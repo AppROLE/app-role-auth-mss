@@ -55,6 +55,23 @@ export class UserRepoMock implements IUserRepository {
       userAcceptedTerms: acceptedTerms
     }
 
+    const user = this.user_mock.users.find((user) => user.userEmail === email);
+
+    if (user) {
+      return user;
+    }
+
+    const u: any = new User({
+      name: newUser.userName,
+      email: newUser.userEmail,
+      password: newUser.userPassword,
+      username: 'digao03',
+      nickname: 'digao',
+    });
+    this.user_mock.users.push(u);
+
+    return u;
+
     
   }
 }
