@@ -2,6 +2,7 @@ import { EntityError } from "../../helpers/errors/domain_errors";
 import { PRIVACY_TYPE } from "../enums/privacy_enum";
 
 interface UserProps {
+  user_id?: string;
   name: string;
   nickname: string;
   username: string;
@@ -39,21 +40,22 @@ interface ReviewProps {
 export class User {
   private user_id?: string;
   private name: string;
-  private nickname: string;
+  private nickname?: string;
   private username: string;
   private email: string;
   private password?: string;
-  private created_at: Date;
   private link_instagram?: string;
   private link_tiktok?: string;
   private bg_photo?: string;
   private profile_photo?: string;
   private privacy?: PRIVACY_TYPE;
+  private created_at: Date;
   private following: FollowingProps[];
   private favorites: FavoriteProps[];
   private reviews: ReviewProps[];
 
   constructor(props: UserProps) {
+    this.user_id = props.user_id;
     if (!User.validateName(props.name)) {
       throw new EntityError("name");
     }
@@ -61,7 +63,11 @@ export class User {
     if (!User.validateNickname(props.nickname)) {
       throw new EntityError("nickname");
     }
-    this.nickname = props.nickname;
+    if (!props.nickname) {
+      props.nickname = props.name;
+    } else {
+      this.nickname = props.nickname;
+    }
     if (!User.validateUsername(props.username)) {
       throw new EntityError("username");
     }
@@ -74,26 +80,32 @@ export class User {
       throw new EntityError("password");
     }
     this.password = props.password;
-    if (!User.validateInstagram(props.linkInstagram)) {
+    if (props.linkInstagram && !User.validateInstagram(props.linkInstagram)) {
       throw new EntityError("linkInstagram");
     }
     this.link_instagram = props.linkInstagram;
-    if (!User.validateTiktok(props.linkTiktok)) {
+    if (props.linkTiktok && !User.validateTiktok(props.linkTiktok)) {
       throw new EntityError("linkTiktok");
     }
     this.link_tiktok = props.linkTiktok;
-    if (!User.validateBgPhoto(props.bgPhoto)) {
+    if (props.bgPhoto && !User.validateBgPhoto(props.bgPhoto)) {
       throw new EntityError("bgPhoto");
     }
     this.bg_photo = props.bgPhoto;
-    if (!User.validateProfilePhoto(props.profilePhoto)) {
+    if (props.profilePhoto && !User.validateProfilePhoto(props.profilePhoto)) {
       throw new EntityError("profilePhoto");
     }
     this.profile_photo = props.profilePhoto;
-    if (!User.validatePrivacy(props.privacy)) {
-      throw new EntityError("privacy");
+
+    if (!props.privacy) {
+      this.privacy = PRIVACY_TYPE.PUBLIC;
+    } else {
+      if (!User.validatePrivacy(props.privacy)) {
+        throw new EntityError("privacy");
+      }
+      this.privacy = props.privacy;
     }
-    this.privacy = props.privacy;
+
     this.following = props.following || [];
     this.favorites = props.favorites || [];
     this.reviews = props.reviews || [];
@@ -108,7 +120,7 @@ export class User {
     return this.name;
   }
 
-  get userNickname(): string {
+  get userNickname(): string | undefined {
     return this.nickname;
   }
 
@@ -252,7 +264,7 @@ export class User {
 
   // minimum 1 upper, 1 lower, 1 number, 1 special character, min 6 characters
   static validatePassword(password: string): boolean {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ç~{}=-+#%&()\\`])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !passwordRegex.test(password)) {
       return false;
     }
