@@ -2,10 +2,13 @@ import { User } from "../../../shared/domain/entities/user";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
 import { IUserRepository } from "../../../shared/domain/irepositories/user_repository_interface";
-import { sendEmail } from "../../../shared/utils/mail_sender";
+import { IMailRepository } from "../../../shared/domain/irepositories/mail_repository_interface";
 
 export class ForgotPasswordUseCase {
-  constructor(private readonly repo: IUserRepository) {}
+  constructor(
+    private readonly repo: IUserRepository,
+    private readonly mailRepo: IMailRepository
+  ) {}
 
   async execute(email: string) {
     if (!User.validateEmail(email)) {
@@ -18,18 +21,11 @@ export class ForgotPasswordUseCase {
     }
 
     const resetPasswordLink = await this.repo.forgotPassword(email);
-
-    try {
-      await sendEmail(
-        email,
-        "Recuperação de Senha",
-        `Acesse esse link para trocar sua senha: ${resetPasswordLink}`
-      );
-    } catch (error) {
-      throw new Error(
-        "Não foi possível enviar o e-mail de recuperação de senha."
-      );
-    }
+    await this.mailRepo.sendMail(
+      email,
+      "Recuperação de Senha",
+      `Acesse esse link para trocar sua senha: ${resetPasswordLink}`
+    );
 
     return { message: "E-mail de recuperação enviado com sucesso" };
   }

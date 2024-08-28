@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-
 import { ForgotPasswordUseCase } from "./forgot_password_usecase";
 import {
   InvalidRequest,
   MissingParameters,
+  WrongTypeParameters,
 } from "../../../shared/helpers/errors/controller_errors";
-import { ConflictItems } from "../../../shared/helpers/errors/usecase_errors";
 import {
   BadRequest,
   Forbidden,
@@ -38,6 +37,9 @@ export class ForgotPasswordController {
         return new Forbidden(error.getMessage()).send(res);
       }
       if (error instanceof MissingParameters) {
+        return new ParameterError(error.message).send(res);
+      }
+      if (error instanceof WrongTypeParameters) {
         return new ParameterError(error.message).send(res);
       }
       return new InternalServerError("Internal Server Error").send(res);
