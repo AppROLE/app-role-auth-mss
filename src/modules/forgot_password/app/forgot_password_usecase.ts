@@ -1,14 +1,21 @@
+import { User } from "../../../shared/domain/entities/user";
+import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
 import { IUserRepository } from "../../../shared/infra/interfaces/user_repository_interface";
 
 export class ForgotPasswordUseCase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(private readonly repo: IUserRepository) {}
 
   async execute(email: string) {
-    const user = await this.userRepository.getUserByEmail(email);
+    if (!User.validateEmail(email)) {
+      throw new EntityError("email");
+    }
+
+    const user = await this.repo.getUserByEmail(email);
     if (!user) {
       throw new NoItemsFound("this user");
     }
-    return this.userRepository.forgotPassword(email);
+
+    return this.repo.forgotPassword(email);
   }
 }
