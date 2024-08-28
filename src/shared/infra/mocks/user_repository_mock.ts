@@ -1,6 +1,7 @@
 import { User } from "../../domain/entities/user";
 import { UserMock } from "../../domain/mocks/user_mock";
-import { IUserRepository } from "../../domain/interfaces/user_repository_interface";
+import { IUserRepository } from "../../domain/irepositories/user_repository_interface";
+import { NoItemsFound } from "../../helpers/errors/usecase_errors";
 
 export class UserRepoMock implements IUserRepository {
   public user_mock: UserMock;
@@ -29,11 +30,31 @@ export class UserRepoMock implements IUserRepository {
    * @returns A promise that resolves with the user, or null if no user is found.
    */
 
-  async getUserByEmail(email: string): Promise<User | null> {
+  async getUserByEmail(email: string): Promise<User> {
     const user = this.user_mock.users.find((user) => user.userEmail === email);
     if (!user) {
-      return null;
+      throw new NoItemsFound('email')
     }
     return user;
+  }
+
+  /**
+   * Registers a new user.
+   * @param name The name of the user.
+   * @param email The email of the user.
+   * @param password The password of the user.
+   * @param acceptedTerms A boolean indicating whether the user has accepted the terms and conditions.
+   * @returns A promise that resolves with the newly registered user.
+   */
+
+  async signUp(name: string, email: string, password: string, acceptedTerms: boolean): Promise<User> {
+    const newUser = {
+      userName: name,
+      userEmail: email,
+      userPassword: password,
+      userAcceptedTerms: acceptedTerms
+    }
+
+    
   }
 }

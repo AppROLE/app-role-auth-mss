@@ -1,5 +1,5 @@
 import { User } from "../../../domain/entities/user";
-import { IUserRepository } from "../../../domain/interfaces/user_repository_interface";
+import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
 import userModel from "../models/user.model";
 
 export class UserRepositoryMongo implements IUserRepository {

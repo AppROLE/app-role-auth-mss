@@ -1,16 +1,18 @@
 import { EntityError } from "../../helpers/errors/domain_errors";
+import { PRIVACY_TYPE } from "../enums/privacy_enum";
 
 interface UserProps {
   name: string;
   nickname: string;
   username: string;
   email: string;
+  password?: string;
   createdAt?: Date;
   linkInstagram?: string;
   linkTiktok?: string;
   bgPhoto?: string;
   profilePhoto?: string;
-  privacy?: string;
+  privacy?: PRIVACY_TYPE;
   following?: FollowingProps[];
   favorites?: FavoriteProps[];
   reviews?: ReviewProps[];
@@ -35,35 +37,67 @@ interface ReviewProps {
 }
 
 export class User {
-  private readonly user_id?: string;
-  private readonly name: string;
-  private readonly username: string;
-  private readonly email: string;
-  private readonly created_at: Date;
-  private readonly link_instagram?: string;
-  private readonly link_tiktok?: string;
-  private readonly bg_photo?: string;
-  private readonly profile_photo?: string;
-  private readonly privacy?: string;
-  private readonly following: FollowingProps[];
-  private readonly favorites: FavoriteProps[];
-  private readonly reviews: ReviewProps[];
+  private user_id?: string;
+  private name: string;
+  private nickname: string;
+  private username: string;
+  private email: string;
+  private password?: string;
+  private created_at: Date;
+  private link_instagram?: string;
+  private link_tiktok?: string;
+  private bg_photo?: string;
+  private profile_photo?: string;
+  private privacy?: PRIVACY_TYPE;
+  private following: FollowingProps[];
+  private favorites: FavoriteProps[];
+  private reviews: ReviewProps[];
 
   constructor(props: UserProps) {
-    this.validate(props);
-
+    if (!User.validateName(props.name)) {
+      throw new EntityError("name");
+    }
     this.name = props.name;
+    if (!User.validateNickname(props.nickname)) {
+      throw new EntityError("nickname");
+    }
+    this.nickname = props.nickname;
+    if (!User.validateUsername(props.username)) {
+      throw new EntityError("username");
+    }
     this.username = props.username;
+    if (!User.validateEmail(props.email)) {
+      throw new EntityError("email");
+    }
     this.email = props.email;
-    this.created_at = props.createdAt || new Date();
+    if (props.password && !User.validatePassword(props.password)) {
+      throw new EntityError("password");
+    }
+    this.password = props.password;
+    if (!User.validateInstagram(props.linkInstagram)) {
+      throw new EntityError("linkInstagram");
+    }
     this.link_instagram = props.linkInstagram;
+    if (!User.validateTiktok(props.linkTiktok)) {
+      throw new EntityError("linkTiktok");
+    }
     this.link_tiktok = props.linkTiktok;
+    if (!User.validateBgPhoto(props.bgPhoto)) {
+      throw new EntityError("bgPhoto");
+    }
     this.bg_photo = props.bgPhoto;
+    if (!User.validateProfilePhoto(props.profilePhoto)) {
+      throw new EntityError("profilePhoto");
+    }
     this.profile_photo = props.profilePhoto;
+    if (!User.validatePrivacy(props.privacy)) {
+      throw new EntityError("privacy");
+    }
     this.privacy = props.privacy;
     this.following = props.following || [];
     this.favorites = props.favorites || [];
     this.reviews = props.reviews || [];
+    this.created_at = props.createdAt || new Date();
   }
 
   get userId(): string | undefined {
@@ -74,12 +108,20 @@ export class User {
     return this.name;
   }
 
+  get userNickname(): string {
+    return this.nickname;
+  }
+
   get userUsername(): string {
     return this.username;
   }
 
   get userEmail(): string {
     return this.email;
+  }
+
+  get userPassword(): string | undefined {
+    return this.password;
   }
 
   get userCreatedAt(): Date {
@@ -102,7 +144,7 @@ export class User {
     return this.profile_photo;
   }
 
-  get userPrivacy(): string | undefined {
+  get userPrivacy(): PRIVACY_TYPE | undefined {
     return this.privacy;
   }
 
@@ -118,117 +160,194 @@ export class User {
     return this.reviews;
   }
 
-  private validate(props: UserProps): void {
-    User.validateName(props.name);
-    User.validateUsername(props.username);
-    User.validateEmail(props.email);
-    User.validateInstagram(props.linkInstagram);
-    User.validateTiktok(props.linkTiktok);
-    User.validateBgPhoto(props.bgPhoto);
-    User.validateProfilePhoto(props.profilePhoto);
-    User.validatePrivacy(props.privacy);
-    User.validateFollowing(props.following);
-    User.validateFavorites(props.favorites);
-    User.validateReviews(props.reviews);
+  set setUserId(id: string | undefined) {
+    this.user_id = id;
   }
 
-  static validateName(name: string): void {
+  set setUserName(name: string) {
+    this.name = name;
+  }
+
+  set setUserNickname(nickname: string) {
+    this.nickname = nickname;
+  }
+
+  set setUserUsername(username: string) {
+    this.username = username;
+  }
+
+  set setUserEmail(email: string) {
+    this.email = email;
+  }
+
+  set setUserCreatedAt(createdAt: Date) {
+    this.created_at = createdAt;
+  }
+
+  set setUserlinkInstagram(linkInstagram: string | undefined) {
+    this.link_instagram = linkInstagram;
+  }
+
+  set setUserlinkTiktok(linkTiktok: string | undefined) {
+    this.link_tiktok = linkTiktok;
+  }
+
+  set setUserBgPhoto(bgPhoto: string | undefined) {
+    this.bg_photo = bgPhoto;
+  }
+
+  set setUserProfilePhoto(profilePhoto: string | undefined) {
+    this.profile_photo = profilePhoto;
+  }
+
+  set setUserPrivacy(privacy: PRIVACY_TYPE | undefined) {
+    this.privacy = privacy;
+  }
+
+  set setUserFollowing(following: FollowingProps[]) {
+    this.following = following;
+  }
+
+  set setUserFavorites(favorites: FavoriteProps[]) {
+    this.favorites = favorites;
+  }
+
+  set setUserReviews(reviews: ReviewProps[]) {
+    this.reviews = reviews;
+  }
+
+  static validateName(name: string): boolean {
     if (!name || name.trim().length === 0 || name.trim().length > 100) {
-      throw new EntityError("Invalid name");
+      return false;
     }
+    return true;
   }
 
-  static validateUsername(username: string): void {
+  static validateNickname(nickname: string): boolean {
+    if (nickname && nickname.trim().length > 50) {
+      return false;
+    }
+    return true;
+  }
+
+  static validateUsername(username: string): boolean {
     if (
       !username ||
       username.trim().length === 0 ||
       username.trim().length > 50
     ) {
-      throw new EntityError("Invalid username");
+      return false;
     }
+
+    return true;
   }
 
   static validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
-      throw new EntityError("Invalid email");
+      return false;
     }
     return true;
   }
 
-  static validateInstagram(linkInstagram?: string): void {
+  // minimum 1 upper, 1 lower, 1 number, 1 special character, min 6 characters
+  static validatePassword(password: string): boolean {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!password || !passwordRegex.test(password)) {
+      return false;
+    }
+    return true;
+  }
+
+  static validateInstagram(linkInstagram?: string): boolean {
     if (linkInstagram && linkInstagram.trim().length > 255) {
-      throw new EntityError("Invalid Instagram link");
+      return false;
     }
+
+    return true;
   }
 
-  static validateTiktok(linkTiktok?: string): void {
+  static validateTiktok(linkTiktok?: string): boolean {
     if (linkTiktok && linkTiktok.trim().length > 255) {
-      throw new EntityError("Invalid TikTok link");
+      return false;
     }
+
+    return true;
   }
 
-  static validateBgPhoto(bgPhoto?: string): void {
+  static validateBgPhoto(bgPhoto?: string): boolean {
     if (bgPhoto && bgPhoto.trim().length > 255) {
-      throw new EntityError("Invalid background photo URL");
+      return false;
     }
+
+    return true;
   }
 
-  static validateProfilePhoto(profilePhoto?: string): void {
+  static validateProfilePhoto(profilePhoto?: string): boolean {
     if (profilePhoto && profilePhoto.trim().length > 255) {
-      throw new EntityError("Invalid profile photo URL");
+      return false;
     }
+
+    return true;
   }
 
-  static validatePrivacy(privacy?: string): void {
-    if (privacy && privacy.trim().length > 50) {
-      throw new EntityError("Invalid privacy setting");
+  static validatePrivacy(privacy?: PRIVACY_TYPE): boolean {
+    if (!privacy || !Object.values(PRIVACY_TYPE).includes(privacy)) {
+      return false;
     }
+
+    return true;
   }
 
-  static validateFollowing(following?: FollowingProps[]): void {
+  static validateFollowing(following?: FollowingProps[]): boolean {
     if (following && !Array.isArray(following)) {
-      throw new EntityError("Invalid following list");
+      return false;
     }
     following?.forEach((f) => {
       if (!f.userFollowedId || f.userFollowedId.trim().length === 0) {
-        throw new EntityError("Invalid user followed ID in following list");
+        return false;
       }
     });
+
+    return true;
   }
 
-  static validateFavorites(favorites?: FavoriteProps[]): void {
+  static validateFavorites(favorites?: FavoriteProps[]): boolean {
     if (favorites && !Array.isArray(favorites)) {
-      throw new EntityError("Invalid favorites list");
+      return false;
     }
     favorites?.forEach((f) => {
       if (!f.instituteId || f.instituteId.trim().length === 0) {
-        throw new EntityError("Invalid institute ID in favorites list");
+        return false;
       }
       if (!f.eventId || f.eventId.trim().length === 0) {
-        throw new EntityError("Invalid event ID in favorites list");
+        return false;
       }
     });
+
+    return true;
   }
 
-  static validateReviews(reviews?: ReviewProps[]): void {
+  static validateReviews(reviews?: ReviewProps[]): boolean {
     if (reviews && !Array.isArray(reviews)) {
-      throw new EntityError("Invalid reviews list");
+      return false;
     }
     reviews?.forEach((r) => {
       if (!r.instituteId || r.instituteId.trim().length === 0) {
-        throw new EntityError("Invalid institute ID in reviews list");
+        return false;
       }
       if (!r.star || r.star < 1 || r.star > 5) {
-        throw new EntityError("Invalid star rating in reviews list");
+        return false;
       }
       if (
         !r.review ||
         r.review.trim().length === 0 ||
         r.review.trim().length > 1000
       ) {
-        throw new EntityError("Invalid review text in reviews list");
+        return false;
       }
     });
+
+    return true;
   }
 }
