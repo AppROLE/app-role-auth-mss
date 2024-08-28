@@ -6,5 +6,7 @@ declare namespace NodeJS {
       AWS_REGION: string;
       STAGE: string;
       MONGO_URI: string;
+      COGNITO_USER_POOL_ID: string;
+      COGNITO_CLIENT_ID: string;
     }
   }
