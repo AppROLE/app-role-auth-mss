@@ -58,10 +58,13 @@ export class CognitoStack extends Construct {
                   required: true,
                   mutable: true
               },
+              nickname: {
+                  required: true,
+                  mutable: true
+              }
           },
           customAttributes: {
             name: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
-            nickname: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
             roleType: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
             // phone: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
             // acceptedTerms: new cognito.BooleanAttribute({mutable: true}),
