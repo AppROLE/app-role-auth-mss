@@ -2,6 +2,7 @@ import { User } from "../../domain/entities/user";
 import { UserMock } from "../../domain/mocks/user_mock";
 import { IUserRepository } from "../../domain/irepositories/user_repository_interface";
 import { NoItemsFound } from "../../helpers/errors/usecase_errors";
+import { generateConfirmationCode } from "@/shared/utils/generate_confirmation_code";
 
 export class UserRepoMock implements IUserRepository {
   public user_mock: UserMock;
@@ -21,6 +22,11 @@ export class UserRepoMock implements IUserRepository {
     if (!user) {
       return "No user found with that email address.";
     }
+    
+    const resetPasswordCode = generateConfirmationCode();
+    
+    user.resetPasswordCode = resetPasswordCode;
+
     return `A password reset link has been sent to ${email}. Please check your inbox to proceed with resetting your password.`;
   }
 
