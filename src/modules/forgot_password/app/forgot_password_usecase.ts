@@ -3,6 +3,7 @@ import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
 import { IUserRepository } from "../../../shared/domain/irepositories/user_repository_interface";
 import { IMailRepository } from "../../../shared/domain/irepositories/mail_repository_interface";
+import { generateConfirmationCode } from "../../../shared/utils/generate_confirmation_code";
 
 export class ForgotPasswordUseCase {
   constructor(
@@ -20,11 +21,13 @@ export class ForgotPasswordUseCase {
       throw new NoItemsFound("this user");
     }
 
-    const resetPasswordLink = await this.repo.forgotPassword(email);
+    const code = generateConfirmationCode();
+
+    await this.repo.forgotPassword(email, code);
     await this.mailRepo.sendMail(
       email,
       "Recuperação de Senha",
-      `Acesse esse link para trocar sua senha: ${resetPasswordLink}`
+      `Codigo de recuperacao: ${code}`
     );
 
     return { message: "E-mail de recuperação enviado com sucesso" };
