@@ -1,7 +1,7 @@
 import { User } from "../../../shared/domain/entities/user";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
-import { IUserRepository } from "../../../shared/domain/interfaces/user_repository_interface";
+import { IUserRepository } from "../../../shared/domain/irepositories/user_repository_interface";
 
 export class ForgotPasswordUseCase {
   constructor(private readonly repo: IUserRepository) {}

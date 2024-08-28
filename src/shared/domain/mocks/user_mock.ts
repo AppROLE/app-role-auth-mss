@@ -1,4 +1,5 @@
 import { User } from "../entities/user";
+import { PRIVACY_TYPE } from "../enums/privacy_enum";
 
 export class UserMock {
   public users: User[];
@@ -14,7 +15,7 @@ export class UserMock {
         linkTiktok: "https://tiktok.com/matue30praum",
         bgPhoto: "https://example.com/bgphoto1.jpg",
         profilePhoto: "https://example.com/profile1.jpg",
-        privacy: "Public",
+        privacy: PRIVACY_TYPE.PUBLIC,
         following: [
           { userFollowedId: "2", followedAt: new Date("2024-01-01") },
         ],
@@ -43,7 +44,7 @@ export class UserMock {
         linkTiktok: "https://tiktok.com/user",
         bgPhoto: "https://example.com/bgphoto2.jpg",
         profilePhoto: "https://example.com/profile2.jpg",
-        privacy: "Private",
+        privacy: PRIVACY_TYPE.PRIVATE,
         following: [
           { userFollowedId: "3", followedAt: new Date("2024-01-02") },
         ],
@@ -72,7 +73,7 @@ export class UserMock {
         linkTiktok: "https://tiktok.com/messi",
         bgPhoto: "https://example.com/bgphoto3.jpg",
         profilePhoto: "https://example.com/profile3.jpg",
-        privacy: "FriendsOnly",
+        privacy: PRIVACY_TYPE.PUBLIC,
         following: [
           { userFollowedId: "1", followedAt: new Date("2024-01-03") },
         ],
