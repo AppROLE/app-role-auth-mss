@@ -3,13 +3,18 @@ import { ForgotPasswordUseCase } from "../../src/modules/forgot_password/app/for
 import { UserRepoMock } from "../../src/shared/infra/mocks/user_repository_mock";
 import { NoItemsFound } from "../../src/shared/helpers/errors/usecase_errors";
 import { EntityError } from "../../src/shared/helpers/errors/domain_errors";
-import * as mailSender from "../../src/shared/utils/mail_sender";
+import { MailRepositoryMock } from "../../src/shared/infra/mocks/mail_repository_mock";
 
 describe("ForgotPasswordUseCase", () => {
-  const userRepoMock = new UserRepoMock();
-  const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepoMock);
+  let userRepoMock: UserRepoMock;
+  let mailRepositoryMock: MailRepositoryMock;
+  let forgotPasswordUseCase: ForgotPasswordUseCase;
 
   beforeEach(() => {
+    userRepoMock = new UserRepoMock();
+    mailRepositoryMock = new MailRepositoryMock();
+    forgotPasswordUseCase = new ForgotPasswordUseCase(userRepoMock, mailRepositoryMock);
+
     vi.clearAllMocks();
     vi.restoreAllMocks();
   });
@@ -18,18 +23,14 @@ describe("ForgotPasswordUseCase", () => {
     const email = "nonexistent@example.com";
     vi.spyOn(userRepoMock, "getUserByEmail").mockResolvedValue(null);
 
-    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(
-      NoItemsFound
-    );
+    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(NoItemsFound);
     expect(userRepoMock.getUserByEmail).toHaveBeenCalledWith(email);
   });
 
   it("should throw EntityError when user email is not valid", async () => {
     const email = "nonexistentexample.com";
 
-    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(
-      EntityError
-    );
+    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(EntityError);
   });
 
   it("should return a success message when user is found", async () => {
@@ -39,9 +40,6 @@ describe("ForgotPasswordUseCase", () => {
     vi.spyOn(userRepoMock, "forgotPassword").mockResolvedValue(
       `A password reset link has been sent to ${email}.`
     );
-    const sendEmailMock = vi
-      .spyOn(mailSender, "sendEmail")
-      .mockResolvedValue(undefined);
 
     const result = await forgotPasswordUseCase.execute(email);
 
@@ -50,10 +48,10 @@ describe("ForgotPasswordUseCase", () => {
     });
     expect(userRepoMock.getUserByEmail).toHaveBeenCalledWith(email);
     expect(userRepoMock.forgotPassword).toHaveBeenCalledWith(email);
-    expect(sendEmailMock).toHaveBeenCalledWith(
+    expect(mailRepositoryMock.wasEmailSent(
       email,
       "Recuperação de Senha",
       `Acesse esse link para trocar sua senha: A password reset link has been sent to ${email}.`
-    );
+    )).toBe(true);
   });
 });

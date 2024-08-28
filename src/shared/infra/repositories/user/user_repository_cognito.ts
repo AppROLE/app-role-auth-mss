@@ -25,6 +25,7 @@ export class UserRepositoryCognito implements IUserRepository {
 
       // set code in user attributes
     } catch (error) {}
+
   }
   getUserByEmail(email: string): Promise<User> {
     throw new Error("Method not implemented.");
