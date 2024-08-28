@@ -148,11 +148,12 @@ export class User {
     }
   }
 
-  static validateEmail(email: string): void {
+  static validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
       throw new EntityError("Invalid email");
     }
+    return true;
   }
 
   static validateInstagram(linkInstagram?: string): void {
