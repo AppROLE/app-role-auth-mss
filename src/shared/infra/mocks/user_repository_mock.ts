@@ -30,7 +30,7 @@ export class UserRepoMock implements IUserRepository {
    * @returns A promise that resolves with the user, or null if no user is found.
    */
 
-  async getUserByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User | null> {
     const user = this.user_mock.users.find((user) => user.userEmail === email);
     if (!user) {
       throw new NoItemsFound('email')
