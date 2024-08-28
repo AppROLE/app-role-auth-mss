@@ -1,6 +1,6 @@
 import { User } from "../../domain/entities/user";
 import { UserMock } from "../../domain/mocks/user_mock";
-import { IUserRepository } from "../interfaces/user_repository_interface";
+import { IUserRepository } from "../../domain/interfaces/user_repository_interface";
 
 export class UserRepoMock implements IUserRepository {
   public user_mock: UserMock;
