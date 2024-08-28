@@ -12,4 +12,6 @@ export const envs = {
   AWS_REGION: process.env.AWS_REGION,
   STAGE: process.env.STAGE,
   MONGO_URI: process.env.MONGO_URI,
+  EMAIL_LOGIN: process.env.EMAIL_LOGIN,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
 };
