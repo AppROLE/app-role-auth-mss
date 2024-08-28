@@ -19,7 +19,7 @@
     "vitest": "^2.0.5"
   },
   "scripts": {
-    "dev": "nodemon --exec ts-node src/shared/server.ts",
+    "dev": "nodemon src/server.ts",
     "test": "vitest"
   }
 }
