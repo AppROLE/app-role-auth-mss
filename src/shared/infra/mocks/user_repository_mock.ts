@@ -10,6 +10,10 @@ export class UserRepoMock implements IUserRepository {
     this.user_mock = new UserMock();
   }
 
+  confirmCode(email: string, code: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
   /**
    * Simulates the forgot password process for a given email.
    * @param email The email of the user who forgot their password.
@@ -33,7 +37,7 @@ export class UserRepoMock implements IUserRepository {
   async getUserByEmail(email: string): Promise<User | null> {
     const user = this.user_mock.users.find((user) => user.userEmail === email);
     if (!user) {
-      throw new NoItemsFound('email')
+      throw new NoItemsFound("email");
     }
     return user;
   }
@@ -47,13 +51,18 @@ export class UserRepoMock implements IUserRepository {
    * @returns A promise that resolves with the newly registered user.
    */
 
-  async signUp(name: string, email: string, password: string, acceptedTerms: boolean): Promise<User> {
+  async signUp(
+    name: string,
+    email: string,
+    password: string,
+    acceptedTerms: boolean
+  ): Promise<User> {
     const newUser = {
       userName: name,
       userEmail: email,
       userPassword: password,
-      userAcceptedTerms: acceptedTerms
-    }
+      userAcceptedTerms: acceptedTerms,
+    };
 
     const user = this.user_mock.users.find((user) => user.userEmail === email);
 
@@ -65,13 +74,11 @@ export class UserRepoMock implements IUserRepository {
       name: newUser.userName,
       email: newUser.userEmail,
       password: newUser.userPassword,
-      username: 'digao03',
-      nickname: 'digao',
+      username: "digao03",
+      nickname: "digao",
     });
     this.user_mock.users.push(u);
 
     return u;
-
-    
   }
 }
