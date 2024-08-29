@@ -63,6 +63,7 @@ jobs:
           cd iac
           ts-node node_modules_adjust.ts
           ts-node adjust_shared_layer.ts
+          
           cdk synth
           cdk deploy --require-approval never
         env:
