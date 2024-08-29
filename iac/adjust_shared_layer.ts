@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const IAC_DIRECTORY_NAME = 'iac';
-const SOURCE_DIRECTORY_NAME = 'dist/src';
+const SOURCE_DIRECTORY_NAME = 'dist';
 const SHARED_DIR_NAME = 'shared';
 const SHARED_NODEJS_DIR_NAME = 'nodejs';
 

@@ -108,6 +108,11 @@
   "exclude": [
     "node_modules",
     "dist",
-    "iac"
+    "iac",
+    "src/tests/**/*"
+  ],
+  "include": [
+    "src/modules/**/*",
+    "src/shared/**/*"
   ]
 }
