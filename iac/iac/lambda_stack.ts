@@ -31,7 +31,7 @@ export class LambdaStack extends Construct {
       functionName: `${modifiedModuleName}-${envs.STACK_NAME}`,
       // need to take ../../src/modules/${moduleName} to get the correct path
       code: lambda.Code.fromAsset(path.join(__dirname, `../../dist/modules/${moduleName}`)),
-      handler: `app.${moduleName}_presenter.lambda_handler`,
+      handler: `app/${moduleName}_presenter.lambda_handler`,
       runtime: lambda.Runtime.NODEJS_20_X,
       layers: [this.lambdaLayer, this.libLayer],
       environment: environmentVariables,
