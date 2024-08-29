@@ -1,27 +1,31 @@
-import cors from 'cors'
-import express from 'express'
-import { envs } from '../../../shared/helpers/envs/envs'
-import { STAGE } from '../../../shared/domain/enums/stage_enum'
-import ServerlessHttp from 'serverless-http'
 
-const app = express()
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Environments } from '../../../shared/environments'
+import {
+  LambdaHttpRequest,
+  LambdaHttpResponse,
+} from '../../../shared/helpers/external_interfaces/http_lambda_requests'
+import { ConfirmForgotPasswordController } from './confirm_forgot_password_controller'
+import { ConfirmForgotPasswordUsecase } from './confirm_forgot_password_usecase'
 
-app.use(express.json())
-app.use(cors({
-  origin: '*'
-}))
+const repo = Environments.getUserRepo()
+const usecase = new ConfirmForgotPasswordUsecase(repo)
+const controller = new ConfirmForgotPasswordController(usecase)
 
-app.post('/confirm-forgot-password', (req, res) => {
-  return res.json({ message: 'Hello World - Confirm Forgot Password' })
-})
+export async function confirmForgotPasswordPresenter(event: Record<string, any>) {
+  const httpRequest = new LambdaHttpRequest(event)
+  const response = await controller.handle(httpRequest)
+  const httpResponse = new LambdaHttpResponse(
+    response?.body,
+    response?.statusCode,
+    response?.headers,
+  )
 
-if (envs.STAGE === STAGE.DEV 
-  || envs.STAGE === STAGE.HOMOLOG 
-  || envs.STAGE === STAGE.PROD
-) {
-  module.exports.lambda_handler = ServerlessHttp(app)
-} else {
-  app.listen(3000, () => {
-    console.log(`Server running on port 3000 in ${STAGE} stage`)
-  })
+  return httpResponse.toJSON()
+}
+
+export async function lambda_handler(event: any, context: any) {
+  const response = await confirmForgotPasswordPresenter(event)
+  return response
 }

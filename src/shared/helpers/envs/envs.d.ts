@@ -8,5 +8,6 @@ declare namespace NodeJS {
       MONGO_URI: string;
       COGNITO_USER_POOL_ID: string;
       COGNITO_CLIENT_ID: string;
+      S3_BUCKET_NAME: string;
     }
   }
