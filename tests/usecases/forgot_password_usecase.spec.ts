@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ForgotPasswordUseCase } from "../../src/modules/forgot_password/app/forgot_password_usecase";
-import { UserRepoMock } from "../../src/shared/infra/mocks/user_repository_mock";
+import { UserRepoMock } from "../../src/shared/infra/repositories/user/user_repository_mock";
 import { NoItemsFound } from "../../src/shared/helpers/errors/usecase_errors";
 import { EntityError } from "../../src/shared/helpers/errors/domain_errors";
-import { MailRepositoryMock } from "../../src/shared/infra/mocks/mail_repository_mock";
+import { MailRepositoryMock } from "../../src/shared/infra/repositories/mail/mail_repository_mock";
 
 describe("ForgotPasswordUseCase", () => {
   let userRepoMock: UserRepoMock;

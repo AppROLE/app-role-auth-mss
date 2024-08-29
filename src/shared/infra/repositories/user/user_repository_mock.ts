@@ -1,7 +1,7 @@
-import { User } from "../../domain/entities/user";
-import { UserMock } from "../../domain/mocks/user_mock";
-import { IUserRepository } from "../../domain/irepositories/user_repository_interface";
-import { NoItemsFound } from "../../helpers/errors/usecase_errors";
+import { User } from "../../../domain/entities/user";
+import { UserMock } from "../../../domain/mocks/user_mock";
+import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
+import { DuplicatedItem, NoItemsFound } from "../../../helpers/errors/usecase_errors";
 
 export class UserRepoMock implements IUserRepository {
   public user_mock: UserMock;
@@ -58,7 +58,7 @@ export class UserRepoMock implements IUserRepository {
     const user = this.user_mock.users.find((user) => user.userEmail === email);
 
     if (user) {
-      return user;
+      throw new DuplicatedItem('email');
     }
 
     const u: any = new User({

@@ -20,12 +20,9 @@ export class UserRepositoryCognito implements IUserRepository {
     );
   }
 
-  async forgotPassword(email: string): Promise<string> {
+  async forgotPassword(email: string, code: string): Promise<string> {
     try {
-      const code = generateConfirmationCode()
-
       await this.updateUserConfirmationCode(email, code);
-
       return "";
 
 

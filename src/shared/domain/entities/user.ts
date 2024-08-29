@@ -7,6 +7,7 @@ interface UserProps {
   nickname: string;
   username: string;
   email: string;
+  phoneNumber?: string;
   password?: string;
   createdAt?: Date;
   linkInstagram?: string;
@@ -43,6 +44,7 @@ export class User {
   private nickname?: string;
   private username: string;
   private email: string;
+  private phoneNumber?: string;
   private password?: string;
   private link_instagram?: string;
   private link_tiktok?: string;
@@ -132,6 +134,10 @@ export class User {
     return this.email;
   }
 
+  get userPhoneNumber(): string | undefined {
+    return this.phoneNumber;
+  }
+
   get userPassword(): string | undefined {
     return this.password;
   }
@@ -190,6 +196,10 @@ export class User {
 
   set setUserEmail(email: string) {
     this.email = email;
+  }
+
+  set setUserPhoneNumber(phoneNumber: string | undefined) {
+    this.phoneNumber = phoneNumber;
   }
 
   set setUserCreatedAt(createdAt: Date) {
@@ -262,9 +272,17 @@ export class User {
     return true;
   }
 
+  static validatePhoneNumber(phoneNumber?: string): boolean {
+    if (phoneNumber && phoneNumber.trim().length > 20) {
+      return false;
+    }
+
+    return true;
+  }
+
   // minimum 1 upper, 1 lower, 1 number, 1 special character, min 6 characters
   static validatePassword(password: string): boolean {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ç~{}=-+#%&()\\`])[A-Za-z\d@$!%*?&]{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ç~{}#%&()\\`])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !passwordRegex.test(password)) {
       return false;
     }

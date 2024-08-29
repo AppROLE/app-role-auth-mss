@@ -3,7 +3,7 @@
 import { config } from "dotenv";
 import path from "path";
 
-config({ path: path.resolve(__dirname, "../.env") });
+config({ path: path.resolve(__dirname, "../../../../.env") });
 
 export const envs = {
   AWS_ACCOUNT_ID: process.env.AWS_ACCOUNT_ID,

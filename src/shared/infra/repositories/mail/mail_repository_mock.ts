@@ -1,4 +1,5 @@
-import { IMailRepository } from "../../domain/irepositories/mail_repository_interface";
+import { IMailRepository } from "../../../domain/irepositories/mail_repository_interface";
+
 
 export class MailRepositoryMock implements IMailRepository {
   public sentEmails: { to: string; subject: string; body: string }[] = [];
