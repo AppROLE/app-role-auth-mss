@@ -18,7 +18,7 @@ export class ForgotPasswordUseCase {
 
     const user = await this.repo.getUserByEmail(email);
     if (!user) {
-      throw new NoItemsFound("this user");
+      throw new NoItemsFound("this email");
     }
 
     const code = generateConfirmationCode();
