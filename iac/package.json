@@ -10,7 +10,7 @@
     "test": "jest",
     "cdk": "cdk",
     "s": "sam local start-api -t ./cdk.out/AppRoleAuthMss.template.json --skip-pull-image --debug",
-    "b": "sam build -t ./cdk.out/.template.json"
+    "b": "sam build -t ./cdk.out/AppRoleAuthMss.template.json"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
