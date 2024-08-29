@@ -1,6 +1,3 @@
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Environments } from '../../../shared/environments'
 import {
   LambdaHttpRequest,
