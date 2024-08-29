@@ -262,9 +262,8 @@ export class User {
     return true;
   }
 
-  // minimum 1 upper, 1 lower, 1 number, 1 special character, min 6 characters
   static validatePassword(password: string): boolean {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ç~{}=-+#%&()\\`])[A-Za-z\d@$!%*?&]{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ç~{}=\-+#%&()\\`])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !passwordRegex.test(password)) {
       return false;
     }
