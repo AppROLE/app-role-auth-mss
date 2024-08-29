@@ -59,6 +59,7 @@ jobs:
       - name: Deploy with CDK
         run: |
           source $GITHUB_ENV
+          yarn build
           cd iac
           ts-node node_modules_adjust.ts
           ts-node adjust_shared_layer.ts
