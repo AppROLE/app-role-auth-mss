@@ -87,4 +87,8 @@ export class UserRepositoryCognito implements IUserRepository {
   signUp(name: string, email: string, password: string, acceptedTerms: boolean): Promise<User> {
     throw new Error("Method not implemented.");
   }
+
+  confirmCode(email: string, code: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
