@@ -23,14 +23,18 @@ describe("ForgotPasswordUseCase", () => {
     const email = "nonexistent@example.com";
     vi.spyOn(userRepoMock, "getUserByEmail").mockResolvedValue(null);
 
-    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(NoItemsFound);
+    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(
+      "No items found for this email"
+    );
     expect(userRepoMock.getUserByEmail).toHaveBeenCalledWith(email);
   });
 
   it("should throw EntityError when user email is not valid", async () => {
     const email = "nonexistentexample.com";
 
-    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(EntityError);
+    await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(
+      "Field email is not valid"
+    );
   });
 
   it("should return a success message when user is found", async () => {
@@ -47,11 +51,11 @@ describe("ForgotPasswordUseCase", () => {
       message: "E-mail de recuperação enviado com sucesso",
     });
     expect(userRepoMock.getUserByEmail).toHaveBeenCalledWith(email);
-    expect(userRepoMock.forgotPassword).toHaveBeenCalledWith(email);
+    expect(userRepoMock.forgotPassword).toHaveBeenCalledWith(email, expect.any(String));
     expect(mailRepositoryMock.wasEmailSent(
       email,
       "Recuperação de Senha",
-      `Acesse esse link para trocar sua senha: A password reset link has been sent to ${email}.`
+      `Codigo de recuperacao: ${expect.any(String)}`
     )).toBe(true);
   });
 });

@@ -30,18 +30,11 @@ export class CognitoStack extends Construct {
       //     throw new Error('Missing required environment variables: FROM_EMAIL, REPLY_TO_EMAIL');
       // }
 
-      const email = cognito.UserPoolEmail.withSES({
-          fromEmail: '',
-          replyTo: ''
-      });
-
       this.userPool = new cognito.UserPool(this, `MssCognitoStack-${stage}`, {
           selfSignUpEnabled: true,
-          accountRecovery: AccountRecovery.EMAIL_ONLY,
+          accountRecovery: AccountRecovery.PHONE_ONLY_WITHOUT_MFA,
           userVerification: {
-              emailSubject: 'Verifique seu email para acessar o Daily Tasks',
-              emailBody: 'Olá, obrigado por criar sua conta no Daily Tasks! Seu código de confirmação é {####}',
-              emailStyle: cognito.VerificationEmailStyle.CODE
+            smsMessage: 'Your verification code is {####}',
           },
           standardAttributes: {
               email: {
@@ -65,7 +58,6 @@ export class CognitoStack extends Construct {
             // emailNotifications: new cognito.BooleanAttribute({mutable: true}),
             confirmationCode: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
           },
-          email: email,
           smsRole: new iam.Role(this, 'smsAppRole_Role', {
             assumedBy: new iam.ServicePrincipal('cognito-idp.amazonaws.com'),
             managedPolicies: [

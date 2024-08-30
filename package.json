@@ -20,7 +20,7 @@
   },
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "test": "vitest",
+    "test": "vitest run",
     "build": "tsc -p ."
   }
 }
