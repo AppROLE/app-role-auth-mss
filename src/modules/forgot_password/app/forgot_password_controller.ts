@@ -1,15 +1,13 @@
 import { ForgotPasswordUseCase } from "./forgot_password_usecase";
 import {
-  InvalidRequest,
   MissingParameters,
   WrongTypeParameters,
-} from "../../../shared/helpers/errors/controller_errors";
+} from "src/shared/helpers/errors/controller_errors";
 import {
   BadRequest,
-  Forbidden,
   InternalServerError,
-} from "../../../shared/helpers/external_interfaces/http_codes";
-import { EntityError } from "../../../shared/helpers/errors/domain_errors";
+} from "src/shared/helpers/external_interfaces/http_codes";
+import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
 import { NotFound, OK, Unauthorized } from "src/shared/helpers/external_interfaces/http_codes";
 import { ConflictItems, ForbiddenAction, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
