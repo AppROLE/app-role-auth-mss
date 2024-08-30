@@ -1,8 +1,8 @@
-import { Environments } from '../../../shared/environments'
+import { Environments } from 'src/shared/environments'
 import {
   LambdaHttpRequest,
   LambdaHttpResponse,
-} from '../../../shared/helpers/external_interfaces/http_lambda_requests'
+} from 'src/shared/helpers/external_interfaces/http_lambda_requests'
 import { ConfirmForgotPasswordController } from './confirm_forgot_password_controller'
 import { ConfirmForgotPasswordUsecase } from './confirm_forgot_password_usecase'
 
