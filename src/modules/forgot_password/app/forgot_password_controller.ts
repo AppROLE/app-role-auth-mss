@@ -1,48 +1,56 @@
-import { Request, Response } from "express";
 import { ForgotPasswordUseCase } from "./forgot_password_usecase";
 import {
-  InvalidRequest,
   MissingParameters,
   WrongTypeParameters,
-} from "../../../shared/helpers/errors/controller_errors";
+} from "src/shared/helpers/errors/controller_errors";
 import {
   BadRequest,
-  Forbidden,
   InternalServerError,
-  ParameterError,
-} from "../../../shared/helpers/http/http_codes";
-import { EntityError } from "../../../shared/helpers/errors/domain_errors";
+} from "src/shared/helpers/external_interfaces/http_codes";
+import { EntityError } from "src/shared/helpers/errors/domain_errors";
+import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
+import { NotFound, OK, Unauthorized } from "src/shared/helpers/external_interfaces/http_codes";
+import { ConflictItems, ForbiddenAction, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
 export class ForgotPasswordController {
   constructor(private readonly usecase: ForgotPasswordUseCase) {}
 
-  async handle(req: Request, res: Response) {
-    const { email } = req.body;
+  async handle(request: IRequest) {
+    const email = request.data.email;
 
     if (!email) {
       throw new MissingParameters("email");
     }
 
+    if (typeof email !== "string") {
+      throw new WrongTypeParameters("email", "string", typeof email);
+    }
+
     try {
-      const message = await this.usecase.execute(email);
-      return res.status(200).json({ message });
+      await this.usecase.execute(email);
+      return new OK({ message: 'Uma mensagem de recuperação foi enviada para o seu e-mail' });
     } catch (error: any) {
-      if (error instanceof InvalidRequest) {
-        return new BadRequest(error.message).send(res);
-      }
-      if (error instanceof EntityError) {
-        return new ParameterError(error.message).send(res);
-      }
-      if (error instanceof Forbidden) {
-        return new Forbidden(error.getMessage()).send(res);
+      if (error instanceof NoItemsFound) {
+        return new NotFound(error.message)
       }
       if (error instanceof MissingParameters) {
-        return new ParameterError(error.message).send(res);
+        return new BadRequest(error.message)
       }
       if (error instanceof WrongTypeParameters) {
-        return new ParameterError(error.message).send(res);
+        return new BadRequest(error.message)
       }
-      return new InternalServerError("Internal Server Error").send(res);
+      if (error instanceof ConflictItems) {
+        return new BadRequest(error.message)
+      }
+      if (error instanceof EntityError) {
+        return new BadRequest(error.message)
+      }
+      if (error instanceof ForbiddenAction) {
+        return new Unauthorized(error.message as any)
+      }
+      if (error instanceof Error) {
+        return new InternalServerError(error.message)
+      }
     }
   }
 }

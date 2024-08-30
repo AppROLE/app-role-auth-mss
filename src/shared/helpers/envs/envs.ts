@@ -3,7 +3,7 @@
 import { config } from "dotenv";
 import path from "path";
 
-config({ path: path.resolve(__dirname, "../.env") });
+config({ path: path.resolve(__dirname, "../../../../.env") });
 
 export const envs = {
   AWS_ACCOUNT_ID: process.env.AWS_ACCOUNT_ID,
@@ -16,4 +16,5 @@ export const envs = {
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   COGNITO_USER_POOL_ID: process.env.COGNITO_USER_POOL_ID,
   COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID,
+  S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
 };

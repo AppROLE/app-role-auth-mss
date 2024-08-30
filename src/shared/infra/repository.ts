@@ -1,4 +1,4 @@
-import { UserRepoMock } from "./mocks/user_repository_mock";
+import { UserRepoMock } from "./repositories/user/user_repository_mock";
 import { UserRepositoryMongo } from "./database/repositories/user_repository_mongo";
 
 class RepositoryProps {

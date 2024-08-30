@@ -5,27 +5,17 @@ import {
     CfnOutput
 } from 'aws-cdk-lib';
 import {Construct} from 'constructs';
-import {envs} from "../../src/envs";
+import {envs} from "../../src/shared/helpers/envs/envs";
 import { AccountRecovery, CfnIdentityPool, ProviderAttribute, UserPoolDomain, UserPoolIdentityProviderGoogle } from 'aws-cdk-lib/aws-cognito';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { stage } from '../get_stage_env';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class CognitoStack extends Construct {
     public readonly userPool: cognito.UserPool;
     public readonly client: cognito.UserPoolClient;
 
-    constructor(scope: Construct, id: string) {
-      const githubRef = envs.GITHUB_REF || '';
-        let stage;
-        if (githubRef.includes('prod')) {
-            stage = 'PROD';
-        } else if (githubRef.includes('homolog')) {
-            stage = 'HOMOLOG';
-        } else if (githubRef.includes('dev')) {
-            stage = 'DEV';
-        } else {
-            stage = 'TEST';
-        }
-      
+    constructor(scope: Construct, id: string) {      
       super(scope, `${envs.STACK_NAME}CognitoStack-${stage}`);
 
       
@@ -45,7 +35,7 @@ export class CognitoStack extends Construct {
           replyTo: ''
       });
 
-      this.userPool = new cognito.UserPool(this, `DailyTasksMssCognitoStack-${stage}`, {
+      this.userPool = new cognito.UserPool(this, `MssCognitoStack-${stage}`, {
           selfSignUpEnabled: true,
           accountRecovery: AccountRecovery.EMAIL_ONLY,
           userVerification: {
@@ -61,7 +51,11 @@ export class CognitoStack extends Construct {
               nickname: {
                   required: true,
                   mutable: true
-              }
+              },
+              phoneNumber: {
+                  required: false,
+                  mutable: true
+              },
           },
           customAttributes: {
             name: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
@@ -71,7 +65,13 @@ export class CognitoStack extends Construct {
             // emailNotifications: new cognito.BooleanAttribute({mutable: true}),
             confirmationCode: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
           },
-          email: email
+          email: email,
+          smsRole: new iam.Role(this, 'smsAppRole_Role', {
+            assumedBy: new iam.ServicePrincipal('cognito-idp.amazonaws.com'),
+            managedPolicies: [
+              iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')
+            ]
+          }),
       });
 
       
@@ -90,8 +90,8 @@ export class CognitoStack extends Construct {
           
       // this.userPool.registerIdentityProvider(googleProvider)
         
-      this.client = this.userPool.addClient(`AppRoleMssUserPoolClient-${stage}`, {
-          userPoolClientName: `AppRoleMssUserPoolClient-${stage}`,
+      this.client = this.userPool.addClient(`AppRoleAuthMssUserPoolClient-${stage}`, {
+          userPoolClientName: `AppRoleAuthMssUserPoolClient-${stage}`,
           generateSecret: false,
           authFlows: {
               adminUserPassword: true,

@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { FailToSendEmail } from "../helpers/errors/usecase_errors";
-import { envs } from "../../envs";
+import { envs } from "../helpers/envs/envs";
 import { InvalidCredentialsError } from "../helpers/errors/login_errors";
 
 dotenv.config();

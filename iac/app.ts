@@ -1,5 +1,5 @@
 import * as cdk from 'aws-cdk-lib'
-import { envs } from '../src/envs'
+import { envs } from '../src/shared/helpers/envs/envs'
 import { IacStack } from './iac/iac_stack'
 
 console.log('Starting the CDK')
