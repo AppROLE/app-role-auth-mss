@@ -13,7 +13,7 @@
 //         "user_id": "sub",
 //         "name": "name",
 //         "email": "email",
-//         "nickname": "custom:nickname",
+//         "nickname": "nickname",
 //         "confirmationCode": "custom:confirmationCode",
 //         "password": "password",
 //         "accepted_terms": "custom:acceptedTerms",
@@ -139,7 +139,7 @@
 
 
 
-/*
-    A arrumar
+// /*
+//     A arrumar
 
-*/
+// */

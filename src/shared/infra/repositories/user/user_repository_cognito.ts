@@ -65,6 +65,7 @@ export class UserRepositoryCognito implements IUserRepository {
       const result = await this.client.send(command);
       if (result.Users && result.Users.length > 0) {
         const user = result.Users[0];
+        console.log("USER FROM COGNITO WITHOUT DTO: ", user);
         return new User({
           name: user.Attributes?.find((attr) => attr.Name === 'name')?.Value as string,
           email: user.Attributes?.find((attr) => attr.Name === 'email')?.Value as string,
