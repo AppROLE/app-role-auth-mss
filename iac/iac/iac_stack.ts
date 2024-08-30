@@ -31,7 +31,8 @@ export class IacStack extends Stack {
 
     const environmentVariables = {
       STAGE: stage,
-      // 'NODE_PATH': '/opt/nodejs:/var/task'
+      NODE_PATH: '/var/task:/opt/nodejs'
+
     };
 
     new LambdaStack(
