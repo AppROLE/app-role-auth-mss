@@ -2,7 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const IAC_DIRECTORY_NAME = 'iac';
-const SOURCE_DIRECTORY_NAME = 'dist';
+const BUILD_DIRECTORY_NAME = 'dist';
+const SOURCE_DIRECTORY_NAME = 'src';
 const SHARED_DIR_NAME = 'shared';
 const SHARED_NODEJS_DIR_NAME = 'nodejs';
 
@@ -17,8 +18,8 @@ export function adjustLayerDirectory(): void {
   console.log(`IaC directory files: ${fs.readdirSync(iacDirectory)}`);
 
   // Define os diretórios de origem e destino para shared
-  const sourceDirectory = path.join(rootDirectory, SOURCE_DIRECTORY_NAME, SHARED_DIR_NAME);
-  const destinationDirectory = path.join(iacDirectory, SHARED_DIR_NAME, SHARED_DIR_NAME);
+  const sourceDirectory = path.join(rootDirectory, BUILD_DIRECTORY_NAME, SHARED_DIR_NAME);
+  const destinationDirectory = path.join(iacDirectory, SHARED_DIR_NAME, SHARED_NODEJS_DIR_NAME, SOURCE_DIRECTORY_NAME, SHARED_DIR_NAME);
 
   // Apaga o diretório de destino se ele existir
   if (fs.existsSync(destinationDirectory)) {
