@@ -16,8 +16,7 @@ export class CognitoStack extends Construct {
     public readonly client: cognito.UserPoolClient;
 
     constructor(scope: Construct, id: string) {      
-      super(scope, `${envs.STACK_NAME}CognitoStack-${stage}`);
-
+      super(scope, `${envs.STACK_NAME}-CognitoStack-${stage}`);
       
       // const googleClientId = envs.GOOGLE_WEB_CLIENT_ID || '';
       // const googleSecretValue = Secret.fromSecretNameV2(this, 
@@ -30,11 +29,13 @@ export class CognitoStack extends Construct {
       //     throw new Error('Missing required environment variables: FROM_EMAIL, REPLY_TO_EMAIL');
       // }
 
-      this.userPool = new cognito.UserPool(this, `MssCognitoStack-${stage}`, {
+      this.userPool = new cognito.UserPool(this, `${envs.STACK_NAME}-UserPool-${stage}`, {
           selfSignUpEnabled: true,
-          accountRecovery: AccountRecovery.PHONE_ONLY_WITHOUT_MFA,
+          accountRecovery: AccountRecovery.EMAIL_ONLY,
           userVerification: {
-            smsMessage: 'Your verification code is {####}',
+              emailSubject: 'Verify your email for AppROLE!',
+              emailBody: 'Hello {username}, Thanks for signing up to AppROLE! Your verification code is {####}',
+              emailStyle: cognito.VerificationEmailStyle.CODE,
           },
           standardAttributes: {
               email: {
@@ -53,17 +54,10 @@ export class CognitoStack extends Construct {
           customAttributes: {
             name: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
             roleType: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
-            // phone: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
             acceptedTerms: new cognito.BooleanAttribute({mutable: true}),
-            // emailNotifications: new cognito.BooleanAttribute({mutable: true}),
             confirmationCode: new cognito.StringAttribute({minLen: 1, maxLen: 2048, mutable: true}),
           },
-          smsRole: new iam.Role(this, 'smsAppRole_Role', {
-            assumedBy: new iam.ServicePrincipal('cognito-idp.amazonaws.com'),
-            managedPolicies: [
-              iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')
-            ]
-          }),
+          removalPolicy: RemovalPolicy.DESTROY,
       });
 
       
@@ -82,13 +76,13 @@ export class CognitoStack extends Construct {
           
       // this.userPool.registerIdentityProvider(googleProvider)
         
-      this.client = this.userPool.addClient(`AppRoleAuthMssUserPoolClient-${stage}`, {
-          userPoolClientName: `AppRoleAuthMssUserPoolClient-${stage}`,
+      this.client = this.userPool.addClient(`${envs.STACK_NAME}-UserPoolClient-${stage}`, {
+          userPoolClientName: `${envs.STACK_NAME}-UserPoolClient-${stage}`,
           generateSecret: false,
           authFlows: {
               adminUserPassword: true,
               userPassword: true,
-              userSrp: true
+              userSrp: true,
           }
       });
       
