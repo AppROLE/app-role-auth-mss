@@ -1,5 +1,10 @@
 import { MissingParameters, WrongTypeParameters } from "src/shared/helpers/errors/controller_errors";
 import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
+import { SignUpUsecase } from "./sign_up_usecase";
+import { SignUpViewmodel } from "./sign_up_viewmodel";
+import { ROLE_TYPE } from "src/shared/domain/enums/role_type_enum";
+import { BadRequest, Created, InternalServerError } from "src/shared/helpers/external_interfaces/http_codes";
+import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class SignUpController {
   constructor(private readonly usecase: SignUpUsecase) {}
@@ -38,6 +43,26 @@ export class SignUpController {
       }
 
       const response = await this.usecase.execute(name, email, password, acceptedTerms);
-    } catch (error: any) {}
+
+      const viewmodel = new SignUpViewmodel({
+        email: response.userEmail,
+        name: response.userName,
+        username: response.userUsername,
+        nickname: response.userNickname as string,
+        roleType: response.userRoleType as ROLE_TYPE
+      });
+
+      return new Created(viewmodel.toJSON());
+    } catch (error: any) {
+      if (error instanceof MissingParameters || error instanceof WrongTypeParameters) {
+        return new BadRequest(error.message);
+      }
+      if (error instanceof EntityError) {
+        return new BadRequest(error.message);
+      }
+      if (error instanceof Error) {
+        return new InternalServerError(`SignUpController, Error on handle: ${error.message}`);
+      }
+    }
   }
 }
