@@ -1,7 +1,7 @@
 import { generateConfirmationCode } from "../../../utils/generate_confirmation_code";
 import { User } from "../../../domain/entities/user";
 import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
-import { AdminUpdateUserAttributesCommand, AdminUpdateUserAttributesCommandInput, CognitoIdentityProviderClient, ListUsersCommand, ListUsersCommandInput } from "@aws-sdk/client-cognito-identity-provider"
+import { AdminUpdateUserAttributesCommand, AdminUpdateUserAttributesCommandInput, CognitoIdentityProviderClient, ListUsersCommand, ListUsersCommandInput, SignUpCommand, SignUpCommandInput } from "@aws-sdk/client-cognito-identity-provider"
 import { NoItemsFound } from "../../../helpers/errors/usecase_errors";
 
 
@@ -72,8 +72,6 @@ export class UserRepositoryCognito implements IUserRepository {
           username: user.Username as string,
           nickname: user.Attributes?.find((attr) => attr.Name === 'custom:nickname')?.Value as string,
           user_id: user.Attributes?.find((attr) => attr.Name === 'sub')?.Value as string,
-          password: user.Attributes?.find((attr) => attr.Name === 'password')?.Value as string,
-          
         });
       } else {
         throw new NoItemsFound("email")
@@ -82,7 +80,70 @@ export class UserRepositoryCognito implements IUserRepository {
       throw new Error("UserRepositoryCognito, Error on getUserByEmail: " + error.message);
     }
   }
-  signUp(name: string, email: string, password: string, acceptedTerms: boolean): Promise<User> {
-    throw new Error("Method not implemented.");
+  async signUp(name: string, email: string, password: string, acceptedTerms: boolean): Promise<User> {
+    try {
+      const user = new User({
+        name,
+        email,
+        password,
+        username: email,
+        nickname: name.split(" ")[0],
+      });
+
+      const code = generateConfirmationCode();
+
+      const params: SignUpCommandInput = {
+        ClientId: this.clientId,
+        Password: password,
+        Username: email,
+        UserAttributes: [
+          {
+            Name: 'email',
+            Value: email,
+          },
+          {
+            Name: 'name',
+            Value: name,
+          },
+          {
+            Name: 'nickname',
+            Value: name.split(" ")[0],
+          },
+          {
+            Name: 'custom:confirmationCode',
+            Value: code,
+          },
+          {
+            Name: 'custom:acceptedTerms',
+            Value: acceptedTerms ? 'true' : 'false',
+          },
+          {
+            Name: 'custom:roleType',
+            Value: user.userRoleType
+          }
+        ],
+        // ValidationData: [
+        //   {
+        //     Name: 'SupressEmail',
+        //     Value: 'true'
+        //   },
+        //   {
+        //     Name: 'SupressSMS',
+        //     Value: 'true'
+        //   }
+        // ]
+      };
+
+      const command = new SignUpCommand(params);
+      const result = await this.client.send(command);
+
+      console.log("SIGN UP RESULT: ", result);
+
+      return user;
+
+
+    } catch (error: any) {
+      throw new Error("UserRepositoryCognito, Error on signUp: " + error.message);
+    }
   }
 }
