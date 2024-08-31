@@ -5,6 +5,7 @@ import { stage } from "../get_stage_env";
 import { LambdaStack } from "./lambda_stack";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { envs } from "../../src/shared/helpers/envs/envs";
+import { CognitoStack } from "./cognito_stack";
 
 export class IacStack extends Stack {
   constructor(scope: Construct, constructId: string, props?: StackProps) {
@@ -29,26 +30,29 @@ export class IacStack extends Stack {
       },
     });
 
+    const cognitoStack = new CognitoStack(this, `${envs.STACK_NAME}-CognitoStack`);
+
     const environmentVariables = {
       STAGE: stage,
-      NODE_PATH: '/var/task:/opt/nodejs'
-
+      NODE_PATH: '/var/task:/opt/nodejs',
+      COGNITO_USER_POOL_ID: cognitoStack.userPool.userPoolId,
+      COGNITO_CLIENT_ID: cognitoStack.client.userPoolClientId,
     };
 
-    new LambdaStack(
+    const lambdaStack = new LambdaStack(
       this,
       apigatewayResource,
       environmentVariables
     )
 
-    // const cognitoAdminPolicy = new iam.PolicyStatement({
-    //   effect: iam.Effect.ALLOW,
-    //   actions: ["cognito-idp:*"],
-    //   resources: [cognitoStack.userPool.userPoolArn],
-    // });
+    const cognitoAdminPolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ["cognito-idp:*"],
+      resources: [cognitoStack.userPool.userPoolArn],
+    });
 
-    // for (const fn of lambdaStack.functionsThatNeedCognitoPermissions) {
-    //   fn.addToRolePolicy(cognitoAdminPolicy);
-    // }
+    for (const fn of lambdaStack.functionsThatNeedCognitoPermissions) {
+      fn.addToRolePolicy(cognitoAdminPolicy);
+    }
   }
 }
