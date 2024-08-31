@@ -1,5 +1,6 @@
 import { EntityError } from "../../helpers/errors/domain_errors";
 import { PRIVACY_TYPE } from "../enums/privacy_enum";
+import { ROLE_TYPE } from "../enums/role_type_enum";
 
 interface UserProps {
   user_id?: string;
@@ -7,6 +8,7 @@ interface UserProps {
   nickname: string;
   username: string;
   email: string;
+  roleType?: ROLE_TYPE;
   phoneNumber?: string;
   password?: string;
   createdAt?: Date;
@@ -44,6 +46,7 @@ export class User {
   private nickname?: string;
   private username: string;
   private email: string;
+  private roleType?: ROLE_TYPE;
   private phoneNumber?: string;
   private password?: string;
   private link_instagram?: string;
@@ -78,6 +81,14 @@ export class User {
       throw new EntityError("email");
     }
     this.email = props.email;
+    if (!props.roleType) {
+      this.roleType = ROLE_TYPE.COMMON
+    } else {
+      if (!User.validateRoleType(props.roleType)) {
+        throw new EntityError("roleType");
+      }
+      this.roleType = props.roleType;
+    }
     if (props.password && !User.validatePassword(props.password)) {
       throw new EntityError("password");
     }
@@ -132,6 +143,10 @@ export class User {
 
   get userEmail(): string {
     return this.email;
+  }
+
+  get userRoleType(): ROLE_TYPE | undefined {
+    return this.roleType;
   }
 
   get userPhoneNumber(): string | undefined {
@@ -196,6 +211,10 @@ export class User {
 
   set setUserEmail(email: string) {
     this.email = email;
+  }
+
+  set setUserRoleType(roleType: ROLE_TYPE | undefined) {
+    this.roleType = roleType;
   }
 
   set setUserPhoneNumber(phoneNumber: string | undefined) {
@@ -269,6 +288,14 @@ export class User {
     if (!email || !emailRegex.test(email)) {
       return false;
     }
+    return true;
+  }
+
+  static validateRoleType(roleType?: ROLE_TYPE): boolean {
+    if (roleType && !Object.values(ROLE_TYPE).includes(roleType)) {
+      return false;
+    }
+
     return true;
   }
 
