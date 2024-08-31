@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ForgotPasswordUseCase } from "../../src/modules/forgot_password/app/forgot_password_usecase";
 import { UserRepoMock } from "../../src/shared/infra/repositories/user/user_repository_mock";
-import { NoItemsFound } from "../../src/shared/helpers/errors/usecase_errors";
-import { EntityError } from "../../src/shared/helpers/errors/domain_errors";
 import { MailRepositoryMock } from "../../src/shared/infra/repositories/mail/mail_repository_mock";
 
 describe("ForgotPasswordUseCase", () => {
@@ -13,7 +11,10 @@ describe("ForgotPasswordUseCase", () => {
   beforeEach(() => {
     userRepoMock = new UserRepoMock();
     mailRepositoryMock = new MailRepositoryMock();
-    forgotPasswordUseCase = new ForgotPasswordUseCase(userRepoMock, mailRepositoryMock);
+    forgotPasswordUseCase = new ForgotPasswordUseCase(
+      userRepoMock,
+      mailRepositoryMock
+    );
 
     vi.clearAllMocks();
     vi.restoreAllMocks();
@@ -44,6 +45,7 @@ describe("ForgotPasswordUseCase", () => {
     vi.spyOn(userRepoMock, "forgotPassword").mockResolvedValue(
       `A password reset link has been sent to ${email}.`
     );
+    vi.spyOn(mailRepositoryMock, "sendMail").mockResolvedValue(undefined);
 
     const result = await forgotPasswordUseCase.execute(email);
 
@@ -51,11 +53,14 @@ describe("ForgotPasswordUseCase", () => {
       message: "E-mail de recuperação enviado com sucesso",
     });
     expect(userRepoMock.getUserByEmail).toHaveBeenCalledWith(email);
-    expect(userRepoMock.forgotPassword).toHaveBeenCalledWith(email, expect.any(String));
-    expect(mailRepositoryMock.wasEmailSent(
+    expect(userRepoMock.forgotPassword).toHaveBeenCalledWith(
+      email,
+      expect.any(String)
+    );
+    expect(mailRepositoryMock.sendMail).toHaveBeenCalledWith(
       email,
       "Recuperação de Senha",
-      `Codigo de recuperacao: ${expect.any(String)}`
-    )).toBe(true);
+      expect.stringContaining("Codigo de recuperacao:")
+    );
   });
 });
