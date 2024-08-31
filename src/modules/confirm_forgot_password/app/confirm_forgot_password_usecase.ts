@@ -4,6 +4,6 @@ export class ConfirmForgotPasswordUsecase {
   constructor(private readonly repo: IUserRepository) {}
 
   async execute(email: string, code: string, newPassword: string) {
-    return "Ok"
+    return "Ok";
   }
 }
