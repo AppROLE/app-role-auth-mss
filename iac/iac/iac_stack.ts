@@ -37,6 +37,8 @@ export class IacStack extends Stack {
       NODE_PATH: '/var/task:/opt/nodejs',
       COGNITO_USER_POOL_ID: cognitoStack.userPool.userPoolId,
       COGNITO_CLIENT_ID: cognitoStack.client.userPoolClientId,
+      EMAIL_LOGIN: envs.EMAIL_LOGIN,
+      EMAIL_PASSWORD: envs.EMAIL_PASSWORD,
     };
 
     const lambdaStack = new LambdaStack(
