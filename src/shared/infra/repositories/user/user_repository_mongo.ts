@@ -26,10 +26,8 @@ export class UserRepositoryMongo implements IUserRepository {
   }> {
     throw new Error("Method not implemented.");
   }
-  getUserByEmail(email: string): Promise<User | null> {
-    return userModel.findOne({
-      userEmail: email,
-    });
+  getUserByEmail(email: string): Promise<User | undefined> {
+    throw new Error("Method not implemented.");
   }
 
   public async forgotPassword(email: string): Promise<string> {

@@ -71,7 +71,7 @@ export class UserRepositoryCognito implements IUserRepository {
     const command = new AdminUpdateUserAttributesCommand(params);
     await this.client.send(command);
   }
-  async getUserByEmail(email: string): Promise<User | null> {
+  async getUserByEmail(email: string): Promise<User | undefined> {
     try {
       const params: ListUsersCommandInput = {
         UserPoolId: this.userPoolId,
@@ -94,8 +94,6 @@ export class UserRepositoryCognito implements IUserRepository {
           user_id: user.Attributes?.find((attr) => attr.Name === "sub")
             ?.Value as string,
         });
-      } else {
-        throw new NoItemsFound("email");
       }
     } catch (error: any) {
       throw new Error(

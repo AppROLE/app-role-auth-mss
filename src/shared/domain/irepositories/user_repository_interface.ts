@@ -2,7 +2,7 @@ import { User } from "../entities/user";
 
 export interface IUserRepository {
   forgotPassword(email: string, code: string): Promise<string>;
-  getUserByEmail(email: string): Promise<User | null>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   signUp(
     name: string,
     email: string,
