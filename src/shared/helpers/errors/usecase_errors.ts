@@ -2,13 +2,13 @@ import { BaseError } from "./base_error";
 
 export class NoItemsFound extends BaseError {
   constructor(message: string) {
-    super(`No items found for ${message}`);
+    super(`Nenhum item foi encontrado para ${message}`);
   }
 }
 
 export class DuplicatedItem extends BaseError {
   constructor(message: string) {
-    super(`The item already exists for this ${message}`);
+    super(`Item já existente para ${message}`);
   }
 }
 
@@ -26,6 +26,6 @@ export class ConflictItems extends BaseError {
 
 export class FailToSendEmail extends BaseError {
   constructor(message: string) {
-    super(`Fail to send email for ${message}`);
+    super(`Falha ao enviar o email ${message}`);
   }
 }
