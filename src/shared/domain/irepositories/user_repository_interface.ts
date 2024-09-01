@@ -8,7 +8,10 @@ export interface IUserRepository {
     email: string,
     password: string,
     acceptedTerms: boolean
-  ): Promise<User>;
+  ): Promise<{
+    user: User;
+    code: string;
+  }>;
   confirmCode(
     email: string,
     code: string
