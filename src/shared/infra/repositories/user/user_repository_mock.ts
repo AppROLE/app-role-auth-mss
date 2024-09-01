@@ -76,7 +76,10 @@ export class UserRepoMock implements IUserRepository {
     email: string,
     password: string,
     acceptedTerms: boolean
-  ): Promise<User> {
+  ): Promise<{
+    user: User;
+    code: string;
+  }> {
     const newUser = {
       userName: name,
       userEmail: email,
@@ -99,6 +102,9 @@ export class UserRepoMock implements IUserRepository {
     });
     this.user_mock.users.push(u);
 
-    return u;
+    return {
+      user: u,
+      code: "123456",
+    }
   }
 }
