@@ -82,7 +82,7 @@ export class User {
     }
     this.email = props.email;
     if (!props.roleType) {
-      this.roleType = ROLE_TYPE.COMMON
+      this.roleType = ROLE_TYPE.COMMON;
     } else {
       if (!User.validateRoleType(props.roleType)) {
         throw new EntityError("roleType");
@@ -257,6 +257,10 @@ export class User {
     this.reviews = reviews;
   }
 
+  set setUserPassword(password: string | undefined) {
+    this.password = password;
+  }
+
   static validateName(name: string): boolean {
     if (!name || name.trim().length === 0 || name.trim().length > 100) {
       return false;
@@ -309,7 +313,8 @@ export class User {
 
   // minimum 1 upper, 1 lower, 1 number, 1 special character, min 6 characters
   static validatePassword(password: string): boolean {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ç~{}#%&()\\`])[A-Za-z\d@$!%*?&]{6,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ç~{}#%&()\\`])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !passwordRegex.test(password)) {
       return false;
     }
