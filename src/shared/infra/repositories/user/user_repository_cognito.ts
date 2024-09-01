@@ -58,7 +58,7 @@ export class UserRepositoryCognito implements IUserRepository {
 
     const params: AdminUpdateUserAttributesCommandInput = {
       UserPoolId: this.userPoolId,
-      Username: user.userUsername as string, // Utilizando o Username do usuário encontrado
+      Username: user.userUsername as string,
       UserAttributes: [
         {
           Name: "custom:confirmationCode",
@@ -70,7 +70,7 @@ export class UserRepositoryCognito implements IUserRepository {
     const command = new AdminUpdateUserAttributesCommand(params);
     await this.client.send(command);
   }
-  async getUserByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User | null> {
     try {
       const params: ListUsersCommandInput = {
         UserPoolId: this.userPoolId,
