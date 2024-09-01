@@ -3,7 +3,7 @@ import { IMailRepository } from "src/shared/domain/irepositories/mail_repository
 import { IUserRepository } from "src/shared/domain/irepositories/user_repository_interface";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
-export class SignUpUsecase {
+export class SignUpUseCase {
   constructor(
     private readonly repo: IUserRepository,
     private readonly mailRepo: IMailRepository
