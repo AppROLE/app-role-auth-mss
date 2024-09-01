@@ -20,7 +20,10 @@ export class UserRepositoryMongo implements IUserRepository {
     email: string,
     password: string,
     acceptedTerms: boolean
-  ): Promise<User> {
+  ): Promise<{
+    user: User;
+    code: string;
+  }> {
     throw new Error("Method not implemented.");
   }
   getUserByEmail(email: string): Promise<User | null> {
