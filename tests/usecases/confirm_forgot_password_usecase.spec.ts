@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { UserRepoMock } from "../../src/shared/infra/repositories/user/user_repository_mock";
-import { ChangePasswordUseCase } from "../../src/modules/change_password/app/change_password_usecase";
+import { ConfirmForgotPasswordUseCase } from "../../src/modules/confirm_forgot_password/app/confirm_forgot_password_usecase";
 import { EntityError } from "../../src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../src/shared/helpers/errors/usecase_errors";
 
-describe("ChangePasswordUseCase", () => {
+describe("ConfirmForgotPasswordUseCase", () => {
   let userRepoMock: UserRepoMock;
-  let changePasswordUseCase: ChangePasswordUseCase;
+  let confirmForgotPasswordUseCase: ConfirmForgotPasswordUseCase;
 
   beforeEach(() => {
     userRepoMock = new UserRepoMock();
-    changePasswordUseCase = new ChangePasswordUseCase(userRepoMock);
+    confirmForgotPasswordUseCase = new ConfirmForgotPasswordUseCase(userRepoMock);
 
     vi.clearAllMocks();
     vi.restoreAllMocks();
@@ -21,7 +21,7 @@ describe("ChangePasswordUseCase", () => {
     const newPassword = "AIAIAI123!";
 
     await expect(
-      changePasswordUseCase.execute(email, newPassword)
+      confirmForgotPasswordUseCase.execute(email, newPassword)
     ).rejects.toThrow(new EntityError("email"));
   });
 
@@ -30,7 +30,7 @@ describe("ChangePasswordUseCase", () => {
     const newPassword = "teste"; 
 
     await expect(
-      changePasswordUseCase.execute(email, newPassword)
+      confirmForgotPasswordUseCase.execute(email, newPassword)
     ).rejects.toThrow(new EntityError("password"));
   });
 
@@ -39,7 +39,7 @@ describe("ChangePasswordUseCase", () => {
     const newPassword = "Validada123!";
 
     await expect(
-      changePasswordUseCase.execute(email, newPassword)
+      confirmForgotPasswordUseCase.execute(email, newPassword)
     ).rejects.toThrow(new NoItemsFound("email"));
   });
 
@@ -49,7 +49,7 @@ describe("ChangePasswordUseCase", () => {
 
     const setUserPasswordSpy = vi.spyOn(userRepoMock, "setUserPassword");
 
-    const result = await changePasswordUseCase.execute(email, newPassword);
+    const result = await confirmForgotPasswordUseCase.execute(email, newPassword);
 
     expect(result).toEqual({
       message: "Senha redefinida com sucesso!",
