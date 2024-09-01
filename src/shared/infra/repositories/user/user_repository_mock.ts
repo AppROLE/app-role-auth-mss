@@ -1,13 +1,37 @@
 import { User } from "../../../domain/entities/user";
 import { UserMock } from "../../../domain/mocks/user_mock";
 import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
-import { DuplicatedItem, NoItemsFound } from "../../../helpers/errors/usecase_errors";
+import {
+  DuplicatedItem,
+  NoItemsFound,
+} from "../../../helpers/errors/usecase_errors";
 
 export class UserRepoMock implements IUserRepository {
   public user_mock: UserMock;
 
   constructor() {
     this.user_mock = new UserMock();
+  }
+  /**
+   * Confirms the verification code for a given email.
+   * @param email The email of the user to confirm the code.
+   * @param code The verification code to confirm.
+   * @returns A promise that resolves with an object containing the user and the code.
+   */
+  async confirmCode(email: string, code: string) {
+    const user = this.user_mock.users.find((user) => user.userEmail === email);
+    if (!user) {
+      throw new NoItemsFound("email");
+    }
+
+    return { user, code };
+  }
+  async setUserPassword(email: string, newPassword: string): Promise<void> {
+    const user = this.user_mock.users.find((user) => user.userEmail === email);
+    if (!user) {
+      throw new NoItemsFound("email");
+    }
+    user.setUserPassword = newPassword;
   }
 
   /**
@@ -30,10 +54,10 @@ export class UserRepoMock implements IUserRepository {
    * @returns A promise that resolves with the user, or null if no user is found.
    */
 
-  async getUserByEmail(email: string): Promise<User | null> {
+  async getUserByEmail(email: string): Promise<User> {
     const user = this.user_mock.users.find((user) => user.userEmail === email);
     if (!user) {
-      throw new NoItemsFound('email')
+      throw new NoItemsFound("email");
     }
     return user;
   }
@@ -47,31 +71,34 @@ export class UserRepoMock implements IUserRepository {
    * @returns A promise that resolves with the newly registered user.
    */
 
-  async signUp(name: string, email: string, password: string, acceptedTerms: boolean): Promise<User> {
+  async signUp(
+    name: string,
+    email: string,
+    password: string,
+    acceptedTerms: boolean
+  ): Promise<User> {
     const newUser = {
       userName: name,
       userEmail: email,
       userPassword: password,
-      userAcceptedTerms: acceptedTerms
-    }
+      userAcceptedTerms: acceptedTerms,
+    };
 
     const user = this.user_mock.users.find((user) => user.userEmail === email);
 
     if (user) {
-      throw new DuplicatedItem('email');
+      throw new DuplicatedItem("email");
     }
 
     const u: any = new User({
       name: newUser.userName,
       email: newUser.userEmail,
       password: newUser.userPassword,
-      username: 'digao03',
-      nickname: 'digao',
+      username: "digao03",
+      nickname: "digao",
     });
     this.user_mock.users.push(u);
 
     return u;
-
-    
   }
 }
