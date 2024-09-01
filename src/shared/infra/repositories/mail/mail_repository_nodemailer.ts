@@ -44,7 +44,7 @@ export class MailRepository implements IMailRepository {
       console.log(`E-mail enviado para ${to}: ${info.response}`);
     } catch (error: any) {
       console.error(`Erro ao enviar e-mail para ${to}: ${error}`);
-      throw new FailToSendEmail(`Erro ao enviar e-mail para ${to}: ${error}`);
+      throw new FailToSendEmail(`para ${to}, erro: ${error}`);
     }
   }
 }
