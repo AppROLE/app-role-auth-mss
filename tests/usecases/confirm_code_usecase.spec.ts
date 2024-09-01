@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { UserRepoMock } from "../../src/shared/infra/repositories/user/user_repository_mock";
-import { ValidateForgotPasswordCodeUseCase } from "../../src/modules/validate_forgot_password_code/app/validate_forgot_password_code_usecase";
+import { ConfirmCodeUseCase } from "../../src/modules/confirm_code/app/confirm_code_usecase";
 import { EntityError } from "../../src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../src/shared/helpers/errors/usecase_errors";
 
-describe("ValidateForgotPasswordCodeUseCase", () => {
+describe("ConfirmCodeUseCase", () => {
   let userRepoMock: UserRepoMock;
-  let validateForgotPasswordCodeUseCase: ValidateForgotPasswordCodeUseCase;
+  let confirmCodeUseCase: ConfirmCodeUseCase;
 
   beforeEach(() => {
     userRepoMock = new UserRepoMock();
-    validateForgotPasswordCodeUseCase = new ValidateForgotPasswordCodeUseCase(
+    confirmCodeUseCase = new ConfirmCodeUseCase(
       userRepoMock
     );
 
@@ -23,7 +23,7 @@ describe("ValidateForgotPasswordCodeUseCase", () => {
     const code = "123456";
 
     await expect(
-      validateForgotPasswordCodeUseCase.execute(email, code)
+      confirmCodeUseCase.execute(email, code)
     ).rejects.toThrow(new EntityError("email"));
   });
 
@@ -32,7 +32,7 @@ describe("ValidateForgotPasswordCodeUseCase", () => {
     const code = "123";
 
     await expect(
-      validateForgotPasswordCodeUseCase.execute(email, code)
+      confirmCodeUseCase.execute(email, code)
     ).rejects.toThrow(new EntityError("code"));
   });
 
@@ -41,7 +41,7 @@ describe("ValidateForgotPasswordCodeUseCase", () => {
     const code = "123456";
 
     await expect(
-      validateForgotPasswordCodeUseCase.execute(email, code)
+      confirmCodeUseCase.execute(email, code)
     ).rejects.toThrow(new NoItemsFound("email"));
   });
 
@@ -50,7 +50,7 @@ describe("ValidateForgotPasswordCodeUseCase", () => {
     const code = "123456";
     const user = userRepoMock.user_mock.users[0];
 
-    const result = await validateForgotPasswordCodeUseCase.execute(email, code);
+    const result = await confirmCodeUseCase.execute(email, code);
 
     expect(result).toEqual({
       message: "Código validado com sucesso!",
