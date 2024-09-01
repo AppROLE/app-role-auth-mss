@@ -2,20 +2,20 @@ import {
   MissingParameters,
   WrongTypeParameters,
 } from "src/shared/helpers/errors/controller_errors";
-import { IRequest } from "../../../shared/helpers/external_interfaces/external_interface";
+import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
 import {
   OK,
   BadRequest,
   NotFound,
   InternalServerError,
-} from "../../../shared/helpers/external_interfaces/http_codes";
-import { ValidateForgotPasswordCodeUseCase } from "./validate_forgot_password_code_usecase";
+} from "src/shared/helpers/external_interfaces/http_codes";
+import { ConfirmCodeUseCase } from "./confirm_code_usecase";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
-import { ValidateForgotPasswordCodeViewmodel } from "./validate_forgot_password_code_viewmodel";
+import { ConfirmCodeViewmodel } from "./confirm_code_viewmodel";
 
-export class ValidateForgotPasswordCodeController {
-  constructor(private readonly usecase: ValidateForgotPasswordCodeUseCase) {}
+export class ConfirmCodeController {
+  constructor(private readonly usecase: ConfirmCodeUseCase) {}
 
   async handle(request: IRequest) {
     const email = request.data.email;
@@ -38,10 +38,10 @@ export class ValidateForgotPasswordCodeController {
 
     try {
       await this.usecase.execute(email, code);
-      const viewmodel = new ValidateForgotPasswordCodeViewmodel(
+      const viewmodel = new ConfirmCodeViewmodel(
         "Código validado com sucesso!"
       );
-      return new OK({ viewmodel });
+      return new OK(viewmodel.toJSON());
     } catch (error: any) {
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
