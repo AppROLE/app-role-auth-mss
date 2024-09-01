@@ -19,6 +19,7 @@ import {
   SignUpCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { NoItemsFound } from "../../../helpers/errors/usecase_errors";
+import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class UserRepositoryCognito implements IUserRepository {
   userPoolId: string;
@@ -107,7 +108,10 @@ export class UserRepositoryCognito implements IUserRepository {
     email: string,
     password: string,
     acceptedTerms: boolean
-  ): Promise<User> {
+  ): Promise<{
+    user: User;
+    code: string;
+  }> {
     try {
       const user = new User({
         name,
@@ -166,7 +170,10 @@ export class UserRepositoryCognito implements IUserRepository {
 
       console.log("SIGN UP RESULT: ", result);
 
-      return user;
+      return {
+        user,
+        code,
+      };
     } catch (error: any) {
       throw new Error(
         "UserRepositoryCognito, Error on signUp: " + error.message
@@ -198,8 +205,25 @@ export class UserRepositoryCognito implements IUserRepository {
       )?.Value;
 
       if (confirmationCode !== code) {
-        throw new Error("Código de confirmação inválido.");
+        throw new EntityError("code");
       }
+
+      const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: user.userUsername as string,
+        UserAttributes: [
+          {
+            Name: "email_verified",
+            Value: "true",
+          },
+        ],
+      };
+
+      const commandConfirmEmail = new AdminUpdateUserAttributesCommand(
+        paramsConfirmEmail
+      );
+
+      await this.client.send(commandConfirmEmail);
 
       return { user, code };
     } catch (error: any) {
