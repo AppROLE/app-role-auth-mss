@@ -1,13 +1,13 @@
 import { MissingParameters, WrongTypeParameters } from "src/shared/helpers/errors/controller_errors";
 import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
-import { SignUpUsecase } from "./sign_up_usecase";
+import { SignUpUseCase } from "./sign_up_usecase";
 import { SignUpViewmodel } from "./sign_up_viewmodel";
 import { ROLE_TYPE } from "src/shared/domain/enums/role_type_enum";
 import { BadRequest, Created, InternalServerError } from "src/shared/helpers/external_interfaces/http_codes";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class SignUpController {
-  constructor(private readonly usecase: SignUpUsecase) {}
+  constructor(private readonly usecase: SignUpUseCase) {}
 
   async handle(request: IRequest) {
     try {
