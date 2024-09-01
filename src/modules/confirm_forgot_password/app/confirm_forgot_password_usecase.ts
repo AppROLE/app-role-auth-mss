@@ -2,7 +2,7 @@ import { IUserRepository } from "src/shared/domain/irepositories/user_repository
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { User } from "src/shared/domain/entities/user";
 
-export class ChangePasswordUseCase {
+export class ConfirmForgotPasswordUseCase {
   constructor(private readonly repo: IUserRepository) {}
 
   async execute(email: string, newPassword: string) {

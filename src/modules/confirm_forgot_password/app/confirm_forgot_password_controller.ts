@@ -2,18 +2,18 @@ import {
   MissingParameters,
   WrongTypeParameters,
 } from "src/shared/helpers/errors/controller_errors";
-import { IRequest } from "../../../shared/helpers/external_interfaces/external_interface";
+import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
 import {
   OK,
   BadRequest,
   InternalServerError,
-} from "../../../shared/helpers/external_interfaces/http_codes";
-import { ChangePasswordUseCase } from "./change_password_usecase";
+} from "src/shared/helpers/external_interfaces/http_codes";
+import { ConfirmForgotPasswordUseCase } from "./confirm_forgot_password_usecase";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
-import { ChangePasswordViewmodel } from "./change_password_viewmodel";
+import { ConfirmForgotPasswordViewmodel } from "./confirm_forgot_password_viewmodel";
 
-export class ChangePasswordController {
-  constructor(private readonly usecase: ChangePasswordUseCase) {}
+export class ConfirmForgotPasswordController {
+  constructor(private readonly usecase: ConfirmForgotPasswordUseCase) {}
 
   async handle(request: IRequest) {
     const email = request.data.email;
@@ -41,10 +41,10 @@ export class ChangePasswordController {
 
     try {
       await this.usecase.execute(email, newPassword);
-      const viewmodel = new ChangePasswordViewmodel(
-        "Código validado com sucesso!"
+      const viewmodel = new ConfirmForgotPasswordViewmodel(
+        "Redefinição de senha realizada com sucesso!"
       );
-      return new OK({ viewmodel });
+      return new OK(viewmodel.toJSON());
     } catch (error: any) {
       if (error instanceof MissingParameters) {
         return new BadRequest(error.message);
