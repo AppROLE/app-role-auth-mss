@@ -40,7 +40,7 @@ export class ForgotPasswordController {
       const viewmodel = new ForgotPasswordViewmodel(
         "Uma mensagem de recuperação foi enviada para o seu e-mail"
       );
-      return new OK({ viewmodel });
+      return new OK(viewmodel.toJSON());
     } catch (error: any) {
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
