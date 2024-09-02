@@ -12,8 +12,13 @@ export class UserRepoMock implements IUserRepository {
   constructor() {
     this.user_mock = new UserMock();
   }
-  resendCode(email: string): Promise<string> {
-    throw new Error("Method not implemented.");
+  
+  async resendCode(email: string): Promise<string> {
+    const user = this.user_mock.users.find((user) => user.userEmail === email);
+    if (!user) {
+      throw new NoItemsFound("email");
+    }
+    return `A verification code has been resent to ${email}. Please check your inbox to proceed.`;
   }
   /**
    * Confirms the verification code for a given email.
@@ -108,6 +113,6 @@ export class UserRepoMock implements IUserRepository {
     return {
       user: u,
       code: "123456",
-    }
+    };
   }
 }
