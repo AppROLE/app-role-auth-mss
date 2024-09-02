@@ -224,26 +224,40 @@ export class UserRepositoryCognito implements IUserRepository {
         (attr) => attr.Name === "custom:confirmationCode"
       )?.Value;
 
+      const isUserEmailVerified = result.UserAttributes?.find(
+        (attr) => attr.Name === "email_verified"
+      )?.Value;
+
       if (confirmationCode !== code) {
         throw new EntityError("code");
       }
 
-      const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
+      if (isUserEmailVerified === "false") {
+        const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
+          UserPoolId: this.userPoolId,
+          Username: user.userUsername as string,
+          UserAttributes: [
+            {
+              Name: "email_verified",
+              Value: "true",
+            },
+          ],
+        };
+
+        const commandConfirmEmail = new AdminUpdateUserAttributesCommand(
+          paramsConfirmEmail
+        );
+        await this.client.send(commandConfirmEmail);
+      }
+
+
+      const paramsAdminConfirmSignUp: AdminConfirmSignUpCommandInput = {
         UserPoolId: this.userPoolId,
         Username: user.userUsername as string,
-        UserAttributes: [
-          {
-            Name: "email_verified",
-            Value: "true",
-          },
-        ],
-      };
+      }
 
-      const commandConfirmEmail = new AdminUpdateUserAttributesCommand(
-        paramsConfirmEmail
-      );
 
-      await this.client.send(commandConfirmEmail);
+      await this.client.send(new AdminConfirmSignUpCommand(paramsAdminConfirmSignUp));
 
       return { user, code };
     } catch (error: any) {
@@ -273,6 +287,17 @@ export class UserRepositoryCognito implements IUserRepository {
     } catch (error: any) {
       throw new Error(
         "UserRepositoryCognito, Error on setUserPassword: " + error.message
+      );
+    }
+  }
+
+  async finishSignUp(email: string): Promise<any> {
+    try {
+      const userFirstCreated = await this.getUserByEmail(email);
+      const username = userFirstCreated?.userUsername
+    } catch (error: any) {
+      throw new Error(
+        "UserRepositoryCognito, Error on finishSignUp: " + error.message
       );
     }
   }
