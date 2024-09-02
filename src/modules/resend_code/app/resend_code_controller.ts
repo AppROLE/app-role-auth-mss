@@ -7,10 +7,12 @@ import { ResendCodeUseCase } from "./resend_code_usecase";
 import {
   BadRequest,
   InternalServerError,
+  NotFound,
   OK,
 } from "src/shared/helpers/external_interfaces/http_codes";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { ResendCodeViewmodel } from "./resend_code_viewmodel";
+import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
 export class ResendCodeController {
   constructor(private readonly usecase: ResendCodeUseCase) {}
@@ -39,6 +41,9 @@ export class ResendCodeController {
         error instanceof WrongTypeParameters
       ) {
         return new BadRequest(error.message);
+      }
+      if (error instanceof NoItemsFound) {
+        return new NotFound(error.message);
       }
       if (error instanceof EntityError) {
         return new BadRequest(error.message);
