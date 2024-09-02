@@ -12,6 +12,9 @@ export class UserRepoMock implements IUserRepository {
   constructor() {
     this.user_mock = new UserMock();
   }
+  resendCode(email: string): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
   /**
    * Confirms the verification code for a given email.
    * @param email The email of the user to confirm the code.
