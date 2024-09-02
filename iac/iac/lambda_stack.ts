@@ -82,6 +82,8 @@ export class LambdaStack extends Construct {
     this.functionsThatNeedCognitoPermissions = [
       this.forgotPasswordFunction,
       this.signUpFunction,
+      this.confirmCodeFunction,
+      this.confirmForgotPasswordFunction
     ]
   }
 }
