@@ -3,7 +3,10 @@ import { IUserRepository } from "../../../domain/irepositories/user_repository_i
 import userModel from "../../database/models/user.model";
 
 export class UserRepositoryMongo implements IUserRepository {
-  
+  resendCode(email: string): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
   confirmCode(
     email: string,
     code: string
