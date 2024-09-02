@@ -25,7 +25,7 @@ describe("ForgotPasswordUseCase", () => {
     vi.spyOn(userRepoMock, "getUserByEmail").mockResolvedValue(null);
 
     await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(
-      "No items found for this email"
+      "Nenhum item foi encontrado para this email"
     );
     expect(userRepoMock.getUserByEmail).toHaveBeenCalledWith(email);
   });
@@ -34,7 +34,7 @@ describe("ForgotPasswordUseCase", () => {
     const email = "nonexistentexample.com";
 
     await expect(forgotPasswordUseCase.execute(email)).rejects.toThrow(
-      "Field email is not valid"
+      "O campo email não é válido."
     );
   });
 
