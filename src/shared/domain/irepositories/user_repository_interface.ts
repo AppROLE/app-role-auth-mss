@@ -20,4 +20,5 @@ export interface IUserRepository {
     code: string;
   }>;
   setUserPassword(email: string, newPassword: string): Promise<void>;
+  resendCode(email: string): Promise<string>;
 }
