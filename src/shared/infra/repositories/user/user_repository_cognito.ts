@@ -34,6 +34,28 @@ export class UserRepositoryCognito implements IUserRepository {
     });
   }
 
+  async resendCode(email: string): Promise<string> {
+    const user = await this.getUserByEmail(email);
+
+    const code = generateConfirmationCode();
+
+    const params: AdminUpdateUserAttributesCommandInput = {
+      UserPoolId: this.userPoolId,
+      Username: user?.userUsername as string,
+      UserAttributes: [
+        {
+          Name: "custom:confirmationCode",
+          Value: code,
+        },
+      ],
+    };
+
+    const command = new AdminUpdateUserAttributesCommand(params);
+    await this.client.send(command);
+
+    return code;
+  }
+
   async forgotPassword(email: string, code: string): Promise<string> {
     try {
       await this.updateUserConfirmationCode(email, code);
