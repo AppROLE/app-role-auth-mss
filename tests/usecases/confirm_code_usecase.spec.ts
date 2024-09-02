@@ -55,7 +55,7 @@ describe("ConfirmCodeUseCase", () => {
     expect(result).toEqual({
       message: "Código validado com sucesso!",
       user,
-      confirmationCode: code,
+      codeFromCognito: code,
     });
   });
 });
