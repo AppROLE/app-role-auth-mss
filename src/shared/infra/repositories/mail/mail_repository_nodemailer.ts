@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import nodemailer, { SendMailOptions } from "nodemailer";
 import dotenv from "dotenv";
 import { IMailRepository } from "../../../domain/irepositories/mail_repository_interface";
 import { FailToSendEmail } from "../../../helpers/errors/usecase_errors";
@@ -32,11 +32,11 @@ export class MailRepository implements IMailRepository {
       throw new InvalidCredentialsError();
     }
 
-    const mailOptions = {
+    const mailOptions: SendMailOptions = {
       from: envs.EMAIL_LOGIN,
       to,
       subject,
-      body,
+      text: body,
     };
 
     try {
