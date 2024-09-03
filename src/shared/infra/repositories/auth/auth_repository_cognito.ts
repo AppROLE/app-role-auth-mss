@@ -7,6 +7,8 @@ import {
   AdminDeleteUserCommand,
   AdminGetUserCommand,
   AdminGetUserCommandInput,
+  AdminInitiateAuthCommand,
+  AdminInitiateAuthCommandInput,
   AdminSetUserPasswordCommand,
   AdminSetUserPasswordCommandInput,
   AdminUpdateUserAttributesCommand,
@@ -289,7 +291,12 @@ export class AuthRepositoryCognito implements IAuthRepository {
     }
   }
 
-  async finishSignUp(email: string, newUsername: string, newNickname: string, password: string): Promise<FinishSignUpReturnType> {
+  async finishSignUp(
+    email: string,
+    newUsername: string,
+    newNickname: string,
+    password: string
+  ): Promise<FinishSignUpReturnType> {
     try {
       const user = await this.getUserByEmail(email);
       const emailUsername = user?.userUsername;
@@ -311,10 +318,9 @@ export class AuthRepositoryCognito implements IAuthRepository {
         roleType: result.UserAttributes?.find(
           (attr) => attr.Name === "custom:roleType"
         )?.Value,
-        name: result.UserAttributes?.find(
-          (attr) => attr.Name === "name"
-        )?.Value as string,
-      }
+        name: result.UserAttributes?.find((attr) => attr.Name === "name")
+          ?.Value as string,
+      };
 
       const paramsToRealSignUp: SignUpCommandInput = {
         ClientId: this.clientId,
@@ -347,10 +353,12 @@ export class AuthRepositoryCognito implements IAuthRepository {
       const commandToRealSignUp = new SignUpCommand(paramsToRealSignUp);
       await this.client.send(commandToRealSignUp);
 
-      await this.client.send(new AdminConfirmSignUpCommand({
-        UserPoolId: this.userPoolId,
-        Username: newUsername
-      }));
+      await this.client.send(
+        new AdminConfirmSignUpCommand({
+          UserPoolId: this.userPoolId,
+          Username: newUsername,
+        })
+      );
 
       const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
         UserPoolId: this.userPoolId,
@@ -368,17 +376,65 @@ export class AuthRepositoryCognito implements IAuthRepository {
       );
       await this.client.send(commandConfirmEmail);
 
-      await this.client.send(new AdminDeleteUserCommand({
-        UserPoolId: this.userPoolId,
-        Username: emailUsername as string
-      }));
+      await this.client.send(
+        new AdminDeleteUserCommand({
+          UserPoolId: this.userPoolId,
+          Username: emailUsername as string,
+        })
+      );
 
       return allAttributtesOfUser;
-      
     } catch (error: any) {
       throw new Error(
         "AuthRepositoryCognito, Error on finishSignUp: " + error.message
       );
+    }
+  }
+
+  async signIn(
+    email: string,
+    password: string
+  ): Promise<{
+    accessToken: string;
+    idToken: string;
+    refreshToken: string;
+  }> {
+    try {
+      const params: AdminInitiateAuthCommandInput = {
+        UserPoolId: this.userPoolId,
+        ClientId: this.clientId,
+        AuthFlow: "USER_PASSWORD_AUTH",
+        AuthParameters: {
+          USERNAME: email,
+          PASSWORD: password,
+        },
+      };
+
+      const command = new AdminInitiateAuthCommand(params);
+      const result = await this.client.send(command);
+
+      return {
+        accessToken: result.AuthenticationResult?.AccessToken || "",
+        idToken: result.AuthenticationResult?.IdToken || "",
+        refreshToken: result.AuthenticationResult?.RefreshToken || "",
+      };
+    } catch (error: any) {
+      const errorCode = error?.name || "";
+      if (
+        errorCode === "NotAuthorizedException" ||
+        errorCode === "UserNotFoundException"
+      ) {
+        throw new Error("Invalid email or password");
+      } else if (errorCode === "UserNotConfirmedException") {
+        throw new Error("User not confirmed");
+      } else if (
+        errorCode === "UserNotFoundException" ||
+        errorCode === "ResourceNotFoundException"
+      ) {
+        throw new Error("User not found");
+      } else {
+        throw new Error("An error occurred during login");
+      }
     }
   }
 }
