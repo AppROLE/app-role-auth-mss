@@ -19,6 +19,7 @@ export class LambdaStack extends Construct {
   signUpFunction: lambda.Function
   resendCodeFunction: lambda.Function
   signInFunction: lambda.Function
+  finishSignUpFunction: lambda.Function
 
   createLambdaApiGatewayIntegration(
     moduleName: string, 
@@ -76,6 +77,7 @@ export class LambdaStack extends Construct {
     this.confirmForgotPasswordFunction = this.createLambdaApiGatewayIntegration('confirm_forgot_password', 'POST', apiGatewayResource, environmentVariables)
     this.resendCodeFunction = this.createLambdaApiGatewayIntegration('resend_code', 'POST', apiGatewayResource, environmentVariables)
     this.signInFunction = this.createLambdaApiGatewayIntegration('sign_in', 'POST', apiGatewayResource, environmentVariables)
+    this.finishSignUpFunction = this.createLambdaApiGatewayIntegration('finish_sign_up', 'POST', apiGatewayResource, environmentVariables)
 
     this.functionsThatNeedS3Permissions = []
 
@@ -85,7 +87,8 @@ export class LambdaStack extends Construct {
       this.confirmCodeFunction,
       this.confirmForgotPasswordFunction,
       this.resendCodeFunction,
-      this.signInFunction
+      this.signInFunction,
+      this.finishSignUpFunction
     ]
   }
 }

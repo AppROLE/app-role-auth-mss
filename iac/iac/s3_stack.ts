@@ -12,7 +12,7 @@ export class S3Stack extends Construct {
   
 
     const bucket = new s3.Bucket(this, `${envs.STACK_NAME}-Bucket`, {
-      bucketName: `${envs.S3_BUCKET_NAME}-${stage}`,
+      bucketName: `${envs.S3_BUCKET_NAME.toLowerCase()}-${stage}`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       versioned: true,
