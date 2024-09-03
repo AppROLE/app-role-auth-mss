@@ -42,13 +42,17 @@ export class FinishSignUpController {
     }
 
     try {
+      let tokens;
+
       newNickname && typeof newNickname === 'string' ?
-        await this.usecase.execute(email, newUsername, password, newNickname) :
-        await this.usecase.execute(email, newUsername, password);
+        tokens = await this.usecase.execute(email, newUsername, password, newNickname) :
+        tokens = await this.usecase.execute(email, newUsername, password);
 
       const viewmodel = new FinishSignUpViewmodel(
-        "Cadastro finalizado com sucesso!"
-      )
+        tokens.accessToken,
+        tokens.refreshToken,
+        tokens.idToken,
+      );
 
       return new OK(viewmodel.toJSON());
     } catch (error: any) {
