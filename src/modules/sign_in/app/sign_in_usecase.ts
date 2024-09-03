@@ -20,10 +20,6 @@ export class SignInUseCase {
       throw new EntityError("email");
     }
 
-    if (!User.validatePassword(password)) {
-      throw new EntityError("password");
-    }
-
     const session = await this.repo.signIn(email, password);
 
     if (!session) {
