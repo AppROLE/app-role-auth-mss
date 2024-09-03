@@ -13,6 +13,9 @@ export class UserRepoMock implements IAuthRepository {
   constructor() {
     this.user_mock = new UserMock();
   }
+  signIn(email: string, password: string): Promise<{ accessToken: string; idToken: string; refreshToken: string; }> {
+    throw new Error("Method not implemented.");
+  }
   
   async resendCode(email: string): Promise<string> {
     const user = this.user_mock.users.find((user) => user.userEmail === email);
