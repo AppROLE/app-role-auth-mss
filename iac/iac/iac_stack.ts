@@ -104,5 +104,11 @@ export class IacStack extends Stack {
         },
       })],
     }));
+
+    new cdk.CfnOutput(this, 'AppRoleFrontDistributionOutput', {
+      value: distribution.domainName,
+      description: 'The distribution domain',
+      exportName: 'AppRoleFrontDistributionOutput'
+    });
   }
 }
