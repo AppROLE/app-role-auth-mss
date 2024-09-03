@@ -6,7 +6,7 @@ import {
 import { SignUpController } from "./sign_up_controller";
 import { SignUpUseCase } from "./sign_up_usecase";
 
-const repo = Environments.getUserRepo();
+const repo = Environments.getAuthRepo();
 const mailRepo = Environments.getMailRepo();
 const usecase = new SignUpUseCase(repo, mailRepo);
 const controller = new SignUpController(usecase);
