@@ -416,24 +416,42 @@ export class AuthRepositoryCognito implements IAuthRepository {
       const command = new AdminInitiateAuthCommand(params);
       const result = await this.client.send(command);
 
+      if (!result.AuthenticationResult) {
+        console.error(
+          "AuthenticationResult is missing in the response:",
+          result
+        );
+        throw new InternalServerError(
+          "Authentication failed, no tokens returned"
+        );
+      }
+
+      const { AccessToken, IdToken, RefreshToken } =
+        result.AuthenticationResult;
+
       return {
-        accessToken: result.AuthenticationResult?.AccessToken || "",
-        idToken: result.AuthenticationResult?.IdToken || "",
-        refreshToken: result.AuthenticationResult?.RefreshToken || "",
+        accessToken: AccessToken || "",
+        idToken: IdToken || "",
+        refreshToken: RefreshToken || "",
       };
     } catch (error: any) {
       const errorCode = error?.name || "";
-      console.error(`Error during signIn: ${error.message}`);
+      console.error(
+        `Error during signIn: ${error.message}, Code: ${errorCode}`
+      );
       if (
         errorCode === "NotAuthorizedException" ||
         errorCode === "UserNotFoundException"
       ) {
         throw new InvalidCredentialsError();
+      } else if (errorCode === "UserNotConfirmedException") {
+        throw new Error("User not confirmed");
       } else if (errorCode === "ResourceNotFoundException") {
-        throw new NoItemsFound("User not found");
+        throw new NoItemsFound("User");
       } else {
-        //caindo aqui merda
-        throw new InternalServerError("CACETE!!!An error occurred during login");
+        throw new InternalServerError(
+          "An unexpected error occurred during login"
+        );
       }
     }
   }
