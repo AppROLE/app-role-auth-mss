@@ -9,6 +9,7 @@ import { stage } from '../get_stage_env'
 
 export class LambdaStack extends Construct {
   functionsThatNeedCognitoPermissions: lambda.Function[] = []
+  functionsThatNeedS3Permissions: lambda.Function[] = []
   lambdaLayer: lambda.LayerVersion
   libLayer: lambda.LayerVersion
 
@@ -69,19 +70,14 @@ export class LambdaStack extends Construct {
     })
 
     // auth routes
-    // this.getAllUsersFunction = this.createLambdaApiGatewayIntegration('get_all_users', 'GET', apiGatewayResource, environmentVariables)
-    // this.loginFunction = this.createLambdaApiGatewayIntegration('login', 'POST', apiGatewayResource, environmentVariables)
-    // this.confirmUserEmailFunction = this.createLambdaApiGatewayIntegration('confirm_user_email', 'POST', apiGatewayResource, environmentVariables)
-    // this.createUserOAuthFunction = this.createLambdaApiGatewayIntegration('create_user_OAuth', 'POST', apiGatewayResource, environmentVariables)
-    // this.refreshTokenFunction = this.createLambdaApiGatewayIntegration('refresh_token', 'POST', apiGatewayResource, environmentVariables)
-    // this.changePasswordFunction = this.createLambdaApiGatewayIntegration('change_password', 'POST', apiGatewayResource, environmentVariables, authorizer)
-    // this.deleteAccountFunction = this.createLambdaApiGatewayIntegration('delete_account', 'DELETE', apiGatewayResource, environmentVariables, authorizer)
     this.signUpFunction = this.createLambdaApiGatewayIntegration('sign_up', 'POST', apiGatewayResource, environmentVariables)
     this.forgotPasswordFunction = this.createLambdaApiGatewayIntegration('forgot_password', 'POST', apiGatewayResource, environmentVariables)
     this.confirmCodeFunction = this.createLambdaApiGatewayIntegration('confirm_code', 'POST', apiGatewayResource, environmentVariables)
     this.confirmForgotPasswordFunction = this.createLambdaApiGatewayIntegration('confirm_forgot_password', 'POST', apiGatewayResource, environmentVariables)
     this.resendCodeFunction = this.createLambdaApiGatewayIntegration('resend_code', 'POST', apiGatewayResource, environmentVariables)
     this.signInFunction = this.createLambdaApiGatewayIntegration('sign_in', 'POST', apiGatewayResource, environmentVariables)
+
+    this.functionsThatNeedS3Permissions = []
 
     this.functionsThatNeedCognitoPermissions = [
       this.forgotPasswordFunction,
