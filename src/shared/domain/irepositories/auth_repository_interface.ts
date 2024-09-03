@@ -26,6 +26,14 @@ export interface IAuthRepository {
     email: string,
     newUsername: string,
     password: string,
-    newNickname?: string,
+    newNickname?: string
   ): Promise<FinishSignUpReturnType>;
+  signIn(
+    email: string,
+    password: string
+  ): Promise<{
+    accessToken: string;
+    idToken: string;
+    refreshToken: string;
+  }>;
 }
