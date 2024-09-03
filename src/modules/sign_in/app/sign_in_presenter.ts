@@ -10,7 +10,7 @@ const repo = Environments.getAuthRepo();
 const usecase = new SignInUseCase(repo);
 const controller = new SignInController(usecase);
 
-export async function confirmCodePresenter(event: Record<string, any>) {
+export async function signInPresenter(event: Record<string, any>) {
   const httpRequest = new LambdaHttpRequest(event);
   const response = await controller.handle(httpRequest);
   const httpResponse = new LambdaHttpResponse(
@@ -23,6 +23,6 @@ export async function confirmCodePresenter(event: Record<string, any>) {
 }
 
 export async function lambda_handler(event: any, context: any) {
-  const response = await confirmCodePresenter(event);
+  const response = await signInPresenter(event);
   return response;
 }
