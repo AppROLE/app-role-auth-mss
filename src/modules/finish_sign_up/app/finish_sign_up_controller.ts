@@ -44,6 +44,8 @@ export class FinishSignUpController {
     try {
       let tokens;
 
+      console.log('FINSIH SIGN UP CONTROLLER', email, newUsername, password, newNickname);
+
       newNickname && typeof newNickname === 'string' ?
         tokens = await this.usecase.execute(email, newUsername, password, newNickname) :
         tokens = await this.usecase.execute(email, newUsername, password);
