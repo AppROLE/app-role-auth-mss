@@ -33,5 +33,9 @@ export class FinishSignUpUseCase {
 
     await this.mongoUserRepo.createUser(userToMongo);
 
+    const tokens = await this.repo.signIn(email, password);
+
+    return tokens;
+
   }
 }
