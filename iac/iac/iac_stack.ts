@@ -43,7 +43,7 @@ export class IacStack extends Stack {
       EMAIL_LOGIN: envs.EMAIL_LOGIN,
       EMAIL_PASSWORD: envs.EMAIL_PASSWORD,
       MONGO_URI: envs.MONGO_URI,
-      S3_BUCKET_NAME: envs.S3_BUCKET_NAME + "-" + stage,
+      S3_BUCKET_NAME: envs.S3_BUCKET_NAME + "-" + stage.toLowerCase(),
     };
 
     const lambdaStack = new LambdaStack(
