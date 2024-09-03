@@ -7,7 +7,7 @@ import { EntityError } from "src/shared/helpers/errors/domain_errors";
 export class FinishSignUpUseCase {
   constructor(
     private repo: IAuthRepository,
-    private mongoUserRepo: IUserRepository
+    private mongoUserRepo: IUserRepository  
   ) {}
 
   async execute(email: string, newUsername: string, password: string, newNickname?: string,) {
