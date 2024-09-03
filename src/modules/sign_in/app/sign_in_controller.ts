@@ -1,9 +1,11 @@
-import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
 import { SignInUseCase } from "./sign_in_usecase";
 import {
   MissingParameters,
   WrongTypeParameters,
 } from "src/shared/helpers/errors/controller_errors";
+
+import { SignInViewModel } from "./sign_in_viewmodel";
+import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
 import {
   BadRequest,
   InternalServerError,
@@ -11,13 +13,13 @@ import {
   OK,
   Unauthorized,
 } from "src/shared/helpers/external_interfaces/http_codes";
-import { SignInViewModel } from "./sign_in_viewmodel";
 import {
+  ConflictItems,
   ForbiddenAction,
   NoItemsFound,
 } from "src/shared/helpers/errors/usecase_errors";
-import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
+import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class SignInController {
   constructor(private readonly usecase: SignInUseCase) {}
@@ -63,10 +65,12 @@ export class SignInController {
       if (error instanceof EntityError) {
         return new BadRequest(error.message);
       }
-      if (error instanceof InvalidCredentialsError) {
-        return new ForbiddenAction(error.message);
+    //   if (error instanceof InvalidCredentialsError) {
+    //     return new ForbiddenAction(error.message);
+    //   }
+      if (error instanceof Error) {
+        return new InternalServerError(error.message);
       }
-      return new InternalServerError(error.message);
     }
   }
 }
