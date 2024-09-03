@@ -6,7 +6,7 @@ import {
 import { ResendCodeController } from "./resend_code_controller";
 import { ResendCodeUseCase } from "./resend_code_usecase";
 
-const repo = Environments.getUserRepo();
+const repo = Environments.getAuthRepo();
 const mailRepo = Environments.getMailRepo();
 const usecase = new ResendCodeUseCase(repo, mailRepo);
 const controller = new ResendCodeController(usecase);
