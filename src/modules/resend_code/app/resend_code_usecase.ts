@@ -1,12 +1,12 @@
 import { User } from "src/shared/domain/entities/user";
 import { IMailRepository } from "src/shared/domain/irepositories/mail_repository_interface";
-import { IUserRepository } from "src/shared/domain/irepositories/user_repository_interface";
+import { IAuthRepository } from "src/shared/domain/irepositories/user_repository_interface";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
 export class ResendCodeUseCase {
   constructor(
-    private readonly userRepository: IUserRepository,
+    private readonly userRepository: IAuthRepository,
     private readonly mailRepository: IMailRepository
   ) {}
 
