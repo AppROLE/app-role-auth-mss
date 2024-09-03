@@ -8,6 +8,8 @@ import { FinishSignUpController } from "./finish_sign_up_controller";
 
 const repo = Environments.getAuthRepo();
 const userMongoRepo = Environments.getUserRepo();
+console.log('userMongoRepo', userMongoRepo);
+console.log('repo', repo);
 const usecase = new FinishSignUpUseCase(repo, userMongoRepo);
 const controller = new FinishSignUpController(usecase);
 
