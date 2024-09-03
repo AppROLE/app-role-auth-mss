@@ -265,6 +265,7 @@ export class UserRepositoryCognito implements IUserRepository {
       );
     }
   }
+  
 
   async setUserPassword(email: string, newPassword: string): Promise<void> {
     try {
