@@ -415,6 +415,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
       const command = new AdminInitiateAuthCommand(params);
       const result = await this.client.send(command);
+      console.log("SIGN IN RESULT: AQUI CARALHOOOO PORRA", result);
 
       if (!result.AuthenticationResult) {
         console.error(
