@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ResendCodeUseCase } from "../../src/modules/resend_code/app/resend_code_usecase";
-import { UserRepoMock } from "../../src/shared/infra/repositories/user/user_repository_mock";
+import { UserRepoMock } from "../../src/shared/infra/repositories/auth/auth_repository_mock";
 import { MailRepositoryMock } from "../../src/shared/infra/repositories/mail/mail_repository_mock";
 import { EntityError } from "../../src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../src/shared/helpers/errors/usecase_errors";
