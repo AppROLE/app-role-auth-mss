@@ -11,14 +11,8 @@ import {
   InternalServerError,
   NotFound,
   OK,
-  Unauthorized,
 } from "src/shared/helpers/external_interfaces/http_codes";
-import {
-  ConflictItems,
-  ForbiddenAction,
-  NoItemsFound,
-} from "src/shared/helpers/errors/usecase_errors";
-import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
+import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class SignInController {
@@ -56,20 +50,19 @@ export class SignInController {
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
       }
-      if (error instanceof MissingParameters) {
-        return new BadRequest(error.message);
-      }
-      if (error instanceof WrongTypeParameters) {
+      if (
+        error instanceof MissingParameters ||
+        error instanceof WrongTypeParameters
+      ) {
         return new BadRequest(error.message);
       }
       if (error instanceof EntityError) {
         return new BadRequest(error.message);
       }
-    //   if (error instanceof InvalidCredentialsError) {
-    //     return new ForbiddenAction(error.message);
-    //   }
       if (error instanceof Error) {
-        return new InternalServerError(error.message);
+        return new InternalServerError(
+          `SignUpController, Error on handle: ${error.message}`
+        );
       }
     }
   }
