@@ -1,10 +1,11 @@
 import { STAGE } from './domain/enums/stage_enum'
-import { IUserRepository } from './domain/irepositories/user_repository_interface'
-import { UserRepositoryCognito } from './infra/repositories/user/user_repository_cognito'
-// import { UserRepositoryMock } from './infra/repositories/user_repository_mock'
+import { IAuthRepository } from './domain/irepositories/auth_repository_interface'
+import { AuthRepositoryCognito } from './infra/repositories/auth/auth_repository_cognito'
+import { UserRepositoryMongo } from './infra/repositories/user/user_repository_mongo'
 import { envs } from './helpers/envs/envs'
 import { IMailRepository } from './domain/irepositories/mail_repository_interface'
 import { MailRepository } from './infra/repositories/mail/mail_repository_nodemailer'
+import { IUserRepository } from './domain/irepositories/user_repository_interface'
 
 export class Environments {
   stage: STAGE = STAGE.TEST
@@ -36,13 +37,25 @@ export class Environments {
     }
   }
 
+  static getAuthRepo(): IAuthRepository {
+    console.log('Environments.getEnvs().stage - [ENVIRONMENTS - { GET USER REPO }] - ', Environments.getEnvs().stage)
+
+    if (Environments.getEnvs().stage === STAGE.TEST) {
+      throw new Error('Invalid STAGE')
+    } else if (Environments.getEnvs().stage === STAGE.DEV || Environments.getEnvs().stage === STAGE.PROD) {
+      return new AuthRepositoryCognito(Environments.getEnvs().userPoolId, Environments.getEnvs().clientId)
+    } else {
+      throw new Error('Invalid STAGE')
+    }
+  }
+
   static getUserRepo(): IUserRepository {
     console.log('Environments.getEnvs().stage - [ENVIRONMENTS - { GET USER REPO }] - ', Environments.getEnvs().stage)
 
     if (Environments.getEnvs().stage === STAGE.TEST) {
       throw new Error('Invalid STAGE')
     } else if (Environments.getEnvs().stage === STAGE.DEV || Environments.getEnvs().stage === STAGE.PROD) {
-      return new UserRepositoryCognito(Environments.getEnvs().userPoolId, Environments.getEnvs().clientId)
+      return new UserRepositoryMongo()
     } else {
       throw new Error('Invalid STAGE')
     }

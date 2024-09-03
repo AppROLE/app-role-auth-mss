@@ -22,18 +22,18 @@ interface UserProps {
   reviews?: ReviewProps[];
 }
 
-interface FollowingProps {
+export interface FollowingProps {
   userFollowedId: string;
   followedAt?: Date;
 }
 
-interface FavoriteProps {
+export interface FavoriteProps {
   instituteId: string;
   eventId: string;
   favoritedAt?: Date;
 }
 
-interface ReviewProps {
+export interface ReviewProps {
   instituteId: string;
   star: number;
   review: string;

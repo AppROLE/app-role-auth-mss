@@ -6,7 +6,7 @@ import {
 import { ForgotPasswordController } from './forgot_password_controller'
 import { ForgotPasswordUseCase } from './forgot_password_usecase'
 
-const repo = Environments.getUserRepo()
+const repo = Environments.getAuthRepo()
 const mailRepo = Environments.getMailRepo()
 const usecase = new ForgotPasswordUseCase(repo, mailRepo)
 const controller = new ForgotPasswordController(usecase)

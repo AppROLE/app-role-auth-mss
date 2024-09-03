@@ -1,9 +1,9 @@
 import { User } from "src/shared/domain/entities/user";
-import { IUserRepository } from "src/shared/domain/irepositories/user_repository_interface";
+import { IAuthRepository } from "src/shared/domain/irepositories/auth_repository_interface";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class ConfirmCodeUseCase {
-  constructor(private readonly repo: IUserRepository) {}
+  constructor(private readonly repo: IAuthRepository) {}
 
   async execute(email: string, code: string) {
     if (!User.validateEmail(email)) {
