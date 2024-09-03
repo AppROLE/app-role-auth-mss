@@ -21,9 +21,8 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
-import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
-import { InternalServerError } from "src/shared/helpers/external_interfaces/http_codes";
+import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
 export class AuthRepositoryCognito implements IAuthRepository {
   userPoolId: string;
@@ -403,19 +402,12 @@ export class AuthRepositoryCognito implements IAuthRepository {
     refreshToken: string;
   }> {
     try {
-      const user = await this.getUserByEmail(email);
-      const emailUsername = user?.userUsername;
-
-      if (!emailUsername) {
-        throw new NoItemsFound("User");
-      }
-
       const params: AdminInitiateAuthCommandInput = {
         UserPoolId: this.userPoolId,
         ClientId: this.clientId,
         AuthFlow: "ADMIN_NO_SRP_AUTH",
         AuthParameters: {
-          USERNAME: emailUsername,
+          USERNAME: email,
           PASSWORD: password,
         },
       };
@@ -429,7 +421,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
           "AuthenticationResult is missing in the response:",
           result
         );
-        throw new InternalServerError(
+        throw new Error(
           "Authentication failed, no tokens returned"
         );
       }
@@ -457,7 +449,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
       } else if (errorCode === "ResourceNotFoundException") {
         throw new NoItemsFound("User");
       } else {
-        throw new InternalServerError(
+        throw new Error(
           "An unexpected error occurred during login"
         );
       }
