@@ -1,6 +1,6 @@
 import { User } from "src/shared/domain/entities/user";
 import { IMailRepository } from "src/shared/domain/irepositories/mail_repository_interface";
-import { IAuthRepository } from "src/shared/domain/irepositories/user_repository_interface";
+import { IAuthRepository } from "src/shared/domain/irepositories/auth_repository_interface";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
