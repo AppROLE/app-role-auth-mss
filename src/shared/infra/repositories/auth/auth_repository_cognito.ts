@@ -23,6 +23,7 @@ import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
+import { InternalServerError } from "src/shared/helpers/external_interfaces/http_codes";
 
 export class AuthRepositoryCognito implements IAuthRepository {
   userPoolId: string;
@@ -431,7 +432,8 @@ export class AuthRepositoryCognito implements IAuthRepository {
       } else if (errorCode === "ResourceNotFoundException") {
         throw new NoItemsFound("User not found");
       } else {
-        throw new EntityError("An error occurred during login");
+        //caindo aqui merda
+        throw new InternalServerError("CACETE!!!An error occurred during login");
       }
     }
   }
