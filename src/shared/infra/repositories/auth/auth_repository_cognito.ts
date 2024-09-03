@@ -403,12 +403,19 @@ export class AuthRepositoryCognito implements IAuthRepository {
     refreshToken: string;
   }> {
     try {
+      const user = await this.getUserByEmail(email);
+      const emailUsername = user?.userUsername;
+
+      if (!emailUsername) {
+        throw new NoItemsFound("User");
+      }
+
       const params: AdminInitiateAuthCommandInput = {
         UserPoolId: this.userPoolId,
         ClientId: this.clientId,
         AuthFlow: "ADMIN_NO_SRP_AUTH",
         AuthParameters: {
-          USERNAME: email,
+          USERNAME: emailUsername,
           PASSWORD: password,
         },
       };
