@@ -17,6 +17,7 @@ export class LambdaStack extends Construct {
   confirmForgotPasswordFunction: lambda.Function
   signUpFunction: lambda.Function
   resendCodeFunction: lambda.Function
+  signInFunction: lambda.Function
 
   createLambdaApiGatewayIntegration(
     moduleName: string, 
@@ -80,13 +81,15 @@ export class LambdaStack extends Construct {
     this.confirmCodeFunction = this.createLambdaApiGatewayIntegration('confirm_code', 'POST', apiGatewayResource, environmentVariables)
     this.confirmForgotPasswordFunction = this.createLambdaApiGatewayIntegration('confirm_forgot_password', 'POST', apiGatewayResource, environmentVariables)
     this.resendCodeFunction = this.createLambdaApiGatewayIntegration('resend_code', 'POST', apiGatewayResource, environmentVariables)
+    this.signInFunction = this.createLambdaApiGatewayIntegration('sign_in', 'POST', apiGatewayResource, environmentVariables)
 
     this.functionsThatNeedCognitoPermissions = [
       this.forgotPasswordFunction,
       this.signUpFunction,
       this.confirmCodeFunction,
       this.confirmForgotPasswordFunction,
-      this.resendCodeFunction
+      this.resendCodeFunction,
+      this.signInFunction
     ]
   }
 }
