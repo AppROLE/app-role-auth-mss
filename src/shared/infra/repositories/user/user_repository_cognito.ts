@@ -232,7 +232,7 @@ export class UserRepositoryCognito implements IUserRepository {
         throw new EntityError("code");
       }
 
-      if (isUserEmailVerified === "false") {
+      if (!isUserEmailVerified) {
         const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
           UserPoolId: this.userPoolId,
           Username: user.userUsername as string,
@@ -248,17 +248,16 @@ export class UserRepositoryCognito implements IUserRepository {
           paramsConfirmEmail
         );
         await this.client.send(commandConfirmEmail);
+
+        const paramsAdminConfirmSignUp: AdminConfirmSignUpCommandInput = {
+          UserPoolId: this.userPoolId,
+          Username: user.userUsername as string,
+        };
+
+        await this.client.send(
+          new AdminConfirmSignUpCommand(paramsAdminConfirmSignUp)
+        );
       }
-
-
-      const paramsAdminConfirmSignUp: AdminConfirmSignUpCommandInput = {
-        UserPoolId: this.userPoolId,
-        Username: user.userUsername as string,
-      }
-
-
-      await this.client.send(new AdminConfirmSignUpCommand(paramsAdminConfirmSignUp));
-
       return { user, code };
     } catch (error: any) {
       throw new Error(
@@ -294,7 +293,7 @@ export class UserRepositoryCognito implements IUserRepository {
   async finishSignUp(email: string): Promise<any> {
     try {
       const userFirstCreated = await this.getUserByEmail(email);
-      const username = userFirstCreated?.userUsername
+      const username = userFirstCreated?.userUsername;
     } catch (error: any) {
       throw new Error(
         "UserRepositoryCognito, Error on finishSignUp: " + error.message
