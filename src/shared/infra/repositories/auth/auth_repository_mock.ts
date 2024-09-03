@@ -13,8 +13,16 @@ export class UserRepoMock implements IAuthRepository {
   constructor() {
     this.user_mock = new UserMock();
   }
-  signIn(email: string, password: string): Promise<{ accessToken: string; idToken: string; refreshToken: string; }> {
-    throw new Error("Method not implemented.");
+  async signIn(email: string, password: string): Promise<{ accessToken: string; idToken: string; refreshToken: string; }> {
+    const user = this.user_mock.users.find((user) => user.userEmail === email && user.userPassword === password);
+    if (!user) {
+      throw new NoItemsFound("email or password");
+    }
+    return {
+      accessToken: "token",
+      idToken: "token",
+      refreshToken: "token",
+    };
   }
   
   async resendCode(email: string): Promise<string> {
