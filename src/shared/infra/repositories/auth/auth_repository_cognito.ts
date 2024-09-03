@@ -21,6 +21,8 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
+import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
+import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
 
 export class AuthRepositoryCognito implements IAuthRepository {
   userPoolId: string;
@@ -420,20 +422,16 @@ export class AuthRepositoryCognito implements IAuthRepository {
       };
     } catch (error: any) {
       const errorCode = error?.name || "";
+      console.error(`Error during signIn: ${error.message}`);
       if (
         errorCode === "NotAuthorizedException" ||
         errorCode === "UserNotFoundException"
       ) {
-        throw new Error("Invalid email or password");
-      } else if (errorCode === "UserNotConfirmedException") {
-        throw new Error("User not confirmed");
-      } else if (
-        errorCode === "UserNotFoundException" ||
-        errorCode === "ResourceNotFoundException"
-      ) {
-        throw new Error("User not found");
+        throw new InvalidCredentialsError();
+      } else if (errorCode === "ResourceNotFoundException") {
+        throw new NoItemsFound("User not found");
       } else {
-        throw new Error("An error occurred during login");
+        throw new EntityError("An error occurred during login");
       }
     }
   }
