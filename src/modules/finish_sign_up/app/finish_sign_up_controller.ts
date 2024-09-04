@@ -2,7 +2,7 @@ import { IRequest } from "src/shared/helpers/external_interfaces/external_interf
 import { FinishSignUpUseCase } from "./finish_sign_up_usecase";
 import { MissingParameters, WrongTypeParameters } from "src/shared/helpers/errors/controller_errors";
 import { FinishSignUpViewmodel } from "./finish_sign_up_viewmodel";
-import { BadRequest, OK } from "src/shared/helpers/external_interfaces/http_codes";
+import { BadRequest, InternalServerError, OK } from "src/shared/helpers/external_interfaces/http_codes";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class FinishSignUpController {
@@ -41,20 +41,19 @@ export class FinishSignUpController {
     }
 
     try {
-      let tokens;
+      let resp;
 
       console.log('FINSIH SIGN UP CONTROLLER', email, newUsername, password, newNickname);
 
-      tokens = newNickname && typeof newNickname === 'string' ?
+      resp = newNickname && typeof newNickname === 'string' ?
         await this.usecase.execute(email, newUsername, password, newNickname) :
         await this.usecase.execute(email, newUsername, password, undefined);
 
-      console.log('FINSIH SIGN UP CONTROLLER TOKENS: ', tokens);
       const viewmodel = new FinishSignUpViewmodel(
-        tokens.accessToken,
-        tokens.refreshToken,
-        tokens.idToken,
+        "Seu cadastro foi finalizado com sucesso!"
       );
+
+      console.log('FINSIH SIGN UP CONTROLLER RESP: ', resp);
 
       console.log('FINSIH SIGN UP CONTROLLER VIEWMODEL: ', viewmodel.toJSON());
 
@@ -66,6 +65,9 @@ export class FinishSignUpController {
         error instanceof EntityError
       ) {
         return new BadRequest(error.message);
+      }
+      if (error instanceof Error) {
+        return new InternalServerError(`Internal Server Error, error: ${error.message}`);
       }
     }
   }
