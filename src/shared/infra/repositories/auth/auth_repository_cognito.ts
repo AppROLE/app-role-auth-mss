@@ -14,6 +14,8 @@ import {
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
   CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+  InitiateAuthCommandInput,
   ListUsersCommand,
   ListUsersCommandInput,
   SignUpCommand,
@@ -424,17 +426,16 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
       const username = user.userUsername as string;
 
-      const params: AdminInitiateAuthCommandInput = {
-        UserPoolId: this.userPoolId,
+      const params: InitiateAuthCommandInput = {
         ClientId: this.clientId,
-        AuthFlow: "ADMIN_NO_SRP_AUTH",
+        AuthFlow: "ADMIN_USER_PASSWORD_AUTH",
         AuthParameters: {
           USERNAME: username,
           PASSWORD: password,
         },
       };
 
-      const command = new AdminInitiateAuthCommand(params);
+      const command = new InitiateAuthCommand(params);
       const result = await this.client.send(command);
       console.log("SIGN IN RESULT: AQUI CARALHOOOO PORRA", result);
 
