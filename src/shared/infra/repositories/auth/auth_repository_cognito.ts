@@ -14,6 +14,7 @@ import {
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
   CognitoIdentityProviderClient,
+  CognitoIdentityProviderServiceException,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   ListUsersCommand,
@@ -462,19 +463,22 @@ export class AuthRepositoryCognito implements IAuthRepository {
         refreshToken: RefreshToken || "",
       };
     } catch (error: any) {
-      const errorCode = error?.name || "";
+      const errorCode: CognitoIdentityProviderServiceException = error;
+
       console.error(
         `Error during signIn: ${error.message}, Code: ${errorCode}`
       );
       if (
-        errorCode === "NotAuthorizedException" ||
-        errorCode === "UserNotFoundException"
+        errorCode.name === "NotAuthorizedException" ||
+        errorCode.name === "UserNotFoundException"
       ) {
         throw new NoItemsFound("email");
-      } else if (errorCode === "UserNotConfirmedException") {
+      } else if (errorCode.name === "UserNotConfirmedException") {
         throw new Error("User not confirmed");
-      } else if (errorCode === "ResourceNotFoundException") {
+      } else if (errorCode.name === "ResourceNotFoundException") {
         throw new NoItemsFound("User");
+      } else if (errorCode.name === "InvalidParameterException") {
+        throw new EntityError("password");
       } else {
         throw new Error(
           "An unexpected error occurred during login"
