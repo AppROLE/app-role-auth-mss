@@ -9,5 +9,6 @@ declare namespace NodeJS {
       COGNITO_USER_POOL_ID: string;
       COGNITO_CLIENT_ID: string;
       S3_BUCKET_NAME: string;
+      CLOUDFRONT_DISTRO: string;
     }
   }
