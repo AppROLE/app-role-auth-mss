@@ -27,15 +27,15 @@ export class ForgotPasswordController {
   async handle(request: IRequest) {
     const email = request.data.email;
 
-    if (!email) {
-      throw new MissingParameters("email");
-    }
-
-    if (typeof email !== "string") {
-      throw new WrongTypeParameters("email", "string", typeof email);
-    }
-
     try {
+      if (!email) {
+        throw new MissingParameters("email");
+      }
+
+      if (typeof email !== "string") {
+        throw new WrongTypeParameters("email", "string", typeof email);
+      }
+
       await this.usecase.execute(email);
       const viewmodel = new ForgotPasswordViewmodel(
         "Uma mensagem de recuperação foi enviada para o seu e-mail"

@@ -6,7 +6,7 @@ import {
 import { ConfirmForgotPasswordUseCase } from "./confirm_forgot_password_usecase";
 import { ConfirmForgotPasswordController } from "./confirm_forgot_password_controller";
 
-const repo = Environments.getUserRepo();
+const repo = Environments.getAuthRepo();
 const usecase = new ConfirmForgotPasswordUseCase(repo);
 const controller = new ConfirmForgotPasswordController(usecase);
 

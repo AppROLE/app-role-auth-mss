@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { UserRepoMock } from "../../src/shared/infra/repositories/user/user_repository_mock";
+import { UserRepoMock } from "../../src/shared/infra/repositories/auth/auth_repository_mock";
 import { ConfirmForgotPasswordUseCase } from "../../src/modules/confirm_forgot_password/app/confirm_forgot_password_usecase";
 import { EntityError } from "../../src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../src/shared/helpers/errors/usecase_errors";

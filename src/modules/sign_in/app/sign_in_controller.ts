@@ -1,61 +1,68 @@
+import { SignInUseCase } from "./sign_in_usecase";
 import {
   MissingParameters,
   WrongTypeParameters,
 } from "src/shared/helpers/errors/controller_errors";
+
+import { SignInViewModel } from "./sign_in_viewmodel";
 import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
 import {
-  OK,
   BadRequest,
-  NotFound,
   InternalServerError,
+  NotFound,
+  OK,
 } from "src/shared/helpers/external_interfaces/http_codes";
-import { ConfirmCodeUseCase } from "./confirm_code_usecase";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
-import { ConfirmCodeViewmodel } from "./confirm_code_viewmodel";
 
-export class ConfirmCodeController {
-  constructor(private readonly usecase: ConfirmCodeUseCase) {}
+export class SignInController {
+  constructor(private readonly usecase: SignInUseCase) {}
 
   async handle(request: IRequest) {
     const email = request.data.email;
-    const code = request.data.code;
+    const password = request.data.password;
 
     try {
       if (!email) {
         throw new MissingParameters("email");
-      }
-      if (!code) {
-        throw new MissingParameters("code");
       }
 
       if (typeof email !== "string") {
         throw new WrongTypeParameters("email", "string", typeof email);
       }
 
-      if (typeof code !== "string") {
-        throw new WrongTypeParameters("code", "string", typeof code);
+      if (!password) {
+        throw new MissingParameters("password");
       }
 
-      await this.usecase.execute(email, code);
-      const viewmodel = new ConfirmCodeViewmodel(
-        "Código validado com sucesso!"
+      if (typeof password !== "string") {
+        throw new WrongTypeParameters("password", "string", typeof password);
+      }
+
+      const session = await this.usecase.execute(email, password);
+      const sessionViewModel = new SignInViewModel(
+        session["accessToken"],
+        session["idToken"],
+        session["refreshToken"]
       );
-      return new OK(viewmodel.toJSON());
+      return new OK(sessionViewModel.toJson());
     } catch (error: any) {
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
       }
-      if (error instanceof MissingParameters) {
-        return new BadRequest(error.message);
-      }
-      if (error instanceof WrongTypeParameters) {
+      if (
+        error instanceof MissingParameters ||
+        error instanceof WrongTypeParameters
+      ) {
         return new BadRequest(error.message);
       }
       if (error instanceof EntityError) {
         return new BadRequest(error.message);
       }
-      return new InternalServerError(error.message);
+
+      return new InternalServerError(
+        `SignInController, Error on handle: ${error.message}`
+      );
     }
   }
 }

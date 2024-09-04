@@ -3,33 +3,34 @@ import { v4 as uuidv4 } from "uuid";
 
 interface IFollowing {
   user_followed_id: string;
-  followed_at: Date;
+  followed_at?: Date;
 }
 
 interface IFavorite {
   institute_id: string;
   event_id: string;
-  favorited_at: Date;
+  favorited_at?: Date;
 }
 
 interface IReview {
   institute_id: string;
   star: number;
   review: string;
-  reviewed_at: Date;
+  reviewed_at?: Date;
 }
 
 export interface IUser extends Document {
   _id: string;
   name: string;
   username: string;
+  nickname: string;
   email: string;
   created_at: Date;
-  lnk_instagram: string;
-  lnk_tiktok: string;
-  bg_photo: string;
-  profile_photo: string;
-  privacy: string;
+  lnk_instagram?: string;
+  lnk_tiktok?: string;
+  bg_photo?: string;
+  profile_photo?: string;
+  privacy?: string;
   following: IFollowing[];
   favorites: IFavorite[];
   reviews: IReview[];
@@ -57,6 +58,7 @@ const UserSchema: Schema = new Schema<IUser>({
   _id: { type: String, default: uuidv4 },
   name: { type: String, required: true },
   username: { type: String, required: true, unique: true },
+  nickname: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   created_at: { type: Date, default: Date.now },
   lnk_instagram: { type: String },

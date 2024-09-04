@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ForgotPasswordUseCase } from "../../src/modules/forgot_password/app/forgot_password_usecase";
-import { UserRepoMock } from "../../src/shared/infra/repositories/user/user_repository_mock";
+import { UserRepoMock } from "../../src/shared/infra/repositories/auth/auth_repository_mock";
 import { MailRepositoryMock } from "../../src/shared/infra/repositories/mail/mail_repository_mock";
 
 describe("ForgotPasswordUseCase", () => {

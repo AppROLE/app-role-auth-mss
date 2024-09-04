@@ -3,15 +3,14 @@ import {
   LambdaHttpRequest,
   LambdaHttpResponse,
 } from "src/shared/helpers/external_interfaces/http_lambda_requests";
-import { SignUpController } from "./sign_up_controller";
-import { SignUpUseCase } from "./sign_up_usecase";
+import { SignInUseCase } from "./sign_in_usecase";
+import { SignInController } from "./sign_in_controller";
 
 const repo = Environments.getAuthRepo();
-const mailRepo = Environments.getMailRepo();
-const usecase = new SignUpUseCase(repo, mailRepo);
-const controller = new SignUpController(usecase);
+const usecase = new SignInUseCase(repo);
+const controller = new SignInController(usecase);
 
-export async function signUpPresenter(event: Record<string, any>) {
+export async function signInPresenter(event: Record<string, any>) {
   const httpRequest = new LambdaHttpRequest(event);
   const response = await controller.handle(httpRequest);
   const httpResponse = new LambdaHttpResponse(
@@ -24,6 +23,6 @@ export async function signUpPresenter(event: Record<string, any>) {
 }
 
 export async function lambda_handler(event: any, context: any) {
-  const response = await signUpPresenter(event);
+  const response = await signInPresenter(event);
   return response;
 }

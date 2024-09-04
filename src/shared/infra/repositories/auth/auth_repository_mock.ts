@@ -1,16 +1,28 @@
 import { User } from "../../../domain/entities/user";
 import { UserMock } from "../../../domain/mocks/user_mock";
-import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
+import { IAuthRepository } from "../../../domain/irepositories/auth_repository_interface";
 import {
   DuplicatedItem,
   NoItemsFound,
 } from "../../../helpers/errors/usecase_errors";
+import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
 
-export class UserRepoMock implements IUserRepository {
+export class UserRepoMock implements IAuthRepository {
   public user_mock: UserMock;
 
   constructor() {
     this.user_mock = new UserMock();
+  }
+  async signIn(email: string, password: string): Promise<{ accessToken: string; idToken: string; refreshToken: string; }> {
+    const user = this.user_mock.users.find((user) => user.userEmail === email && user.userPassword === password);
+    if (!user) {
+      throw new NoItemsFound("email or password");
+    }
+    return {
+      accessToken: "token",
+      idToken: "token",
+      refreshToken: "token",
+    };
   }
   
   async resendCode(email: string): Promise<string> {
@@ -19,6 +31,10 @@ export class UserRepoMock implements IUserRepository {
       throw new NoItemsFound("email");
     }
     return `A verification code has been resent to ${email}. Please check your inbox to proceed.`;
+  }
+
+  finishSignUp(email: string, newUsername: string, newNickname: string): Promise<FinishSignUpReturnType> {
+    throw new Error("Method not implemented.");
   }
   /**
    * Confirms the verification code for a given email.

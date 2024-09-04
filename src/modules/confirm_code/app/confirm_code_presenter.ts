@@ -6,7 +6,7 @@ import {
 import { ConfirmCodeUseCase } from "./confirm_code_usecase";
 import { ConfirmCodeController } from "./confirm_code_controller";
 
-const repo = Environments.getUserRepo();
+const repo = Environments.getAuthRepo();
 const usecase = new ConfirmCodeUseCase(repo);
 const controller = new ConfirmCodeController(usecase);
 
@@ -20,6 +20,7 @@ export async function confirmCodePresenter(
     response?.statusCode,
     response?.headers
   );
+  
 
   return httpResponse.toJSON();
 }

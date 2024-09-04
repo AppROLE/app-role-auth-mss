@@ -1,9 +1,10 @@
 import { generateConfirmationCode } from "../../../utils/generate_confirmation_code";
 import { User } from "../../../domain/entities/user";
-import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
+import { IAuthRepository } from "../../../domain/irepositories/auth_repository_interface";
 import {
   AdminConfirmSignUpCommand,
   AdminConfirmSignUpCommandInput,
+  AdminDeleteUserCommand,
   AdminGetUserCommand,
   AdminGetUserCommandInput,
   AdminInitiateAuthCommand,
@@ -13,18 +14,17 @@ import {
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
   CognitoIdentityProviderClient,
-  ConfirmForgotPasswordCommand,
-  ConfirmForgotPasswordCommandInput,
   ListUsersCommand,
   ListUsersCommandInput,
   SignUpCommand,
   SignUpCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { NoItemsFound } from "../../../helpers/errors/usecase_errors";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
+import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
 import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
+import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
-export class UserRepositoryCognito implements IUserRepository {
+export class AuthRepositoryCognito implements IAuthRepository {
   userPoolId: string;
   clientId: string;
   client: CognitoIdentityProviderClient;
@@ -67,7 +67,7 @@ export class UserRepositoryCognito implements IUserRepository {
       // set code in user attributes
     } catch (error: any) {
       throw new Error(
-        "UserRepositoryCognito, Error on forgotPassword: " + error.message
+        "AuthRepositoryCognito, Error on forgotPassword: " + error.message
       );
     }
   }
@@ -122,7 +122,7 @@ export class UserRepositoryCognito implements IUserRepository {
       }
     } catch (error: any) {
       throw new Error(
-        "UserRepositoryCognito, Error on getUserByEmail: " + error.message
+        "AuthRepositoryCognito, Error on getUserByEmail: " + error.message
       );
     }
   }
@@ -199,7 +199,7 @@ export class UserRepositoryCognito implements IUserRepository {
       };
     } catch (error: any) {
       throw new Error(
-        "UserRepositoryCognito, Error on signUp: " + error.message
+        "AuthRepositoryCognito, Error on signUp: " + error.message
       );
     }
   }
@@ -235,7 +235,7 @@ export class UserRepositoryCognito implements IUserRepository {
         throw new EntityError("code");
       }
 
-      if (!isUserEmailVerified) {
+      if (isUserEmailVerified === "false") {
         const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
           UserPoolId: this.userPoolId,
           Username: user.userUsername as string,
@@ -256,11 +256,12 @@ export class UserRepositoryCognito implements IUserRepository {
           UserPoolId: this.userPoolId,
           Username: user.userUsername as string,
         };
-
+  
         await this.client.send(
           new AdminConfirmSignUpCommand(paramsAdminConfirmSignUp)
         );
       }
+
       return { user, code };
     } catch (error: any) {
       throw new Error(
@@ -289,18 +290,119 @@ export class UserRepositoryCognito implements IUserRepository {
       await this.client.send(command);
     } catch (error: any) {
       throw new Error(
-        "UserRepositoryCognito, Error on setUserPassword: " + error.message
+        "AuthRepositoryCognito, Error on setUserPassword: " + error.message
       );
     }
   }
 
-  async finishSignUp(email: string): Promise<any> {
+  async finishSignUp(
+    email: string,
+    newUsername: string,
+    password: string,
+    newNickname: string,
+  ): Promise<FinishSignUpReturnType> {
     try {
-      const userFirstCreated = await this.getUserByEmail(email);
-      const username = userFirstCreated?.userUsername;
+      console.log("INITIATING FINISH SIGN UP REPO");
+      console.log("FINISH SIGN UP REPO", email, newUsername, newNickname);
+      const user = await this.getUserByEmail(email);
+      const emailUsername = user?.userUsername;
+
+      console.log("PASSWORD REPO COGNITO: ", password);
+
+      const params: AdminGetUserCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: emailUsername as string,
+      };
+
+      const command = new AdminGetUserCommand(params);
+      const result = await this.client.send(command);
+      console.log("FINISH SIGN UP RESULT FROM GET USER: ", result);
+      const allAttributtesOfUser = {
+        email,
+        newUsername,
+        newNickname,
+        acceptedTerms: result.UserAttributes?.find(
+          (attr) => attr.Name === "custom:acceptedTerms"
+        )?.Value,
+        roleType: result.UserAttributes?.find(
+          (attr) => attr.Name === "custom:roleType"
+        )?.Value,
+        name: result.UserAttributes?.find((attr) => attr.Name === "name")
+          ?.Value as string,
+      };
+
+      console.log('password', password)
+
+      const paramsToRealSignUp: SignUpCommandInput = {
+        ClientId: this.clientId,
+        Password: password,
+        Username: newUsername,
+        UserAttributes: [
+          {
+            Name: "email",
+            Value: email,
+          },
+          {
+            Name: "name",
+            Value: allAttributtesOfUser.name,
+          },
+          {
+            Name: "nickname",
+            Value: newNickname,
+          },
+          {
+            Name: "custom:acceptedTerms",
+            Value: allAttributtesOfUser.acceptedTerms,
+          },
+          {
+            Name: "custom:roleType",
+            Value: allAttributtesOfUser.roleType,
+          },
+        ],
+      };
+
+      const commandToRealSignUp = new SignUpCommand(paramsToRealSignUp);
+      console.log("COMMAND TO REAL SIGN UP: ", commandToRealSignUp);
+      const resultRealSignUp = await this.client.send(commandToRealSignUp);
+
+      console.log("FINISH SIGN UP RESULT FROM REAL SIGN UP: ", resultRealSignUp);
+
+      await this.client.send(
+        new AdminConfirmSignUpCommand({
+          UserPoolId: this.userPoolId,
+          Username: newUsername,
+        })
+      );
+
+      const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: newUsername,
+        UserAttributes: [
+          {
+            Name: "email_verified",
+            Value: "true",
+          },
+        ],
+      };
+
+      const commandConfirmEmail = new AdminUpdateUserAttributesCommand(
+        paramsConfirmEmail
+      );
+      await this.client.send(commandConfirmEmail);
+
+      await this.client.send(
+        new AdminDeleteUserCommand({
+          UserPoolId: this.userPoolId,
+          Username: emailUsername as string,
+        })
+      );
+
+      console.log('CHEGOU NO FINAL DO FINISH SIGN UP REPO')
+
+      return allAttributtesOfUser;
     } catch (error: any) {
       throw new Error(
-        "UserRepositoryCognito, Error on finishSignUp: " + error.message
+        "AuthRepositoryCognito, Error on finishSignUp: " + error.message
       );
     }
   }
