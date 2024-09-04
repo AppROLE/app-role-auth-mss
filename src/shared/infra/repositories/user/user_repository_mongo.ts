@@ -1,4 +1,4 @@
-import { DuplicatedItem } from "src/shared/helpers/errors/usecase_errors";
+import { DuplicatedItem, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { User } from "../../../domain/entities/user";
 import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
 import { connectDB } from "../../database/models";
@@ -40,5 +40,36 @@ export class UserRepositoryMongo implements IUserRepository {
     } finally {
       
     }
+  }
+
+  async updateProfilePhoto(email: string, profilePhotoUrl: string): Promise<string> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ email });
+
+      if (!userDoc) {
+        throw new NoItemsFound('email');
+      }
+
+      userDoc.profile_photo = profilePhotoUrl;
+
+      const respMongo = await userMongoClient?.updateOne({ email }, { $set: userDoc });
+      console.log('MONGO REPO USER RESPMONGO: ', respMongo);
+
+      return profilePhotoUrl;
+
+    } catch (error) {
+      throw new Error(`Error updating profile photo on MongoDB: ${error}`);
+    } finally {
+      
+    }
+
   }
 }
