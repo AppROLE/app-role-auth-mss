@@ -55,7 +55,9 @@ export class ConfirmForgotPasswordController {
       if (error instanceof EntityError) {
         return new BadRequest(error.message);
       }
-      return new InternalServerError(error.message);
+      return new InternalServerError(
+        `SignInController, Error on handle: ${error.message}`
+      );
     }
   }
 }
