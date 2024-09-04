@@ -6,6 +6,8 @@ import {
   AdminConfirmSignUpCommandInput,
   AdminGetUserCommand,
   AdminGetUserCommandInput,
+  AdminInitiateAuthCommand,
+  AdminInitiateAuthCommandInput,
   AdminSetUserPasswordCommand,
   AdminSetUserPasswordCommandInput,
   AdminUpdateUserAttributesCommand,
@@ -20,6 +22,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { NoItemsFound } from "../../../helpers/errors/usecase_errors";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
+import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
 
 export class UserRepositoryCognito implements IUserRepository {
   userPoolId: string;
@@ -299,6 +302,77 @@ export class UserRepositoryCognito implements IUserRepository {
       throw new Error(
         "UserRepositoryCognito, Error on finishSignUp: " + error.message
       );
+    }
+  }
+
+  async signIn(
+    email: string,
+    password: string
+  ): Promise<{
+    accessToken: string;
+    idToken: string;
+    refreshToken: string;
+  }> {
+    try {
+      const user = await this.getUserByEmail(email);
+
+      if (!user) {
+        throw new NoItemsFound("email");
+      }
+
+      const username = user.userUsername as string;
+
+      const params: AdminInitiateAuthCommandInput = {
+        UserPoolId: this.userPoolId,
+        ClientId: this.clientId,
+        AuthFlow: "ADMIN_NO_SRP_AUTH",
+        AuthParameters: {
+          USERNAME: username,
+          PASSWORD: password,
+        },
+      };
+
+      const command = new AdminInitiateAuthCommand(params);
+      const result = await this.client.send(command);
+      console.log("SIGN IN RESULT: AQUI CARALHOOOO PORRA", result);
+
+      if (!result.AuthenticationResult) {
+        console.error(
+          "AuthenticationResult is missing in the response:",
+          result
+        );
+        throw new Error(
+          "Authentication failed, no tokens returned"
+        );
+      }
+
+      const { AccessToken, IdToken, RefreshToken } =
+        result.AuthenticationResult;
+
+      return {
+        accessToken: AccessToken || "",
+        idToken: IdToken || "",
+        refreshToken: RefreshToken || "",
+      };
+    } catch (error: any) {
+      const errorCode = error?.name || "";
+      console.error(
+        `Error during signIn: ${error.message}, Code: ${errorCode}`
+      );
+      if (
+        errorCode === "NotAuthorizedException" ||
+        errorCode === "UserNotFoundException"
+      ) {
+        throw new InvalidCredentialsError();
+      } else if (errorCode === "UserNotConfirmedException") {
+        throw new Error("User not confirmed");
+      } else if (errorCode === "ResourceNotFoundException") {
+        throw new NoItemsFound("User");
+      } else {
+        throw new Error(
+          "An unexpected error occurred during login"
+        );
+      }
     }
   }
 }
