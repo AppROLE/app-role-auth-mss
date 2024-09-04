@@ -10,12 +10,10 @@ export class UserRepositoryMongo implements IUserRepository {
   async createUser(user: User): Promise<User> {
     try {
       const db = await connectDB();
-      console.log('MONGO REPO DB: ', db);
-      db.connections[0].on('error', console.error.bind(console, 'connection error:'));
-
-      db.connections[0].once('open', function() {
-        console.log('MONGO REPO DB CONNECTION OPEN');
-      })
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
 
       const userMongoClient = db.connections[0].db?.collection<IUser>('User');
 
@@ -39,6 +37,8 @@ export class UserRepositoryMongo implements IUserRepository {
       return user;
     } catch (error) {
       throw new Error(`Error creating user on MongoDB: ${error}`);
+    } finally {
+      
     }
   }
 }
