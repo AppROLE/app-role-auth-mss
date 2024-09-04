@@ -24,15 +24,8 @@ export class FinishSignUpUseCase {
       throw new EntityError("password");
     }
 
-    console.log('FINSIH SIGN UP USECASE EMAIL: ', email)
-    console.log('FINSIH SIGN UP USECASE USERNAME: ', newUsername)
-    console.log('FINSIH SIGN UP USECASE PASSWORD: ', password)
-    console.log('FINSIH SIGN UP USECASE NICKNAME: ', newNickname)
-
     const userInfos = await this.repo.finishSignUp(email, newUsername, password, newNickname);
 
-    console.log('FINSIH SIGN UP USECASE USERINFOS: ', userInfos);
-    
     const userToMongo = new User({
       email: userInfos.email,
       name: userInfos.name,
