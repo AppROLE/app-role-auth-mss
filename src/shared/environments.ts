@@ -34,7 +34,7 @@ export class Environments {
       this.s3BucketName = 'bucket-test'
       this.region = 'sa-east-1'
     } else {
-      this.s3BucketName = envs.S3_BUCKET_NAME as string
+      this.s3BucketName = envs.S3_BUCKET_NAME.toLowerCase() + envs.STAGE.toLowerCase() as string
       this.region = envs.AWS_REGION as string
       this.userPoolId = envs.COGNITO_USER_POOL_ID as string
       this.clientId = envs.COGNITO_CLIENT_ID as string
