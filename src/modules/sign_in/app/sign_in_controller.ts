@@ -22,25 +22,25 @@ export class SignInController {
     const email = request.data.email;
     const password = request.data.password;
 
-    if (!email) {
-      throw new MissingParameters("email");
-    }
-
-    if (typeof email !== "string") {
-      throw new WrongTypeParameters("email", "string", typeof email);
-    }
-
-    console.log("TESTAAAANDO AQUI!!!" + password);
-    if (!password) {
-      console.log("TESTANDOOO ENTROU NO IFF!!!!")
-      throw new MissingParameters("password");
-    }
-
-    if (typeof password !== "string") {
-      throw new WrongTypeParameters("password", "string", typeof password);
-    }
-
     try {
+      if (!email) {
+        throw new MissingParameters("email");
+      }
+
+      if (typeof email !== "string") {
+        throw new WrongTypeParameters("email", "string", typeof email);
+      }
+
+      console.log("TESTAAAANDO AQUI!!!" + password);
+      if (!password) {
+        console.log("TESTANDOOO ENTROU NO IFF!!!!");
+        throw new MissingParameters("password");
+      }
+
+      if (typeof password !== "string") {
+        throw new WrongTypeParameters("password", "string", typeof password);
+      }
+
       const session = await this.usecase.execute(email, password);
       const sessionViewModel = new SignInViewModel(
         session["accessToken"],
@@ -49,6 +49,8 @@ export class SignInController {
       );
       return new OK(sessionViewModel.toJson());
     } catch (error: any) {
+      console.error("Erro capturado no controlador:", error.message);
+
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
       }
@@ -61,11 +63,10 @@ export class SignInController {
       if (error instanceof EntityError) {
         return new BadRequest(error.message);
       }
-      if (error instanceof Error) {
-        return new InternalServerError(
-          `SignUpController, Error on handle: ${error.message}`
-        );
-      }
+
+      return new InternalServerError(
+        `SignInController, Error on handle: ${error.message}`
+      );
     }
   }
 }
