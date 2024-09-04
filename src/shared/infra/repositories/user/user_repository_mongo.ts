@@ -1,9 +1,15 @@
 import { User } from "../../../domain/entities/user";
 import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
+import { connectDB } from "../../database/models";
 import userModel from "../../database/models/user.model";
 import { UserMongoDTO } from "../../dto/user_mongo_dto"
+import mongoose from "mongoose";
 
-export class UserRepositoryMongo implements IUserRepository {
+export class UserRepositoryMongo implements IUserRepository { 
+
+  constructor() {
+    connectDB()
+  }
   async createUser(user: User): Promise<User> {
     try {
       const dto = UserMongoDTO.fromEntity(user);
