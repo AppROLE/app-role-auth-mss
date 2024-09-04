@@ -36,13 +36,7 @@ export class FinishSignUpUseCase {
 
     await this.mongoUserRepo.createUser(userToMongo);
 
-    console.log('FINSIH SIGN UP USECASE AFTER MONGO CREATE USER');
-
-    const tokens = await this.repo.signIn(email, password);
-
-    console.log('FINSIH SIGN UP USECASE TOKENS: ', tokens);
-
-    return tokens;
+    return "Sign up finished successfully!";
 
   }
 }
