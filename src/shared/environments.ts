@@ -6,6 +6,8 @@ import { envs } from './helpers/envs/envs'
 import { IMailRepository } from './domain/irepositories/mail_repository_interface'
 import { MailRepository } from './infra/repositories/mail/mail_repository_nodemailer'
 import { IUserRepository } from './domain/irepositories/user_repository_interface'
+import { IFileRepository } from './domain/irepositories/file_repository_interface'
+import { FileRepositoryS3 } from './infra/repositories/file/file_repository_s3'
 
 export class Environments {
   stage: STAGE = STAGE.TEST
@@ -14,6 +16,7 @@ export class Environments {
   userPoolId: string = ''
   clientId: string = ''
   mongoUri: string = ''
+  cloudFrontUrl: string = ''
 
   configureLocal() {
     console.log('envs.STAGE - [ENVIRONMENTS - { CONFIGURE LOCAL }] - ', envs.STAGE)
@@ -36,6 +39,7 @@ export class Environments {
       this.userPoolId = envs.COGNITO_USER_POOL_ID as string
       this.clientId = envs.COGNITO_CLIENT_ID as string
       this.mongoUri = envs.MONGO_URI as string
+      this.cloudFrontUrl = `https://${envs.CLOUDFRONT_DISTRO}`
     }
   }
 
@@ -70,6 +74,18 @@ export class Environments {
       throw new Error('Invalid STAGE')
     } else if (Environments.getEnvs().stage === STAGE.DEV || Environments.getEnvs().stage === STAGE.PROD) {
       return new MailRepository()
+    } else {
+      throw new Error('Invalid STAGE')
+    }
+  }
+
+  static getFileRepo(): IFileRepository {
+    console.log('Environments.getEnvs().stage - [ENVIRONMENTS - { GET FILE REPO }] - ', Environments.getEnvs().stage)
+
+    if (Environments.getEnvs().stage === STAGE.TEST) {
+      throw new Error('Invalid STAGE')
+    } else if (Environments.getEnvs().stage === STAGE.DEV || Environments.getEnvs().stage === STAGE.PROD) {
+      return new FileRepositoryS3(Environments.getEnvs().s3BucketName)
     } else {
       throw new Error('Invalid STAGE')
     }
