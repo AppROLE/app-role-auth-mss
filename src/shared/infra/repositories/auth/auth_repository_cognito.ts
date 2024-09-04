@@ -328,6 +328,8 @@ export class AuthRepositoryCognito implements IAuthRepository {
           ?.Value as string,
       };
 
+      console.log('password', password)
+
       const paramsToRealSignUp: SignUpCommandInput = {
         ClientId: this.clientId,
         Password: password,
