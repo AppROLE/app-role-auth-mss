@@ -14,6 +14,8 @@ import {
   AdminUpdateUserAttributesCommand,
   AdminUpdateUserAttributesCommandInput,
   CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+  InitiateAuthCommandInput,
   ListUsersCommand,
   ListUsersCommandInput,
   SignUpCommand,
@@ -269,6 +271,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
       );
     }
   }
+  
 
   async setUserPassword(email: string, newPassword: string): Promise<void> {
     try {
@@ -415,17 +418,24 @@ export class AuthRepositoryCognito implements IAuthRepository {
     refreshToken: string;
   }> {
     try {
-      const params: AdminInitiateAuthCommandInput = {
-        UserPoolId: this.userPoolId,
+      const user = await this.getUserByEmail(email);
+
+      if (!user) {
+        throw new NoItemsFound("email");
+      }
+
+      const username = user.userUsername as string;
+
+      const params: InitiateAuthCommandInput = {
         ClientId: this.clientId,
-        AuthFlow: "ADMIN_NO_SRP_AUTH",
+        AuthFlow: "ADMIN_USER_PASSWORD_AUTH",
         AuthParameters: {
-          USERNAME: email,
+          USERNAME: username,
           PASSWORD: password,
         },
       };
 
-      const command = new AdminInitiateAuthCommand(params);
+      const command = new InitiateAuthCommand(params);
       const result = await this.client.send(command);
       console.log("SIGN IN RESULT: AQUI CARALHOOOO PORRA", result);
 
