@@ -56,6 +56,8 @@ export class FinishSignUpController {
         tokens.idToken,
       );
 
+      console.log('FINSIH SIGN UP CONTROLLER VIEWMODEL: ', viewmodel.toJSON());
+
       return new OK(viewmodel.toJSON());
     } catch (error: any) {
       if (
