@@ -1,24 +1,34 @@
 import { envs } from "../../../helpers/envs/envs";
 import mongoose, { Mongoose } from "mongoose";
 import User from "./user.model";
+import { Environments } from "src/shared/environments";
 
 
-const connectDB = async () => {
+let mongoConnection: Mongoose | null = null;
+
+export const connectDB = async (): Promise<Mongoose> => {
+  if (mongoConnection) {
+    console.log("Reusing existing MongoDB connection");
+    return mongoConnection;
+  }
+  
   try {
-    if (!envs.MONGO_URI) {
+    if (!Environments.getEnvs().mongoUri) {
       throw new Error("MONGO_URI is not defined");
     }
 
-    console.log("Connecting to MongoDB");
-    console.log("MONGO_URI", envs.MONGO_URI);
-    const mongoSession = await mongoose.connect(envs.MONGO_URI + envs.STAGE.toLowerCase())
+    const uri = Environments.getEnvs().mongoUri + envs.STAGE.toLowerCase();
 
+    console.log("Connecting to MongoDB, uri: ", uri);
+    
+    mongoConnection = await mongoose.connect(Environments.getEnvs().mongoUri + envs.STAGE.toLowerCase());
     console.log("MongoDB connected");
-    return mongoSession;
+
+    return mongoConnection;
   } catch (error) {
     console.error("Error connecting to MongoDB", error);
-    process.exit(1);
+    process.exit(1); // Exit process on failure
   }
 };
 
-export { connectDB, User };
+export { User };

@@ -13,6 +13,7 @@ export class Environments {
   region: string = ''
   userPoolId: string = ''
   clientId: string = ''
+  mongoUri: string = ''
 
   configureLocal() {
     console.log('envs.STAGE - [ENVIRONMENTS - { CONFIGURE LOCAL }] - ', envs.STAGE)
@@ -34,6 +35,7 @@ export class Environments {
       this.region = envs.AWS_REGION as string
       this.userPoolId = envs.COGNITO_USER_POOL_ID as string
       this.clientId = envs.COGNITO_CLIENT_ID as string
+      this.mongoUri = envs.MONGO_URI as string
     }
   }
 
