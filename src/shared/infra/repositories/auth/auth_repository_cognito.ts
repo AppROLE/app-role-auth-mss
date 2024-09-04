@@ -251,7 +251,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
           paramsConfirmEmail
         );
         await this.client.send(commandConfirmEmail);
-        
+
         const paramsAdminConfirmSignUp: AdminConfirmSignUpCommandInput = {
           UserPoolId: this.userPoolId,
           Username: user.userUsername as string,
@@ -313,6 +313,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
       const command = new AdminGetUserCommand(params);
       const result = await this.client.send(command);
+      console.log("FINISH SIGN UP RESULT FROM GET USER: ", result);
       const allAttributtesOfUser = {
         email,
         newUsername,
@@ -356,7 +357,9 @@ export class AuthRepositoryCognito implements IAuthRepository {
       };
 
       const commandToRealSignUp = new SignUpCommand(paramsToRealSignUp);
-      await this.client.send(commandToRealSignUp);
+      const resultRealSignUp = await this.client.send(commandToRealSignUp);
+
+      console.log("FINISH SIGN UP RESULT FROM REAL SIGN UP: ", resultRealSignUp);
 
       await this.client.send(
         new AdminConfirmSignUpCommand({
