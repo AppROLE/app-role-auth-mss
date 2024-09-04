@@ -31,9 +31,7 @@ export class SignInController {
         throw new WrongTypeParameters("email", "string", typeof email);
       }
 
-      console.log("TESTAAAANDO AQUI!!!" + password);
       if (!password) {
-        console.log("TESTANDOOO ENTROU NO IFF!!!!");
         throw new MissingParameters("password");
       }
 
@@ -49,8 +47,6 @@ export class SignInController {
       );
       return new OK(sessionViewModel.toJson());
     } catch (error: any) {
-      console.error("Erro capturado no controlador:", error.message);
-
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
       }
