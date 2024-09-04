@@ -12,7 +12,11 @@ export class UserRepositoryMongo implements IUserRepository {
       const dto = UserMongoDTO.fromEntity(user);
       const userDoc = UserMongoDTO.toMongo(dto);
 
+      console.log('MONGO REPO USER DOC: ', userDoc);
+
       await userModel.create(userDoc);
+
+      console.log('MONGO REPO USER CREATED: ', user);
 
       return user;
     } catch (error) {
