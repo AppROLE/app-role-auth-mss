@@ -357,6 +357,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
       };
 
       const commandToRealSignUp = new SignUpCommand(paramsToRealSignUp);
+      console.log("COMMAND TO REAL SIGN UP: ", commandToRealSignUp);
       const resultRealSignUp = await this.client.send(commandToRealSignUp);
 
       console.log("FINISH SIGN UP RESULT FROM REAL SIGN UP: ", resultRealSignUp);
