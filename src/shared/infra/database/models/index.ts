@@ -11,7 +11,7 @@ const connectDB = async () => {
 
     console.log("Connecting to MongoDB");
     console.log("MONGO_URI", envs.MONGO_URI);
-    const mongoSession = await mongoose.connect(envs.MONGO_URI)
+    const mongoSession = await mongoose.connect(envs.MONGO_URI + envs.STAGE.toLowerCase())
 
     console.log("MongoDB connected");
     return mongoSession;
