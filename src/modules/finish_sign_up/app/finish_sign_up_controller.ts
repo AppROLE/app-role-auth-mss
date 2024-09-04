@@ -2,8 +2,9 @@ import { IRequest } from "src/shared/helpers/external_interfaces/external_interf
 import { FinishSignUpUseCase } from "./finish_sign_up_usecase";
 import { MissingParameters, WrongTypeParameters } from "src/shared/helpers/errors/controller_errors";
 import { FinishSignUpViewmodel } from "./finish_sign_up_viewmodel";
-import { BadRequest, InternalServerError, OK } from "src/shared/helpers/external_interfaces/http_codes";
+import { BadRequest, InternalServerError, NotFound, OK } from "src/shared/helpers/external_interfaces/http_codes";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
+import { DuplicatedItem, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
 export class FinishSignUpController {
   constructor(private usecase: FinishSignUpUseCase) {}
@@ -64,6 +65,12 @@ export class FinishSignUpController {
         error instanceof WrongTypeParameters ||
         error instanceof EntityError
       ) {
+        return new BadRequest(error.message);
+      }
+      if (error instanceof NoItemsFound) {
+        return new NotFound(error.message);
+      }
+      if (error instanceof DuplicatedItem) {
         return new BadRequest(error.message);
       }
       if (error instanceof Error) {
