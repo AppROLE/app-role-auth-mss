@@ -1,8 +1,10 @@
+import { DuplicatedItem } from "src/shared/helpers/errors/usecase_errors";
 import { User } from "../../../domain/entities/user";
 import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
 import { connectDB } from "../../database/models";
 import { IUser, userModel } from "../../database/models/user.model";
 import { UserMongoDTO } from "../../dto/user_mongo_dto"
+import { v4 as uuidv4 } from 'uuid';
 
 export class UserRepositoryMongo implements IUserRepository { 
   async createUser(user: User): Promise<User> {
@@ -21,6 +23,14 @@ export class UserRepositoryMongo implements IUserRepository {
       const userDoc = UserMongoDTO.toMongo(dto);
 
       console.log('MONGO REPO USER DOC: ', userDoc);
+
+      userDoc._id = uuidv4();
+
+      const userAlreadyExists = await userMongoClient?.findOne({ email: user.userEmail });
+
+      if (userAlreadyExists) {
+        throw new DuplicatedItem('email');
+      }
 
       const respMongo = await userMongoClient?.insertOne(userDoc);
       console.log('MONGO REPO USER RESPMONGO: ', respMongo);
