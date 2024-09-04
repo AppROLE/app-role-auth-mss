@@ -300,6 +300,8 @@ export class AuthRepositoryCognito implements IAuthRepository {
     password: string
   ): Promise<FinishSignUpReturnType> {
     try {
+      console.log("INITIATING FINISH SIGN UP REPO");
+      console.log("FINISH SIGN UP REPO", email, newUsername, newNickname);
       const user = await this.getUserByEmail(email);
       const emailUsername = user?.userUsername;
 

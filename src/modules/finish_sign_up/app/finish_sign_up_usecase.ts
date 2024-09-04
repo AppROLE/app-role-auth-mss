@@ -21,6 +21,8 @@ export class FinishSignUpUseCase {
       throw new EntityError("nickname");
     }
 
+    console.log('FINSIH SIGN UP USECASE', email, newUsername, password, newNickname);
+
     const userInfos = await this.repo.finishSignUp(email, newUsername, password, newNickname);
 
     const userToMongo = new User({
@@ -34,6 +36,8 @@ export class FinishSignUpUseCase {
     await this.mongoUserRepo.createUser(userToMongo);
 
     const tokens = await this.repo.signIn(email, password);
+
+    console.log('FINSIH SIGN UP USECASE TOKENS: ', tokens);
 
     return tokens;
 
