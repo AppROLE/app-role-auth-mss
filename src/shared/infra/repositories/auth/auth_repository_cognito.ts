@@ -25,7 +25,7 @@ import {
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
 import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
-import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
+import { DuplicatedItem, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 
 export class AuthRepositoryCognito implements IAuthRepository {
   userPoolId: string;
@@ -404,6 +404,11 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
       return allAttributtesOfUser;
     } catch (error: any) {
+
+      if (error.name === "UsernameExistsException") {
+        throw new DuplicatedItem("esse usuário");
+      }
+
       throw new Error(
         "AuthRepositoryCognito, Error on finishSignUp: " + error.message
       );
