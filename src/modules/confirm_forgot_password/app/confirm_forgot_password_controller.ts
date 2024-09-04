@@ -46,10 +46,10 @@ export class ConfirmForgotPasswordController {
       );
       return new OK(viewmodel.toJSON());
     } catch (error: any) {
-      if (error instanceof MissingParameters) {
-        return new BadRequest(error.message);
-      }
-      if (error instanceof WrongTypeParameters) {
+      if (
+        error instanceof MissingParameters ||
+        error instanceof WrongTypeParameters
+      ) {
         return new BadRequest(error.message);
       }
       if (error instanceof EntityError) {
