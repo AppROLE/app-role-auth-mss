@@ -14,6 +14,8 @@ export class FinishSignUpController {
     let newNickname = request.data.nickname;
     const password = request.data.password;
 
+    console.log('FINSIH SIGN UP CONTROLLER', email, newUsername, password, newNickname);
+
     if (!email) {
       throw new MissingParameters("email");
     }

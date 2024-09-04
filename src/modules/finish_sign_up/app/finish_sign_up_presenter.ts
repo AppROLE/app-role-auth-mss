@@ -15,6 +15,7 @@ const controller = new FinishSignUpController(usecase);
 
 export async function finishSignUpPresenter(event: Record<string, any>) {
   const httpRequest = new LambdaHttpRequest(event);
+  console.log('httpRequest', httpRequest);
   const response = await controller.handle(httpRequest);
   const httpResponse = new LambdaHttpResponse(
     response?.body,
