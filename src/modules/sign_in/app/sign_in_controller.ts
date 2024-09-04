@@ -59,6 +59,9 @@ export class SignInController {
       if (error instanceof EntityError) {
         return new BadRequest(error.message);
       }
+      if (error instanceof NoItemsFound) {
+        return new NotFound(error.message);
+      }
 
       return new InternalServerError(
         `SignInController, Error on handle: ${error.message}`
