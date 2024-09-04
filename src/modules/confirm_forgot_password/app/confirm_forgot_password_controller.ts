@@ -19,27 +19,27 @@ export class ConfirmForgotPasswordController {
     const email = request.data.email;
     const newPassword = request.data.newPassword;
 
-    if (!email) {
-      throw new MissingParameters("email");
-    }
-
-    if (!newPassword) {
-      throw new MissingParameters("newPassword");
-    }
-
-    if (typeof email !== "string") {
-      throw new WrongTypeParameters("email", "string", typeof email);
-    }
-
-    if (typeof newPassword !== "string") {
-      throw new WrongTypeParameters(
-        "newPassword",
-        "string",
-        typeof newPassword
-      );
-    }
-
     try {
+      if (!email) {
+        throw new MissingParameters("email");
+      }
+
+      if (!newPassword) {
+        throw new MissingParameters("newPassword");
+      }
+
+      if (typeof email !== "string") {
+        throw new WrongTypeParameters("email", "string", typeof email);
+      }
+
+      if (typeof newPassword !== "string") {
+        throw new WrongTypeParameters(
+          "newPassword",
+          "string",
+          typeof newPassword
+        );
+      }
+
       await this.usecase.execute(email, newPassword);
       const viewmodel = new ConfirmForgotPasswordViewmodel(
         "Redefinição de senha realizada com sucesso!"
