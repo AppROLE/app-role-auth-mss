@@ -31,6 +31,8 @@ export class FinishSignUpUseCase {
 
     const userInfos = await this.repo.finishSignUp(email, newUsername, password, newNickname);
 
+    console.log('FINSIH SIGN UP USECASE USERINFOS: ', userInfos);
+    
     const userToMongo = new User({
       email: userInfos.email,
       name: userInfos.name,
