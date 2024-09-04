@@ -16,10 +16,11 @@ export const connectDB = async (): Promise<Mongoose> => {
     if (!Environments.getEnvs().mongoUri) {
       throw new Error("MONGO_URI is not defined");
     }
-
-    const uri = Environments.getEnvs().mongoUri + envs.STAGE.toLowerCase();
+    const stage = Environments.getEnvs().stage.toLowerCase();
+    const uri = Environments.getEnvs().mongoUri + stage
 
     console.log("Connecting to MongoDB, uri: ", uri);
+    console.log("Connecting to MongoDB, stage: ", stage);
     
     mongoConnection = await mongoose.connect(Environments.getEnvs().mongoUri + envs.STAGE.toLowerCase());
     console.log("MongoDB connected");
