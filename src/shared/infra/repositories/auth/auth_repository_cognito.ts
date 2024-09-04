@@ -297,8 +297,8 @@ export class AuthRepositoryCognito implements IAuthRepository {
   async finishSignUp(
     email: string,
     newUsername: string,
+    password: string,
     newNickname: string,
-    password: string
   ): Promise<FinishSignUpReturnType> {
     try {
       console.log("INITIATING FINISH SIGN UP REPO");
