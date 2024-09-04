@@ -1,6 +1,4 @@
-import { envs } from "../../../helpers/envs/envs";
 import mongoose, { Mongoose } from "mongoose";
-import User from "./user.model";
 import { Environments } from "src/shared/environments";
 
 
@@ -31,5 +29,3 @@ export const connectDB = async (): Promise<Mongoose> => {
     process.exit(1); // Exit process on failure
   }
 };
-
-export { User };

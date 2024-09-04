@@ -71,4 +71,4 @@ const UserSchema: Schema = new Schema<IUser>({
   reviews: [ReviewSchema],
 });
 
-export default mongoose.model<IUser>("User", UserSchema);
+export const userModel = mongoose.model<IUser>("User", UserSchema);
