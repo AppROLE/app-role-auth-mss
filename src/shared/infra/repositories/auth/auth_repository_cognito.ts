@@ -426,7 +426,8 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
       const username = user.userUsername as string;
 
-      const params: InitiateAuthCommandInput = {
+      const params: AdminInitiateAuthCommandInput = {
+        UserPoolId: this.userPoolId,
         ClientId: this.clientId,
         AuthFlow: "USER_PASSWORD_AUTH",
         AuthParameters: {
@@ -435,7 +436,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
         },
       };
 
-      const command = new InitiateAuthCommand(params);
+      const command = new AdminInitiateAuthCommand(params);
       const result = await this.client.send(command);
 
       if (!result.AuthenticationResult) {
@@ -465,7 +466,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
         errorCode === "NotAuthorizedException" ||
         errorCode === "UserNotFoundException"
       ) {
-        throw new InvalidCredentialsError();
+        throw new NoItemsFound("email");
       } else if (errorCode === "UserNotConfirmedException") {
         throw new Error("User not confirmed");
       } else if (errorCode === "ResourceNotFoundException") {
