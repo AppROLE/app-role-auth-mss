@@ -18,9 +18,9 @@ export class ResendCodeController {
   constructor(private readonly usecase: ResendCodeUseCase) {}
 
   async handle(request: IRequest) {
-    try {
-      const email = request.data.email;
+    const email = request.data.email;
 
+    try {
       if (!email) {
         throw new MissingParameters("email");
       }
