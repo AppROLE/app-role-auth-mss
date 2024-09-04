@@ -251,16 +251,16 @@ export class AuthRepositoryCognito implements IAuthRepository {
           paramsConfirmEmail
         );
         await this.client.send(commandConfirmEmail);
-
-        const paramsAdminConfirmSignUp: AdminConfirmSignUpCommandInput = {
-          UserPoolId: this.userPoolId,
-          Username: user.userUsername as string,
-        };
-
-        await this.client.send(
-          new AdminConfirmSignUpCommand(paramsAdminConfirmSignUp)
-        );
       }
+
+      const paramsAdminConfirmSignUp: AdminConfirmSignUpCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: user.userUsername as string,
+      };
+
+      await this.client.send(
+        new AdminConfirmSignUpCommand(paramsAdminConfirmSignUp)
+      );
       return { user, code };
     } catch (error: any) {
       throw new Error(
