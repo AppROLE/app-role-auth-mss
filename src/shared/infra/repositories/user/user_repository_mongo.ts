@@ -6,12 +6,10 @@ import { UserMongoDTO } from "../../dto/user_mongo_dto"
 import mongoose from "mongoose";
 
 export class UserRepositoryMongo implements IUserRepository { 
-
-  constructor() {
-    connectDB()
-  }
   async createUser(user: User): Promise<User> {
     try {
+      await connectDB();
+
       const dto = UserMongoDTO.fromEntity(user);
       const userDoc = UserMongoDTO.toMongo(dto);
 
