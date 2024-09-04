@@ -3,7 +3,6 @@ import { IUserRepository } from "../../../domain/irepositories/user_repository_i
 import { connectDB } from "../../database/models";
 import userModel from "../../database/models/user.model";
 import { UserMongoDTO } from "../../dto/user_mongo_dto"
-import mongoose from "mongoose";
 
 export class UserRepositoryMongo implements IUserRepository { 
   async createUser(user: User): Promise<User> {
