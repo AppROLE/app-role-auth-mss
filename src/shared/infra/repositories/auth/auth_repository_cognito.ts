@@ -396,6 +396,8 @@ export class AuthRepositoryCognito implements IAuthRepository {
         })
       );
 
+      console.log('CHEGOU NO FINAL DO FINISH SIGN UP REPO')
+
       return allAttributtesOfUser;
     } catch (error: any) {
       throw new Error(
