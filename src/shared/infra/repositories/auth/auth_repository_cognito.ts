@@ -306,6 +306,8 @@ export class AuthRepositoryCognito implements IAuthRepository {
       const user = await this.getUserByEmail(email);
       const emailUsername = user?.userUsername;
 
+      console.log("PASSWORD REPO COGNITO: ", password);
+
       const params: AdminGetUserCommandInput = {
         UserPoolId: this.userPoolId,
         Username: emailUsername as string,
