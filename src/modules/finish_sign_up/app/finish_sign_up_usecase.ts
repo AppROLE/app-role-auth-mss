@@ -20,6 +20,9 @@ export class FinishSignUpUseCase {
     if (newNickname && !User.validateNickname(newNickname)) {
       throw new EntityError("nickname");
     }
+    if (!User.validatePassword(password)) {
+      throw new EntityError("password");
+    }
 
     console.log('FINSIH SIGN UP USECASE EMAIL: ', email)
     console.log('FINSIH SIGN UP USECASE USERNAME: ', newUsername)
