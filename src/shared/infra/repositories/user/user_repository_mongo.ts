@@ -15,7 +15,7 @@ export class UserRepositoryMongo implements IUserRepository {
         console.log('MONGO REPO DB CONNECTION OPEN');
       })
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('users');
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
 
       const dto = UserMongoDTO.fromEntity(user);
       const userDoc = UserMongoDTO.toMongo(dto);
