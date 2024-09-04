@@ -17,4 +17,5 @@ export const envs = {
   COGNITO_USER_POOL_ID: process.env.COGNITO_USER_POOL_ID,
   COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID,
   S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+  CLOUDFRONT_DISTRO: process.env.CLOUDFRONT_DISTRO,
 };
