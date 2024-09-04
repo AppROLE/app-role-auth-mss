@@ -428,7 +428,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
       const params: InitiateAuthCommandInput = {
         ClientId: this.clientId,
-        AuthFlow: "ADMIN_USER_PASSWORD_AUTH",
+        AuthFlow: "USER_PASSWORD_AUTH",
         AuthParameters: {
           USERNAME: username,
           PASSWORD: password,
