@@ -30,7 +30,9 @@ export class SignInController {
       throw new WrongTypeParameters("email", "string", typeof email);
     }
 
+    console.log("TESTAAAANDO AQUI!!!" + password);
     if (!password) {
+      console.log("TESTANDOOO ENTROU NO IFF!!!!")
       throw new MissingParameters("password");
     }
 
