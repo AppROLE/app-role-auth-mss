@@ -21,22 +21,22 @@ export class ConfirmCodeController {
     const email = request.data.email;
     const code = request.data.code;
 
-    if (!email) {
-      throw new MissingParameters("email");
-    }
-    if (!code) {
-      throw new MissingParameters("code");
-    }
-
-    if (typeof email !== "string") {
-      throw new WrongTypeParameters("email", "string", typeof email);
-    }
-
-    if (typeof code !== "string") {
-      throw new WrongTypeParameters("code", "string", typeof code);
-    }
-
     try {
+      if (!email) {
+        throw new MissingParameters("email");
+      }
+      if (!code) {
+        throw new MissingParameters("code");
+      }
+
+      if (typeof email !== "string") {
+        throw new WrongTypeParameters("email", "string", typeof email);
+      }
+
+      if (typeof code !== "string") {
+        throw new WrongTypeParameters("code", "string", typeof code);
+      }
+
       await this.usecase.execute(email, code);
       const viewmodel = new ConfirmCodeViewmodel(
         "Código validado com sucesso!"
