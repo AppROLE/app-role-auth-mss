@@ -25,9 +25,6 @@ export class FinishSignUpController {
     if (!password) {
       throw new MissingParameters("password");
     }
-    if (!newNickname) {
-      newNickname = null;
-    }
 
 
     if (typeof email !== "string") {
@@ -48,10 +45,11 @@ export class FinishSignUpController {
 
       console.log('FINSIH SIGN UP CONTROLLER', email, newUsername, password, newNickname);
 
-      newNickname && typeof newNickname === 'string' ?
-        tokens = await this.usecase.execute(email, newUsername, password, newNickname) :
-        tokens = await this.usecase.execute(email, newUsername, password);
+      tokens = newNickname && typeof newNickname === 'string' ?
+        await this.usecase.execute(email, newUsername, password, newNickname) :
+        await this.usecase.execute(email, newUsername, password, undefined);
 
+      console.log('FINSIH SIGN UP CONTROLLER TOKENS: ', tokens);
       const viewmodel = new FinishSignUpViewmodel(
         tokens.accessToken,
         tokens.refreshToken,
