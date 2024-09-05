@@ -19,8 +19,10 @@ export class UploadProfilePhotoUseCase {
       throw new EntityError("username");
     }
 
-    await this.fileRepo.uploadProfilePhoto(`${email}-${username}${extensionName}`, profilePhoto);
+    const imageKey = `${email}-${username}${extensionName}`;
 
-    await this.mongoRepo.updateProfilePhoto(email, `${Environments.getEnvs().cloudFrontUrl}/${email}-${username}${extensionName}`);
+    await this.fileRepo.uploadProfilePhoto(imageKey, profilePhoto);
+
+    await this.mongoRepo.updateProfilePhoto(email, `${Environments.getEnvs().cloudFrontUrl}/${imageKey}`);
   }
 }
