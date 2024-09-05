@@ -85,7 +85,7 @@ export class Environments {
     if (Environments.getEnvs().stage === STAGE.TEST) {
       throw new Error('Invalid STAGE')
     } else if (Environments.getEnvs().stage === STAGE.DEV || Environments.getEnvs().stage === STAGE.PROD) {
-      return new FileRepositoryS3(Environments.getEnvs().s3BucketName)
+      return new FileRepositoryS3(Environments.getEnvs().s3BucketName.toLowerCase())
     } else {
       throw new Error('Invalid STAGE')
     }
