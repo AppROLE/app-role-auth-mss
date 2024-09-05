@@ -1,7 +1,7 @@
 import { STAGE } from './domain/enums/stage_enum'
 import { IAuthRepository } from './domain/irepositories/auth_repository_interface'
 import { AuthRepositoryCognito } from './infra/repositories/auth/auth_repository_cognito'
-import { UserRepositoryMongo } from './infra/database/repositories/user/user_repository_mongo'
+import { UserRepositoryMongo } from './infra/repositories/user/user_repository_mongo'
 import { envs } from './helpers/envs/envs'
 import { IMailRepository } from './domain/irepositories/mail_repository_interface'
 import { MailRepository } from './infra/repositories/mail/mail_repository_nodemailer'
