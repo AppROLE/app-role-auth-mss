@@ -20,11 +20,9 @@ export class FileRepositoryS3 implements IFileRepository {
         ContentType: 'image/jpeg',
       };
 
-      const result = await s3.upload(params).promise();
+      await s3.putObject(params).promise();
 
-
-
-      return result.Location;
+      return `https://${this.s3BucketName}.s3.amazonaws.com/${imageNameKey}`;
     } catch (error: any) {
       throw new Error(`FileRepositoryS3, Error on uploadProfilePhoto: ${error.message}`);
     }
