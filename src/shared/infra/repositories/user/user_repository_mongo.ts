@@ -67,9 +67,7 @@ export class UserRepositoryMongo implements IUserRepository {
 
     } catch (error) {
       throw new Error(`Error updating profile photo on MongoDB: ${error}`);
-    } finally {
-      
-    }
+    } 
 
   }
 }
