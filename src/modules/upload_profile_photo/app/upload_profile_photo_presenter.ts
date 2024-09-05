@@ -11,6 +11,14 @@ const fileRepo = Environments.getFileRepo()
 const usecase = new UploadProfilePhotoUseCase(repo, fileRepo);
 const controller = new UploadProfilePhotoController(usecase);
 
+// logs to find busboy on node_modules
+import fs from 'fs';
+import path from 'path';
+fs.readdirSync(path.join(__dirname, '../../opt')).forEach(file => {
+  console.log('busboy finding: file ', file); 
+});
+
+
 export async function uploadProfilePhoto(event: Record<string, any>) {
   const httpRequest = new LambdaHttpRequest(event);
   const response = await controller.handle(httpRequest);
