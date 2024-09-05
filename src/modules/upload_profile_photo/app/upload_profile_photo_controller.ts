@@ -6,63 +6,14 @@ import { BadRequest, InternalServerError, NotFound, OK } from "src/shared/helper
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { MissingParameters } from "src/shared/helpers/errors/controller_errors";
+import { parseMultipartFormData } from "src/shared/helpers/export_busboy";
 
 export class UploadProfilePhotoController {
   constructor(private readonly usecase: UploadProfilePhotoUseCase) {}
 
-  async parseMultipartFormData(request: IRequest): Promise<Record<string, any>>{
-    const contentType = request.data['content-type'] || request.data['Content-Type'] as any
-    if (!contentType || !contentType.includes('multipart/form-data')) {
-      throw new Error('Content-Type da requisição não é multipart/form-data')
-    }
-    const busboy = Busboy({ headers: { 'content-type': contentType } })
-    const result: Record<string, any> = {
-      files: [],
-      fields: {},
-    }
-  
-    return new Promise((resolve, reject) => {
-      busboy.on('file', (fieldname: any, file: any, filename: any, encoding: any, mimetype: any) => {
-        console.log(`Recebendo arquivo: ${fieldname}`)
-        const fileChunks: Buffer[] = []
-        file.on('data', (data: Buffer) => {
-          fileChunks.push(data)
-        }).on('end', () => {
-          console.log(`Arquivo recebido: ${fieldname}`)
-          result.files.push({
-            fieldname,
-            filename,
-            encoding,
-            mimetype,
-            data: Buffer.concat(fileChunks),
-          })
-        })
-      })
-  
-      busboy.on('field', (fieldname: any, val: any) => {
-        console.log(`Recebendo campo: ${fieldname}`)
-        result.fields[fieldname] = val
-      })
-  
-      busboy.on('finish', () => {
-        console.log('Parse do form-data finalizado')
-        resolve(result)
-      })
-  
-      busboy.on('error', (error: any) => {
-        console.log('Erro no parse do form-data:', error)
-        reject(error)
-      })
-  
-      // Inicia o parsing passando o corpo da requisição
-      busboy.write(request.data.body, request.data.isBase64Encoded ? 'base64' : 'binary')
-      busboy.end()
-    })
-  }
-
   async handle(request: IRequest) {
     try {
-      const formData = await this.parseMultipartFormData(request)
+      const formData = await parseMultipartFormData(request)
   
       const email = formData.fields.email
       const username = formData.fields.username
