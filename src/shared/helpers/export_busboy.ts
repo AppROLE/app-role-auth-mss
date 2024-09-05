@@ -46,6 +46,8 @@ export async function parseMultipartFormData(request: IRequest): Promise<Record<
     })
 
     // Inicia o parsing passando o corpo da requisição
+    console.log('request.data.body', request.data.body)
+    console.log('request.data.isBase64Encoded', request.data.isBase64Encoded)
     busboy.write(request.data.body, request.data.isBase64Encoded ? 'base64' : 'binary')
     busboy.end()
   })
