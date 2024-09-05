@@ -80,9 +80,11 @@ export class LambdaStack extends Construct {
     this.signInFunction = this.createLambdaApiGatewayIntegration('sign_in', 'POST', apiGatewayResource, environmentVariables)
     this.finishSignUpFunction = this.createLambdaApiGatewayIntegration('finish_sign_up', 'POST', apiGatewayResource, environmentVariables)
     this.uploadProfilePhoto = this.createLambdaApiGatewayIntegration('upload_profile_photo', 'POST', apiGatewayResource, environmentVariables)
-    
 
-    this.functionsThatNeedS3Permissions = []
+
+    this.functionsThatNeedS3Permissions = [
+      this.uploadProfilePhoto
+    ]
 
     this.functionsThatNeedCognitoPermissions = [
       this.forgotPasswordFunction,
