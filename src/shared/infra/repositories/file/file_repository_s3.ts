@@ -16,7 +16,6 @@ export class FileRepositoryS3 implements IFileRepository {
         Bucket: this.s3BucketName,
         Key: imageNameKey,
         Body: profilePhoto,
-        ACL: 'public-read',
         ContentType: 'image/jpeg',
       };
 
