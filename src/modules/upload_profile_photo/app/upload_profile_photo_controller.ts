@@ -17,6 +17,7 @@ export class UploadProfilePhotoController {
   
       const email = formData.fields.email
       const username = formData.fields.username
+      const typePhoto = formData.fields.typePhoto
 
       if (!email) {
         throw new MissingParameters("email")
@@ -24,6 +25,10 @@ export class UploadProfilePhotoController {
       if (!username) {
         throw new MissingParameters("username")
       }
+      if (!typePhoto) {
+        throw new MissingParameters("typePhoto")
+      }
+
 
       console.log('EMAIL', email)
       console.log('USERNAME', username)
@@ -36,16 +41,12 @@ export class UploadProfilePhotoController {
         return file.fieldname
       }) as string[]
   
-      const extensionNames = fieldNames.map((fieldName: string) => {
-        return fieldName.split('.').pop()
-      }) as string[]
   
       console.log('IMAGES DATA', imagesData)
       console.log('FIELD NAMES', fieldNames)
-      console.log('EXTENSION NAMES', extensionNames)
   
   
-      await this.usecase.execute(email, username, imagesData[0], extensionNames[0])
+      await this.usecase.execute(email, username, imagesData[0], typePhoto)
   
       const viewmodel = new UploadProfilePhotoViewmodel("A foto de perfil foi adicionada com sucesso!")
   
