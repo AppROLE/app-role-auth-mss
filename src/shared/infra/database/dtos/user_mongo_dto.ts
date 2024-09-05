@@ -1,8 +1,8 @@
 import { PRIVACY_TYPE } from "src/shared/domain/enums/privacy_enum";
-import { IUser } from "../database/models/user.model";
+import { IUser } from "../models/user.model";
 import { FavoriteProps, FollowingProps, ReviewProps, User } from "src/shared/domain/entities/user";
 import { ROLE_TYPE } from "src/shared/domain/enums/role_type_enum";
-import { IUser as UserDocument } from "../database/models/user.model";
+import { IUser as UserDocument } from "../models/user.model";
 
 export interface UserMongoDTOProps {
   _id: string;
