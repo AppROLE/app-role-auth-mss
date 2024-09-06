@@ -1,5 +1,6 @@
 import Busboy from 'busboy'
 import { IRequest } from './external_interfaces/external_interface'
+import { AnyLengthString } from 'aws-sdk/clients/comprehendmedical'
 
 export async function parseMultipartFormData(request: IRequest): Promise<Record<string, any>>{
   const contentType = request.data['content-type'] || request.data['Content-Type'] as any
@@ -45,9 +46,11 @@ export async function parseMultipartFormData(request: IRequest): Promise<Record<
       reject(error)
     })
 
-    // Inicia o parsing passando o corpo da requisição
-    console.log('request.data.isBase64Encoded', request.data.isBase64Encoded)
-    busboy.write(request.data.body, 'binary')
+    const body = request.data.isBase64Encoded ?
+      Buffer.from(request.data.body as any, 'base64') :
+      request.data.body
+    
+    busboy.write(body, 'base64')
     busboy.end()
   })
 }
