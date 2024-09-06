@@ -21,13 +21,15 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       file.on('data', (data: Buffer) => {
         fileChunks.push(data)
       }).on('end', () => {  
+        const fullBuffer = Buffer.concat(fileChunks)
         console.log(`Arquivo recebido: ${fieldname}`)
+        console.log(`Tamanho do arquivo: ${fullBuffer.length} bytes`)
         result.files.push({
           fieldname,
           filename,
           encoding,
           mimeType,
-          data: Buffer.concat(fileChunks),
+          data: fullBuffer,
         })
       })
     })
