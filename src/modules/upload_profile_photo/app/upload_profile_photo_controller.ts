@@ -40,7 +40,7 @@ export class UploadProfilePhotoController {
       }) as string[]
 
       const mimetypes = formData.files.map((file: any) => {
-        return file.mimetype
+        return file.mimeType
       }) as string[]
   
   
