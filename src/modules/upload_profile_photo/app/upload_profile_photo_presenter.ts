@@ -14,7 +14,7 @@ const controller = new UploadProfilePhotoController(usecase);
 
 
 export async function uploadProfilePhoto(event: Record<string, any>) {
-  const formDataParsed = parseMultipartFormData(event);
+  const formDataParsed = await parseMultipartFormData(event);
   const httpRequest = new LambdaHttpRequest(event);
   const response = await controller.handle(httpRequest, formDataParsed);
   const httpResponse = new LambdaHttpResponse(
