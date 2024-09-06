@@ -12,6 +12,7 @@ export class UploadProfilePhotoController {
   async handle(request: IRequest, formData: any) {
     try {  
       console.log('FORM DATA', formData)
+      console.log('FORM DATA files filename', formData.files.filename)
       const email = formData.fields.email
       const username = formData.fields.username
       const typePhoto = formData.fields.typePhoto
