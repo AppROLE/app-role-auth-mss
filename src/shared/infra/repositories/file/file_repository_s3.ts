@@ -9,14 +9,14 @@ export class FileRepositoryS3 implements IFileRepository {
     this.s3BucketName = s3BucketName;
   }
 
-  async uploadProfilePhoto(imageNameKey: string, profilePhoto: Buffer): Promise<string> {
+  async uploadProfilePhoto(imageNameKey: string, profilePhoto: Buffer, mimetype: string): Promise<string> {
     try {
       const s3 = new S3();
       const params = {
         Bucket: this.s3BucketName,
         Key: imageNameKey,
         Body: profilePhoto,
-        ContentType: 'image/jpeg',
+        ContentType: mimetype,
       };
 
       await s3.putObject(params).promise();
