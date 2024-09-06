@@ -13,7 +13,9 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
   }
 
   return new Promise((resolve, reject) => {
-    busboy.on('file', (fieldname: any, file: any, filename: any, encoding: any, mimetype: any) => {
+    busboy.on('file', (fieldname: any, file: any, infos: any) => {
+      console.log('form-data infos: ', infos)
+      const { filename, encoding, mimeType } = infos
       console.log(`Recebendo arquivo: ${fieldname}`)
       const fileChunks: Buffer[] = []
       file.on('data', (data: Buffer) => {
@@ -24,7 +26,7 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
           fieldname,
           filename,
           encoding,
-          mimetype,
+          mimeType,
           data: Buffer.concat(fileChunks),
         })
       })
