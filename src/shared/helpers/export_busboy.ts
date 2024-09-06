@@ -18,6 +18,7 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       const { filename, encoding, mimeType } = infos
       console.log(`Recebendo arquivo: ${fieldname}`)
       const fileChunks: Buffer[] = []
+      file.setEncoding('binary')
       file.on('data', (data: Buffer) => {
         fileChunks.push(data)
       }).on('end', () => {  
@@ -48,6 +49,8 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       console.log('Erro no parse do form-data:', error)
       reject(error)
     })
+
+    console.log('IS BASE 64 ENCODED', request.isBase64Encoded)
 
     const body = request.isBase64Encoded 
       ? Buffer.from(request.body, 'base64') 
