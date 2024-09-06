@@ -5,15 +5,12 @@ import { BadRequest, InternalServerError, NotFound, OK } from "src/shared/helper
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { MissingParameters } from "src/shared/helpers/errors/controller_errors";
-import { parseMultipartFormData } from "src/shared/helpers/export_busboy";
 
 export class UploadProfilePhotoController {
   constructor(private readonly usecase: UploadProfilePhotoUseCase) {}
 
-  async handle(request: IRequest) {
-    try {
-      const formData = await parseMultipartFormData(request)
-  
+  async handle(request: IRequest, formData: any) {
+    try {  
       const email = formData.fields.email
       const username = formData.fields.username
       const typePhoto = formData.fields.typePhoto
