@@ -6,7 +6,15 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
     throw new Error('Content-Type da requisição não é multipart/form-data')
   }
 
-  const busboy = Busboy({ headers: { 'content-type': contentType } })
+  const contentLength = request.headers['content-length'] || request.headers['Content-Length']
+
+  console.log('contentLength', contentLength)
+
+
+  const busboy = Busboy({ headers: { 
+    'content-type': contentType, 
+    "content-length": contentLength,
+  }})
   const result: Record<string, any> = {
     files: [],
     fields: {},
