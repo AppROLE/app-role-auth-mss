@@ -5,6 +5,7 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
   if (!contentType || !contentType.includes('multipart/form-data')) {
     throw new Error('Content-Type da requisição não é multipart/form-data')
   }
+
   const busboy = Busboy({ headers: { 'content-type': contentType } })
   const result: Record<string, any> = {
     files: [],
@@ -44,7 +45,10 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       reject(error)
     })
 
-    busboy.write(request.body, request.isBase64Encoded ? 'base64' : 'binary')
+    const body = request.isBase64Encoded 
+      ? Buffer.from(request.body, 'base64') 
+      : request.body;
+    busboy.write(body, 'binary');
     busboy.end()
   })
 }
