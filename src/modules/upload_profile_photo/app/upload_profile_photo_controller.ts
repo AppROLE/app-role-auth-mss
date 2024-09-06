@@ -1,6 +1,5 @@
 import { IRequest } from "src/shared/helpers/external_interfaces/external_interface";
 import { UploadProfilePhotoUseCase } from "./upload_profile_photo_usecase";
-import Busboy from 'busboy'
 import { UploadProfilePhotoViewmodel } from "./upload_profile_photo_viewmodel";
 import { BadRequest, InternalServerError, NotFound, OK } from "src/shared/helpers/external_interfaces/http_codes";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
