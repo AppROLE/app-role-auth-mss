@@ -18,7 +18,7 @@ export async function parseMultipartFormData(request: IRequest): Promise<Record<
       const fileChunks: Buffer[] = []
       file.on('data', (data: Buffer) => {
         fileChunks.push(data)
-      }).on('end', () => {
+      }).on('end', () => {  
         console.log(`Arquivo recebido: ${fieldname}`)
         result.files.push({
           fieldname,
