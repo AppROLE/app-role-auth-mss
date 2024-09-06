@@ -5,15 +5,18 @@ import {
 } from "src/shared/helpers/external_interfaces/http_lambda_requests";
 import { UploadProfilePhotoUseCase } from "./upload_profile_photo_usecase";
 import { UploadProfilePhotoController } from "./upload_profile_photo_controller";
+import { parseMultipartFormData } from "src/shared/helpers/export_busboy";
 
 const repo = Environments.getUserRepo()
 const fileRepo = Environments.getFileRepo()
 const usecase = new UploadProfilePhotoUseCase(repo, fileRepo);
 const controller = new UploadProfilePhotoController(usecase);
 
+
 export async function uploadProfilePhoto(event: Record<string, any>) {
+  const formDataParsed = parseMultipartFormData(event);
   const httpRequest = new LambdaHttpRequest(event);
-  const response = await controller.handle(httpRequest);
+  const response = await controller.handle(httpRequest, formDataParsed);
   const httpResponse = new LambdaHttpResponse(
     response?.body,
     response?.statusCode,
