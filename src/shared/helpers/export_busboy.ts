@@ -18,7 +18,6 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       const { filename, encoding, mimeType } = infos
       console.log(`Recebendo arquivo: ${fieldname}`)
       const fileChunks: Buffer[] = []
-      file.setEncoding('binary')
       file.on('data', (data: Buffer) => {
         fileChunks.push(data)
       }).on('end', () => {  
