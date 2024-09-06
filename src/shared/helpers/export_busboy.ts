@@ -25,21 +25,27 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       console.log('form-data infos: ', infos)
       const { filename, encoding, mimeType } = infos
       console.log(`Recebendo arquivo: ${fieldname}`)
-      const fileChunks: Buffer[] = []
+      let fileBuffer: Buffer | null = null; // Variável para armazenar o buffer
+
       file.on('data', (data: Buffer) => {
-        fileChunks.push(data)
-      }).on('end', () => {  
-        const fullBuffer = Buffer.concat(fileChunks)
-        console.log(`Arquivo recebido: ${fieldname}`)
-        console.log(`Tamanho do arquivo: ${fullBuffer.length} bytes`)
+        // Acumula o buffer diretamente
+        if (!fileBuffer) {
+          fileBuffer = data;
+        } else {
+          // Se houver múltiplos chunks, concatena
+          fileBuffer = Buffer.concat([fileBuffer, data]);
+        }
+      }).on('end', () => {
+        // Garante que o arquivo foi completamente recebido
+        console.log(`Arquivo recebido: ${filename}, Tamanho: ${fileBuffer?.length} bytes`);
         result.files.push({
           fieldname,
           filename,
           encoding,
           mimeType,
-          data: fullBuffer,
-        })
-      })
+          data: fileBuffer, // O buffer completo
+        });
+      });
     })
 
     busboy.on('field', (fieldname: any, val: any) => {
