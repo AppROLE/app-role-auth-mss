@@ -27,12 +27,16 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       const { filename, encoding, mimeType } = infos
       console.log(`Recebendo arquivo: ${fieldname}`)
       
-      const filePath = `/tmp/imageToS3_${filename}`
-      const writeStream = fs.createWriteStream(filePath)
+      const chunks: Buffer[] = []
 
-      file.pipe(writeStream)
-
-      file.on('end', () => {
+      file.on('data', (chunk: Buffer) => {
+        console.log(`Recebendo dados do arquivo: ${fieldname}`)
+        chunks.push(chunk)
+      })
+      
+      
+      .on('end', () => {
+        const completeFile = Buffer.concat(chunks)
         // Garante que o arquivo foi completamente recebido
         console.log(`Arquivo recebido: ${filename}`)
         result.files.push({
@@ -40,7 +44,7 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
           filename,
           encoding,
           mimeType,
-          filePath,
+          data: completeFile,
         });
       });
     })
@@ -65,7 +69,7 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
     const body = request.isBase64Encoded 
       ? Buffer.from(request.body, 'base64') 
       : request.body;
-    busboy.write(body, 'binary');
+    busboy.write(body);
     busboy.end()
   })
 }
