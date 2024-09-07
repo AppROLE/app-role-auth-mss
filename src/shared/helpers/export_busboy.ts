@@ -1,4 +1,5 @@
 import Busboy from 'busboy'
+import fs from 'fs'
 
 export async function parseMultipartFormData(request: Record<string, any>): Promise<Record<string, any>>{
   const contentType = request.headers['content-type'] || request.headers['Content-Type'] as any
@@ -25,25 +26,21 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
       console.log('form-data infos: ', infos)
       const { filename, encoding, mimeType } = infos
       console.log(`Recebendo arquivo: ${fieldname}`)
-      let fileBuffer: Buffer | null = null; // Variável para armazenar o buffer
+      
+      const filePath = `/tmp/imageToS3_${filename}`
+      const writeStream = fs.createWriteStream(filePath)
 
-      file.on('data', (data: Buffer) => {
-        // Acumula o buffer diretamente
-        if (!fileBuffer) {
-          fileBuffer = data;
-        } else {
-          // Se houver múltiplos chunks, concatena
-          fileBuffer = Buffer.concat([fileBuffer, data]);
-        }
-      }).on('end', () => {
+      file.pipe(writeStream)
+
+      file.on('end', () => {
         // Garante que o arquivo foi completamente recebido
-        console.log(`Arquivo recebido: ${filename}, Tamanho: ${fileBuffer?.length} bytes`);
+        console.log(`Arquivo recebido: ${filename}`)
         result.files.push({
           fieldname,
           filename,
           encoding,
           mimeType,
-          data: fileBuffer, // O buffer completo
+          data: filePath, // O buffer completo
         });
       });
     })
