@@ -5,7 +5,6 @@ import { BadRequest, InternalServerError, NotFound, OK } from "src/shared/helper
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { MissingParameters } from "src/shared/helpers/errors/controller_errors";
-import fs from 'fs'
 
 export class UploadProfilePhotoController {
   constructor(private readonly usecase: UploadProfilePhotoUseCase) {}
@@ -16,10 +15,6 @@ export class UploadProfilePhotoController {
       const email = formData.fields.email
       const username = formData.fields.username
       const typePhoto = formData.fields.typePhoto
-
-      const tempLambdaDir = '/tmp'
-      // console log ls /tmp
-      console.log('CONTROLLER TEMP LAMBDA DIR', fs.readdirSync(tempLambdaDir))
 
       if (!email) {
         throw new MissingParameters("email")
