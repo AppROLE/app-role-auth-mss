@@ -5,14 +5,15 @@ import { BadRequest, InternalServerError, NotFound, OK } from "src/shared/helper
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { MissingParameters } from "src/shared/helpers/errors/controller_errors";
+import fs from 'fs'
 
 export class UploadProfilePhotoController {
   constructor(private readonly usecase: UploadProfilePhotoUseCase) {}
 
   async handle(request: IRequest, formData: any) {
     try {  
-      console.log('FORM DATA', formData)
-      console.log('FORM DATA files filename', formData.files.filename)
+      console.log('CONTROLLER FORM DATA', formData)
+      console.log('CONTROLLER FORM DATA files filename', formData.files.filename)
       const email = formData.fields.email
       const username = formData.fields.username
       const typePhoto = formData.fields.typePhoto
@@ -27,13 +28,20 @@ export class UploadProfilePhotoController {
         throw new MissingParameters("typePhoto")
       }
 
+      formData.files.forEach((file: any) => {
+        console.log('CONTROLLER FILE.data', file.data)
+        const img = fs.readFileSync(file.data)
+
+        console.log('CONTROLLER IMG LENGTH', img.length)
+      })
+
 
       console.log('EMAIL', email)
       console.log('USERNAME', username)
   
       const imagesData = formData.files.map((file: any) => {
         return file.data
-      }) as Buffer[]
+      }) 
   
       const fieldNames = formData.files.map((file: any) => {
         return file.fieldname
