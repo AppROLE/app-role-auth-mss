@@ -13,7 +13,6 @@ export class UploadProfilePhotoController {
   async handle(request: IRequest, formData: any) {
     try {  
       console.log('CONTROLLER FORM DATA', formData)
-      console.log('CONTROLLER FORM DATA files filename', formData.files.filename)
       const email = formData.fields.email
       const username = formData.fields.username
       const typePhoto = formData.fields.typePhoto
@@ -32,20 +31,13 @@ export class UploadProfilePhotoController {
         throw new MissingParameters("typePhoto")
       }
 
-      formData.files.forEach((file: any) => {
-        console.log('CONTROLLER FILE.data', file.data)
-        const img = fs.createReadStream(file.data)
-
-        console.log('CONTROLLER IMG LENGTH', img)
-      })
-
 
       console.log('EMAIL', email)
       console.log('USERNAME', username)
   
-      const imagesData = formData.files.map((file: any) => {
-        return file.data
-      }) 
+      const imagesPath = formData.files.map((file: any) => {
+        return file.filePath
+      }) as string[]
   
       const fieldNames = formData.files.map((file: any) => {
         return file.fieldname
@@ -56,12 +48,12 @@ export class UploadProfilePhotoController {
       }) as string[]
   
   
-      console.log('IMAGES DATA', imagesData)
+      console.log('IMAGES PATH', imagesPath)
       console.log('FIELD NAMES', fieldNames)
       console.log('MIMETYPES', mimetypes)
   
   
-      await this.usecase.execute(email, username, imagesData[0], typePhoto, mimetypes[0])
+      await this.usecase.execute(email, username, imagesPath[0], typePhoto, mimetypes[0])
   
       const viewmodel = new UploadProfilePhotoViewmodel("A foto de perfil foi adicionada com sucesso!")
   
