@@ -23,6 +23,7 @@ export class IacStack extends Stack {
         allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
         allowHeaders: ["*"],
       },
+      binaryMediaTypes: ["multipart/form-data"],
     });
 
     const apigatewayResource = restApi.root.addResource("mss-role-auth", {
