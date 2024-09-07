@@ -40,7 +40,7 @@ export async function parseMultipartFormData(request: Record<string, any>): Prom
           filename,
           encoding,
           mimeType,
-          data: filePath, // O buffer completo
+          filePath,
         });
       });
     })
