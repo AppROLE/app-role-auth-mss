@@ -35,9 +35,9 @@ export class UploadProfilePhotoController {
       console.log('EMAIL', email)
       console.log('USERNAME', username)
   
-      const imagesPath = formData.files.map((file: any) => {
-        return file.filePath
-      }) as string[]
+      const imagesBuffers = formData.files.map((file: any) => {
+        return file.data
+      }) as Buffer[]
   
       const fieldNames = formData.files.map((file: any) => {
         return file.fieldname
@@ -48,12 +48,12 @@ export class UploadProfilePhotoController {
       }) as string[]
   
   
-      console.log('IMAGES PATH', imagesPath)
+      console.log('IMAGES PATH', imagesBuffers)
       console.log('FIELD NAMES', fieldNames)
       console.log('MIMETYPES', mimetypes)
   
   
-      await this.usecase.execute(email, username, imagesPath[0], typePhoto, mimetypes[0])
+      await this.usecase.execute(email, username, imagesBuffers[0], typePhoto, mimetypes[0])
   
       const viewmodel = new UploadProfilePhotoViewmodel("A foto de perfil foi adicionada com sucesso!")
   
