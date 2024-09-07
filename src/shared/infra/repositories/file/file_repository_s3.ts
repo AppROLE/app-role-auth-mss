@@ -10,10 +10,8 @@ export class FileRepositoryS3 implements IFileRepository {
     this.s3BucketName = s3BucketName;
   }
 
-  async uploadProfilePhoto(imageNameKey: string, profilePhotoPath: string, mimetype: string): Promise<string> {
+  async uploadProfilePhoto(imageNameKey: string, profilePhoto: Buffer, mimetype: string): Promise<string> {
     try {
-      const profilePhoto = fs.createReadStream(profilePhotoPath);
-
       const s3 = new S3();
       const params: S3.PutObjectRequest = {
         Bucket: this.s3BucketName,
