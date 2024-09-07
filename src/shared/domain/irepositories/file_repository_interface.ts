@@ -1,7 +1,7 @@
 export interface IFileRepository {
   uploadProfilePhoto(
     imageNameKey: string,
-    profilePhoto: Buffer,
+    profilePhotoPath: string,
     mimetype: string
   ): Promise<string>;
 }
