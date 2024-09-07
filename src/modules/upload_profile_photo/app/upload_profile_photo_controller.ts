@@ -18,6 +18,10 @@ export class UploadProfilePhotoController {
       const username = formData.fields.username
       const typePhoto = formData.fields.typePhoto
 
+      const tempLambdaDir = '/tmp'
+      // console log ls /tmp
+      console.log('CONTROLLER TEMP LAMBDA DIR', fs.readdirSync(tempLambdaDir))
+
       if (!email) {
         throw new MissingParameters("email")
       }
@@ -30,9 +34,9 @@ export class UploadProfilePhotoController {
 
       formData.files.forEach((file: any) => {
         console.log('CONTROLLER FILE.data', file.data)
-        const img = fs.readFileSync(file.data)
+        const img = fs.createReadStream(file.data)
 
-        console.log('CONTROLLER IMG LENGTH', img.length)
+        console.log('CONTROLLER IMG LENGTH', img)
       })
 
 
