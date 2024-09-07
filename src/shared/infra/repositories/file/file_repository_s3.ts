@@ -1,7 +1,5 @@
 import { IFileRepository } from "src/shared/domain/irepositories/file_repository_interface";
 import { S3 } from 'aws-sdk';
-import fs from 'fs';
-
 
 export class FileRepositoryS3 implements IFileRepository {
   s3BucketName: string;
