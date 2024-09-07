@@ -10,7 +10,7 @@ export class UploadProfilePhotoUseCase {
     private readonly fileRepo: IFileRepository
   ) {}
 
-  async execute(email: string, username: string, profilePhotoPath: string, extensionName: string, mimetype: string) {
+  async execute(email: string, username: string, profilePhoto: Buffer, extensionName: string, mimetype: string) {
     if (!User.validateEmail(email)) {
       throw new EntityError("email");
     }
@@ -21,7 +21,7 @@ export class UploadProfilePhotoUseCase {
 
     const imageKey = `${email}-${username}${extensionName}`;
 
-    await this.fileRepo.uploadProfilePhoto(imageKey, profilePhotoPath, mimetype);
+    await this.fileRepo.uploadProfilePhoto(imageKey, profilePhoto, mimetype);
 
     await this.mongoRepo.updateProfilePhoto(email, `${Environments.getEnvs().cloudFrontUrl}/${imageKey}`);
   }
