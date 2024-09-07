@@ -1,5 +1,4 @@
 import Busboy from 'busboy'
-import fs from 'fs'
 
 export async function parseMultipartFormData(request: Record<string, any>): Promise<Record<string, any>>{
   const contentType = request.headers['content-type'] || request.headers['Content-Type'] as any
