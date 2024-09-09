@@ -9,6 +9,7 @@ export class GetProfileController {
   async handle(request: IRequest) {
     try {
       const requesterUser = request.data.requesterUser as any
+      console.log('requesterUser', requesterUser);
 
       const { userId, username } = UserAPIGatewayDTO.fromAPIGateway(requesterUser).getParsedData();
 
