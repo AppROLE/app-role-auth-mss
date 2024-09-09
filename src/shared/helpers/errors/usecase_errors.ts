@@ -14,7 +14,7 @@ export class DuplicatedItem extends BaseError {
 
 export class ForbiddenAction extends BaseError {
   constructor(message: string) {
-    super(`The action is forbidden for this ${message}`);
+    super(`Essa ação não é permitida para esse ${message}`);
   }
 }
 
