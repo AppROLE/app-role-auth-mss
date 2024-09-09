@@ -36,4 +36,9 @@ export interface IAuthRepository {
     idToken: string;
     refreshToken: string;
   }>;
+  refreshToken(refreshToken: string): Promise<{
+    accessToken: string;
+    idToken: string;
+    refreshToken: string;
+  }>;
 }
