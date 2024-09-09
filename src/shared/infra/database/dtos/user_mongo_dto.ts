@@ -54,8 +54,8 @@ export class UserMongoDTO {
     this.reviews = props.reviews;
   }
 
-  static fromMongo(userDoc: IUser): UserMongoDTO {
-    const userObject = userDoc?.toObject();
+  static fromMongo(userDoc: IUser, needToObj: boolean): UserMongoDTO {
+    const userObject = needToObj ? userDoc.toObject() : userDoc;
 
     return new UserMongoDTO({
       _id: userObject._id,
