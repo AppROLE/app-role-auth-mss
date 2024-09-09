@@ -87,7 +87,7 @@ export class LambdaStack extends Construct {
 
 
     // inside app router
-    // this.getProfileFunction = this.createLambdaApiGatewayIntegration('get_profile', 'GET', apiGatewayResource, environmentVariables, authorizer)
+    this.getProfileFunction = this.createLambdaApiGatewayIntegration('get_profile', 'GET', apiGatewayResource, environmentVariables, authorizer)
 
 
     this.functionsThatNeedS3Permissions = [
