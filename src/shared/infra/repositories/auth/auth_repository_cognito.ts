@@ -427,12 +427,10 @@ export class AuthRepositoryCognito implements IAuthRepository {
       const user = await this.getUserByEmail(email);
 
       if (!user) {
-        throw new NoItemsFound("email");
+        throw new InvalidCredentialsError();
       }
 
       const username = user.userUsername as string;
-
-      console.log("SIGN IN REPO COGNITO EMAIL, PASSWORD< USERNAME: ", email, password, username);
 
       const params: AdminInitiateAuthCommandInput = {
         UserPoolId: this.userPoolId,
@@ -446,8 +444,6 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
       const command = new AdminInitiateAuthCommand(params);
       const result = await this.client.send(command);
-
-      console.log("SIGN IN RESULT: ", result);
 
       if (!result.AuthenticationResult) {
         console.error(
