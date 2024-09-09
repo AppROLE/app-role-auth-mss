@@ -12,10 +12,10 @@ export class GetProfileController {
 
       const { userId, username } = UserAPIGatewayDTO.fromAPIGateway(requesterUser).getParsedData();
 
-
+      console.log('username after api gateway dto', username);
       const profile = await this.usecase.execute(username);
 
-      
+
 
     } catch (error: any) {
       if (error instanceof Error) {
