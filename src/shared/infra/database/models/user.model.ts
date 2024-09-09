@@ -30,7 +30,7 @@ export interface IUser extends Document {
   lnk_tiktok?: string;
   bg_photo?: string;
   profile_photo?: string;
-  privacy?: string;
+  privacy: string;
   following: IFollowing[];
   favorites: IFavorite[];
   reviews: IReview[];
