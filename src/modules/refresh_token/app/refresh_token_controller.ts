@@ -9,14 +9,15 @@ export class RefreshTokenController {
 
   async handle(request: IRequest) {
     try {
-      const refreshToken = request.data.Authorization;
-      if (!refreshToken) {
-        throw new MissingParameters("refreshToken");
-      }
+      const bearerToken = request.data.Authorization;
 
-      if (typeof refreshToken !== "string") {
-        throw new WrongTypeParameters("refreshToken", "string", typeof refreshToken);
+      if (!bearerToken) {
+        throw new MissingParameters("token");
       }
+      if (typeof bearerToken !== "string") {
+        throw new WrongTypeParameters("token", "string", typeof bearerToken);
+      }
+      const refreshToken = bearerToken.split(" ")[1];
 
       const { accessToken, refreshToken: newRefreshToken, idToken } = await this.usecase.execute(refreshToken);
       return new OK({ accessToken, refreshToken: newRefreshToken, idToken });
