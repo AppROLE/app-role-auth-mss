@@ -9,6 +9,7 @@ export class GetProfileController {
 
   async handle(request: IRequest) {
     try {
+      console.log('request.data ', request.data);
       const requesterUser = request.data.claims as any
       console.log('requesterUser with req.data.claims', requesterUser);
 
