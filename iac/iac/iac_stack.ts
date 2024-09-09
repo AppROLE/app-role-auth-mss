@@ -74,6 +74,11 @@ export class IacStack extends Stack {
     }));
     
     const cognitoStack = new CognitoStack(this, `${envs.STACK_NAME}-CognitoStack`);
+
+    const authorizer = new cdk.aws_apigateway.CognitoUserPoolsAuthorizer(this, `${envs.STACK_NAME}-Authorizer`, {
+      cognitoUserPools: [cognitoStack.userPool],
+      identitySource: 'method.request.header.Authorization',
+    });
     
     const environmentVariables = {
       STAGE: stage,
@@ -90,7 +95,8 @@ export class IacStack extends Stack {
     const lambdaStack = new LambdaStack(
       this,
       apigatewayResource,
-      environmentVariables
+      environmentVariables,
+      authorizer
     )
     
     const cognitoAdminPolicy = new iam.PolicyStatement({
