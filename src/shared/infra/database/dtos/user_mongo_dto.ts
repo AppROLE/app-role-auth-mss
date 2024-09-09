@@ -10,7 +10,6 @@ export interface UserMongoDTOProps {
   email: string;
   nickname: string;
   username: string;
-  roleType: ROLE_TYPE;
   phoneNumber?: string;
   linkInstagram?: string;
   linkTiktok?: string;
@@ -28,7 +27,6 @@ export class UserMongoDTO {
   private email: string;
   private nickname: string;
   private username: string;
-  private roleType: ROLE_TYPE;
   private phoneNumber?: string;
   private linkInstagram?: string;
   private linkTiktok?: string;
@@ -45,7 +43,6 @@ export class UserMongoDTO {
     this.email = props.email;
     this.nickname = props.nickname;
     this.username = props.username;
-    this.roleType = props.roleType;
     this.phoneNumber = props.phoneNumber;
     this.linkInstagram = props.linkInstagram;
     this.linkTiktok = props.linkTiktok;
@@ -66,7 +63,6 @@ export class UserMongoDTO {
       email: userObject.email,
       nickname: userObject.nickname,
       username: userObject.username,
-      roleType: userObject.roleType,
       phoneNumber: userObject.phoneNumber,
       linkInstagram: userObject.linkInstagram,
       linkTiktok: userObject.linkTiktok,
@@ -86,7 +82,6 @@ export class UserMongoDTO {
       nickname: userMongoDTO.nickname,
       username: userMongoDTO.username,
       email: userMongoDTO.email,
-      roleType: userMongoDTO.roleType,
       phoneNumber: userMongoDTO.phoneNumber,
       linkInstagram: userMongoDTO.linkInstagram,
       linkTiktok: userMongoDTO.linkTiktok,
@@ -118,7 +113,6 @@ export class UserMongoDTO {
       email: user.userEmail,
       nickname: user.userNickname as string,
       username: user.userUsername,
-      roleType: user.userRoleType as ROLE_TYPE,
       phoneNumber: user.userPhoneNumber,
       linkInstagram: user.userlinkInstagram,
       linkTiktok: user.userlinkTiktok,
