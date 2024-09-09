@@ -16,7 +16,7 @@ export async function confirmCodePresenter(
   const httpRequest = new LambdaHttpRequest(event);
   console.log('event.requestContext', event.requestContext);
   console.log('event.requestContext.authorizer', event.requestContext.authorizer.claims);
-  httpRequest['requesterUser'] = event.requestContext.authorizer.claims;
+  // httpRequest['requesterUser'] = event.requestContext.authorizer.claims;
   const response = await controller.handle(httpRequest);
   const httpResponse = new LambdaHttpResponse(
     response?.body,
