@@ -90,7 +90,7 @@ export class UserRepositoryMongo implements IUserRepository {
 
       console.log('MONGO REPO USER DOC: ', userDoc);
 
-      const userDto = UserMongoDTO.fromMongo(userDoc);
+      const userDto = UserMongoDTO.fromMongo(userDoc, false);
       const user = UserMongoDTO.toEntity(userDto);
 
       const following: number = user.userFollowing.length;
