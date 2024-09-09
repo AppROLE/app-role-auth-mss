@@ -10,12 +10,12 @@ const repo = Environments.getUserRepo();
 const usecase = new GetProfileUseCase(repo);
 const controller = new GetProfileController(usecase);
 
-export async function confirmCodePresenter(
+export async function getProfilePresenter(
   event: Record<string, any>
 ) {
   const httpRequest = new LambdaHttpRequest(event);
   console.log('event.requestContext', event.requestContext);
-  console.log('event.requestContext.authorizer', event.requestContext.authorizer.claims);
+  console.log('event.requestContext.authorizer.claims', event.requestContext.authorizer.claims);
   console.log('httpRequest', httpRequest);
   // httpRequest['requesterUser'] = event.requestContext.authorizer.claims;
   const response = await controller.handle(httpRequest);
@@ -30,6 +30,6 @@ export async function confirmCodePresenter(
 }
 
 export async function lambda_handler(event: any, context: any) {
-  const response = await confirmCodePresenter(event);
+  const response = await getProfilePresenter(event);
   return response;
 }
