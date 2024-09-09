@@ -491,4 +491,44 @@ export class AuthRepositoryCognito implements IAuthRepository {
       }
     }
   }
+  async refreshToken(refreshToken: string): Promise<{
+    accessToken: string,
+    idToken: string,
+    refreshToken: string
+  }> {
+    try {
+      const params: InitiateAuthCommandInput = {
+        ClientId: this.clientId,
+        AuthFlow: "REFRESH_TOKEN_AUTH",
+        AuthParameters: {
+          REFRESH_TOKEN: refreshToken,
+        },
+      }
+
+      const command = new InitiateAuthCommand(params);
+
+      const result = await this.client.send(command);
+
+      if (!result.AuthenticationResult) {
+        console.error(
+          "AuthenticationResult is missing in the response:",
+          result
+        );
+        throw new Error(
+          "Authentication failed, no tokens returned"
+        );
+      }
+
+      const { AccessToken, IdToken } =
+        result.AuthenticationResult;
+
+      return {
+        accessToken: AccessToken || "",
+        idToken: IdToken || "",
+        refreshToken
+      };
+    } catch (error: any) {
+      throw new Error(`Error during refreshToken: ${error.message}`);
+    }
+  }
 }
