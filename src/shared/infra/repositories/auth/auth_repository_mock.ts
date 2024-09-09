@@ -131,4 +131,8 @@ export class UserRepoMock implements IAuthRepository {
       code: "123456",
     };
   }
+
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string; idToken: string; refreshToken: string; }> {
+    throw new Error("Method not implemented.");
+  }
 }
