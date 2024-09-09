@@ -88,6 +88,8 @@ export class UserRepositoryMongo implements IUserRepository {
         throw new NoItemsFound('username');
       }
 
+      console.log('MONGO REPO USER DOC: ', userDoc);
+
       const userDto = UserMongoDTO.fromMongo(userDoc);
       const user = UserMongoDTO.toEntity(userDto);
 
