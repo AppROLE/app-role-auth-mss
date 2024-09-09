@@ -69,6 +69,7 @@ class LambdaHttpRequest extends HttpRequest {
   request_context: Record<string, any>
   http: LambdaDefaultHTTP
   body: any
+  requesterUser: any
 
   constructor(data: Record<string, any> = {}) {
     const _headers = data.headers
@@ -91,6 +92,7 @@ class LambdaHttpRequest extends HttpRequest {
     this.query_string_parameters = data.queryStringParameters
     this.request_context = data.requestContext
     this.http = new LambdaDefaultHTTP(this.request_context.external_interfaces)
+    this.requesterUser = data.requestContext.authorizer
   }
 }
 
