@@ -8,6 +8,7 @@ export class UserAPIGatewayDTO {
   }
 
   static fromAPIGateway(data: Record<string, any>): UserAPIGatewayDTO {
+    console.log('data FROM API GATEWAY ', data)
     return new UserAPIGatewayDTO(data['sub'], data['cognito:username'])
   }
 
