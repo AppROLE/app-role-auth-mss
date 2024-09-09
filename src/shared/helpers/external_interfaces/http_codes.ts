@@ -62,7 +62,7 @@ class Forbidden extends HttpResponse {
 }
 
 class Unauthorized extends HttpResponse {
-  constructor(body: object) {
+  constructor(body: any) {
     super(HttpStatusCodeEnum.UNAUTHORIZED, body)
   }
 }
