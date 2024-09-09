@@ -8,16 +8,11 @@ export class SignInUseCase {
   constructor(private readonly repo: IAuthRepository) {}
 
   async execute(email: string, password: string) {
-    if (!email) {
-      throw new NoItemsFound("email");
-    }
-
-    if (!password) {
-      throw new NoItemsFound("password");
-    }
-
     if (!User.validateEmail(email)) {
       throw new EntityError("email");
+    }
+    if (!User.validatePassword(password)) {
+      throw new EntityError("password");
     }
 
     const session = await this.repo.signIn(email, password);
