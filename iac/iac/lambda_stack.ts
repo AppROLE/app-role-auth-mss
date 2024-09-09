@@ -21,6 +21,9 @@ export class LambdaStack extends Construct {
   signInFunction: lambda.Function
   finishSignUpFunction: lambda.Function
   uploadProfilePhoto: lambda.Function
+  refreshTokenFunction: lambda.Function
+
+  getProfileFunction: lambda.Function
 
   createLambdaApiGatewayIntegration(
     moduleName: string, 
@@ -80,6 +83,11 @@ export class LambdaStack extends Construct {
     this.signInFunction = this.createLambdaApiGatewayIntegration('sign_in', 'POST', apiGatewayResource, environmentVariables)
     this.finishSignUpFunction = this.createLambdaApiGatewayIntegration('finish_sign_up', 'POST', apiGatewayResource, environmentVariables)
     this.uploadProfilePhoto = this.createLambdaApiGatewayIntegration('upload_profile_photo', 'POST', apiGatewayResource, environmentVariables)
+    this.refreshTokenFunction = this.createLambdaApiGatewayIntegration('refresh_token', 'POST', apiGatewayResource, environmentVariables)
+
+
+    // inside app router
+    // this.getProfileFunction = this.createLambdaApiGatewayIntegration('get_profile', 'GET', apiGatewayResource, environmentVariables, authorizer)
 
 
     this.functionsThatNeedS3Permissions = [
