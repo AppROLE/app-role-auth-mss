@@ -55,7 +55,7 @@ export class UserMongoDTO {
   }
 
   static fromMongo(userDoc: IUser): UserMongoDTO {
-    const userObject = userDoc.toObject();
+    const userObject = userDoc?.toObject();
 
     return new UserMongoDTO({
       _id: userObject._id,
