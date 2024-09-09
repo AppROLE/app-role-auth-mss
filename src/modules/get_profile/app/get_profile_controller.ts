@@ -7,11 +7,8 @@ import { GetProfileViewmodel } from "./get_profile_viewmodel";
 export class GetProfileController {
   constructor(private readonly usecase: GetProfileUseCase) {}
 
-  async handle(request: IRequest) {
+  async handle(requesterUser: Record<string, any>) {
     try {
-      console.log('request.data ', request.data);
-      const requesterUser = request.data.claims as any
-      console.log('requesterUser with req.data.claims', requesterUser);
 
       const { userId, username } = UserAPIGatewayDTO.fromAPIGateway(requesterUser).getParsedData();
 
