@@ -473,7 +473,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
         errorCode.name === "NotAuthorizedException" ||
         errorCode.name === "UserNotFoundException"
       ) {
-        throw new NoItemsFound("email");
+        throw new InvalidCredentialsError();
       } else if (errorCode.name === "UserNotConfirmedException") {
         throw new Error("User not confirmed");
       } else if (errorCode.name === "ResourceNotFoundException") {
@@ -481,9 +481,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
       } else if (errorCode.name === "InvalidParameterException") {
         throw new EntityError("password");
       } else {
-        throw new Error(
-          "An unexpected error occurred during login"
-        );
+        throw new InvalidCredentialsError()
       }
     }
   }
