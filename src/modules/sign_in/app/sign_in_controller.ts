@@ -14,6 +14,7 @@ import {
 } from "src/shared/helpers/external_interfaces/http_codes";
 import { NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
+import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
 
 export class SignInController {
   constructor(private readonly usecase: SignInUseCase) {}
@@ -62,7 +63,9 @@ export class SignInController {
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
       }
-
+      if (error instanceof InvalidCredentialsError) {
+        return new BadRequest(error.message);
+      }
       return new InternalServerError(
         `SignInController, Error on handle: ${error.message}`
       );
