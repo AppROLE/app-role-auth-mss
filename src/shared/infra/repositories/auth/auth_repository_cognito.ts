@@ -525,4 +525,19 @@ export class AuthRepositoryCognito implements IAuthRepository {
       throw new Error(`Error during refreshToken: ${error.message}`);
     }
   }
+
+  async deleteAccount(username: string) {
+    try {
+      await this.client.send(
+        new AdminDeleteUserCommand({
+          UserPoolId: this.userPoolId,
+          Username: username,
+        })
+      );
+    } catch (error: any) {
+      throw new Error(
+        "AuthRepositoryCognito, Error on deleteAccount: " + error.message
+      );
+    }
+  }
 }
