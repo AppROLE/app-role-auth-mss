@@ -1,27 +1,23 @@
 export class SignInViewModel {
-  access_token: string;
-  id_token: string;
-  refresh_token: string;
-  user_id?: string;
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
 
   constructor(
-    access_token: string,
-    id_token: string,
-    refresh_token: string,
-    user_id?: string
+    accessToken: string,
+    idToken: string,
+    refreshToken: string,
   ) {
-    this.access_token = access_token;
-    this.id_token = id_token;
-    this.refresh_token = refresh_token;
-    this.user_id = user_id;
+    this.accessToken = accessToken;
+    this.idToken = idToken;
+    this.refreshToken = refreshToken;
   }
 
-  toJson(): object {
+  toJSON(): object {
     return {
-      access_token: this.access_token,
-      id_token: this.id_token,
-      refresh_token: this.refresh_token,
-      user_id: this.user_id,
+      accessToken: this.accessToken,
+      idToken: this.idToken,
+      refreshToken: this.refreshToken,
     };
   }
 }
