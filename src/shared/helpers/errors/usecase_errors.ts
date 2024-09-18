@@ -35,3 +35,9 @@ export class FailToSendEmail extends BaseError {
     super(`Falha ao enviar o email ${message}`);
   }
 }
+
+export class UserNotRegistered extends BaseError {
+  constructor() {
+    super('Usuário não cadastrado ainda');
+  }
+}
