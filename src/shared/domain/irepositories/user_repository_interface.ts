@@ -5,4 +5,5 @@ export interface IUserRepository {
   createUser(user: User): Promise<User>;
   updateProfilePhoto(email: string, profilePhoto: string): Promise<string>;
   getProfile(username: string): Promise<GetProfileReturnType>
+  deleteAccount(username: string): Promise<void>;
 }
