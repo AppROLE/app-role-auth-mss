@@ -5,6 +5,7 @@ import {
   AdminConfirmSignUpCommand,
   AdminConfirmSignUpCommandInput,
   AdminDeleteUserCommand,
+  AdminDeleteUserCommandInput,
   AdminGetUserCommand,
   AdminGetUserCommandInput,
   AdminInitiateAuthCommand,
@@ -528,12 +529,20 @@ export class AuthRepositoryCognito implements IAuthRepository {
 
   async deleteAccount(username: string) {
     try {
-      await this.client.send(
-        new AdminDeleteUserCommand({
-          UserPoolId: this.userPoolId,
-          Username: username,
-        })
-      );
+
+      console.log('USERNAME TO DELETE: ', username)
+      const params: AdminDeleteUserCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: username
+      }
+
+      const command = new AdminDeleteUserCommand(params);
+
+      await this.client.send(command);
+
+      console.log('DELETED USER AFTER SEND: ', username)
+
+
     } catch (error: any) {
       throw new Error(
         "AuthRepositoryCognito, Error on deleteAccount: " + error.message

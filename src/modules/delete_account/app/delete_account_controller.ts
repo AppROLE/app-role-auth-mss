@@ -18,7 +18,11 @@ export class DeleteAccountController {
 
       await this.usecase.execute(username, email);
 
+      console.log("Conta deletada com sucesso!");
+
       const viewmodel = new DeleteAccountViewmodel("Conta deletada com sucesso!");
+
+      console.log(viewmodel.toJSON());
 
       return new OK(viewmodel.toJSON());
 
