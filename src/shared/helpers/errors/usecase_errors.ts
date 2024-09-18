@@ -12,6 +12,12 @@ export class DuplicatedItem extends BaseError {
   }
 }
 
+export class UserAlreadyExists extends BaseError {
+  constructor() {
+    super('Este usuário já está cadastrado');
+  }
+}
+
 export class ForbiddenAction extends BaseError {
   constructor(message: string) {
     super(`Essa ação não é permitida para esse ${message}`);
