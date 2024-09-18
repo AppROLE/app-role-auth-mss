@@ -135,4 +135,8 @@ export class UserRepoMock implements IAuthRepository {
   async refreshToken(refreshToken: string): Promise<{ accessToken: string; idToken: string; refreshToken: string; }> {
     throw new Error("Method not implemented.");
   }
+
+  async deleteAccount(username: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
