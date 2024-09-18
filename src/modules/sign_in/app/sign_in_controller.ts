@@ -46,7 +46,7 @@ export class SignInController {
         session["idToken"],
         session["refreshToken"]
       );
-      return new OK(sessionViewModel.toJson());
+      return new OK(sessionViewModel.toJSON());
     } catch (error: any) {
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message);
