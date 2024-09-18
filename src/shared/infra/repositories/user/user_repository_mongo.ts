@@ -113,4 +113,21 @@ export class UserRepositoryMongo implements IUserRepository {
       throw new Error(`Error getting profile on MongoDB: ${error}`);
     }
   }
+
+  async deleteAccount(username: string): Promise<void> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      await userMongoClient?.deleteOne({ username });
+
+    } catch (error) {
+      throw new Error(`Error deleting account on MongoDB: ${error}`);
+    }
+  }
 }
