@@ -1,8 +1,6 @@
 import { IAuthRepository } from "src/shared/domain/irepositories/auth_repository_interface";
 import { IUserRepository } from "src/shared/domain/irepositories/user_repository_interface";
 import { UserNotRegistered } from "src/shared/helpers/errors/usecase_errors";
-import { DeleteAccountViewmodel } from "./delete_account_viewmodel";
-import { OK } from "src/shared/helpers/external_interfaces/http_codes";
 
 export class DeleteAccountUseCase {
   constructor(

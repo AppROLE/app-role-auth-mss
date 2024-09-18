@@ -102,7 +102,10 @@ export class LambdaStack extends Construct {
       this.confirmForgotPasswordFunction,
       this.resendCodeFunction,
       this.signInFunction,
-      this.finishSignUpFunction
+      this.finishSignUpFunction,
+      this.refreshTokenFunction,
+      this.getProfileFunction,
+      this.deleteAccountFunction
     ]
   }
 }
