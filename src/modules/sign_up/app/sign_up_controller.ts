@@ -5,6 +5,7 @@ import { SignUpViewmodel } from "./sign_up_viewmodel";
 import { ROLE_TYPE } from "src/shared/domain/enums/role_type_enum";
 import { BadRequest, Created, InternalServerError } from "src/shared/helpers/external_interfaces/http_codes";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
+import { DuplicatedItem } from "src/shared/helpers/errors/usecase_errors";
 
 export class SignUpController {
   constructor(private readonly usecase: SignUpUseCase) {}
@@ -58,6 +59,9 @@ export class SignUpController {
         return new BadRequest(error.message);
       }
       if (error instanceof EntityError) {
+        return new BadRequest(error.message);
+      }
+      if (error instanceof DuplicatedItem) {
         return new BadRequest(error.message);
       }
       if (error instanceof Error) {
