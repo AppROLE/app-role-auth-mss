@@ -10,7 +10,7 @@ const repo = Environments.getAuthRepo();
 const usecase = new RefreshTokenUseCase(repo);
 const controller = new RefreshTokenController(usecase);
 
-export async function confirmCodePresenter(
+export async function refreshTokenPresenter(
   event: Record<string, any>
 ) {
   const httpRequest = new LambdaHttpRequest(event);
@@ -26,6 +26,6 @@ export async function confirmCodePresenter(
 }
 
 export async function lambda_handler(event: any, context: any) {
-  const response = await confirmCodePresenter(event);
+  const response = await refreshTokenPresenter(event);
   return response;
 }
