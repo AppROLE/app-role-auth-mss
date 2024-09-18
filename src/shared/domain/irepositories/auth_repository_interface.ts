@@ -41,4 +41,5 @@ export interface IAuthRepository {
     idToken: string;
     refreshToken: string;
   }>;
+  deleteAccount(username: string): Promise<void>;
 }
