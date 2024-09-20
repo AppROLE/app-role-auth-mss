@@ -25,6 +25,7 @@ export class LambdaStack extends Construct {
 
   getProfileFunction: lambda.Function
   deleteAccountFunction: lambda.Function
+  createReviewFunction: lambda.Function
 
   createLambdaApiGatewayIntegration(
     moduleName: string, 
@@ -90,6 +91,7 @@ export class LambdaStack extends Construct {
     // inside app router
     this.getProfileFunction = this.createLambdaApiGatewayIntegration('get_profile', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.deleteAccountFunction = this.createLambdaApiGatewayIntegration('delete_account', 'DELETE', apiGatewayResource, environmentVariables, authorizer)
+    this.createReviewFunction = this.createLambdaApiGatewayIntegration('create_review', 'POST', apiGatewayResource, environmentVariables, authorizer)
 
     this.functionsThatNeedS3Permissions = [
       this.uploadProfilePhoto
