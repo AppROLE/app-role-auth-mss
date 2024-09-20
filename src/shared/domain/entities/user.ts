@@ -8,6 +8,7 @@ interface UserProps {
   nickname: string;
   username: string;
   email: string;
+  biography?: string;
   roleType?: ROLE_TYPE;
   phoneNumber?: string;
   password?: string;
@@ -46,6 +47,7 @@ export class User {
   private nickname?: string;
   private username: string;
   private email: string;
+  private biography?: string;
   private roleType?: ROLE_TYPE;
   private phoneNumber?: string;
   private password?: string;
@@ -101,6 +103,10 @@ export class User {
       throw new EntityError("linkTiktok");
     }
     this.link_tiktok = props.linkTiktok;
+    if (props.biography && !User.validateBiography(props.biography)) {
+      throw new EntityError("biography");
+    }
+    this.biography = props.biography;
     if (props.bgPhoto && !User.validateBgPhoto(props.bgPhoto)) {
       throw new EntityError("bgPhoto");
     }
@@ -151,6 +157,10 @@ export class User {
 
   get userPhoneNumber(): string | undefined {
     return this.phoneNumber;
+  }
+
+  get userBiography(): string | undefined {
+    return this.biography;
   }
 
   get userPassword(): string | undefined {
@@ -219,6 +229,10 @@ export class User {
 
   set setUserPhoneNumber(phoneNumber: string | undefined) {
     this.phoneNumber = phoneNumber;
+  }
+
+  set setUserBiography(biography: string | undefined) {
+    this.biography = biography;
   }
 
   set setUserCreatedAt(createdAt: Date) {
@@ -297,6 +311,17 @@ export class User {
 
   static validateRoleType(roleType?: ROLE_TYPE): boolean {
     if (roleType && !Object.values(ROLE_TYPE).includes(roleType)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  static validateBiography(biography?: string): boolean {
+    if (biography && biography.trim().length > 1000) {
+      return false;
+    }
+    if (biography && biography.trim().length === 0) {
       return false;
     }
 

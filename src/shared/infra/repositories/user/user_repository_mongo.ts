@@ -130,4 +130,69 @@ export class UserRepositoryMongo implements IUserRepository {
       throw new Error(`Error deleting account on MongoDB: ${error}`);
     }
   }
+
+  async findByUsername(username: string): Promise<User> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ username });
+
+      if (!userDoc) {
+        throw new NoItemsFound('username');
+      }
+
+      const userDto = UserMongoDTO.fromMongo(userDoc, false);
+      const user = UserMongoDTO.toEntity(userDto);
+
+      return user;
+
+    } catch (error: any) {
+      throw new Error(`Error finding user by username on MongoDB: ${error.message}`);
+    }
+  }
+
+  async createReview(
+    star: number,
+    review: string,
+    reviewedAt: Date,
+    instituteId: string,
+    username: string
+  ): Promise<void> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ username });
+
+      if (!userDoc) {
+        throw new NoItemsFound('username');
+      }
+
+      const reviewDoc = {
+        star,
+        review,
+        reviewedAt,
+        institute_id: instituteId
+      };
+
+      userDoc.reviews.push(reviewDoc);
+
+      const respMongo = await userMongoClient?.updateOne({ username }, { $set: userDoc });
+      console.log('MONGO REPO USER RESPMONGO: ', respMongo);
+
+    } catch (error) {
+      throw new Error(`Error creating review on MongoDB: ${error}`);
+    }
+  }
 }

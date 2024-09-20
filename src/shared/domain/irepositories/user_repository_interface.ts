@@ -6,4 +6,12 @@ export interface IUserRepository {
   updateProfilePhoto(email: string, profilePhoto: string): Promise<string>;
   getProfile(username: string): Promise<GetProfileReturnType>
   deleteAccount(username: string): Promise<void>;
+  findByUsername(username: string): Promise<User>;
+  createReview(
+    star: number,
+    review: string,
+    reviewedAt: Date,
+    instituteId: string,
+    username: string
+  ): Promise<void>;
 }
