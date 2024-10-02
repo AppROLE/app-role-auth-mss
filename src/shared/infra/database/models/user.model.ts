@@ -25,6 +25,7 @@ export interface IUser extends Document {
   username: string;
   nickname: string;
   email: string;
+  biography?: string;
   created_at: Date;
   lnk_instagram?: string;
   lnk_tiktok?: string;
@@ -60,6 +61,7 @@ const UserSchema: Schema = new Schema<IUser>({
   username: { type: String, required: true, unique: true },
   nickname: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  biography: { type: String },
   created_at: { type: Date, default: Date.now },
   lnk_instagram: { type: String },
   lnk_tiktok: { type: String },
