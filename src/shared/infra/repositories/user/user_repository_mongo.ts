@@ -216,6 +216,10 @@ export class UserRepositoryMongo implements IUserRepository {
         return friend.user_followed_id;
       });
 
+      if (!friends) {
+        return [];
+      }
+
       const friendsDocs = await userMongoClient?.find({ userId: { $in: friends } }).toArray();
 
       if (!friendsDocs) {
