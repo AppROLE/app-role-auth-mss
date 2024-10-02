@@ -105,6 +105,7 @@ export class UserRepositoryMongo implements IUserRepository {
         name: user.userName,
         linkTiktok: user.userlinkTiktok,
         linkInstagram: user.userlinkInstagram,
+        biography: user.userBiography,
         following,
         followers
       };
