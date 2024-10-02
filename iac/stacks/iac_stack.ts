@@ -112,11 +112,5 @@ export class IacStack extends Stack {
     for (const fn of lambdaStack.functionsThatNeedS3Permissions) {
       fn.addToRolePolicy(s3Policy);
     }
-
-    new cdk.CfnOutput(this, 'AppRoleFrontDistributionOutput', {
-      value: distribution.domainName,
-      description: 'The distribution domain',
-      exportName: 'AppRoleFrontDistributionOutput'
-    });
   }
 }
