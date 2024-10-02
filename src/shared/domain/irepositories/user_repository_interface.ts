@@ -14,4 +14,5 @@ export interface IUserRepository {
     instituteId: string,
     username: string
   ): Promise<void>;
+  getFriends(username: string): Promise<User[]>;
 }
