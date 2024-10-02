@@ -195,4 +195,44 @@ export class UserRepositoryMongo implements IUserRepository {
       throw new Error(`Error creating review on MongoDB: ${error}`);
     }
   }
+
+  async getFriends(username: string): Promise<User[]> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ username });
+
+      if (!userDoc) {
+        throw new NoItemsFound('username');
+      }
+
+      const friends = userDoc.following.map(friend => {
+        return friend.user_followed_id;
+      });
+
+      const friendsDocs = await userMongoClient?.find({ userId: { $in: friends } }).toArray();
+
+      if (!friendsDocs) {
+        throw new NoItemsFound('friends');
+      }
+
+      const friendsDto = friendsDocs.map(friendDoc => {
+        return UserMongoDTO.fromMongo(friendDoc, false);
+      });
+
+      const friendsEntities = friendsDto.map(friendDto => {
+        return UserMongoDTO.toEntity(friendDto);
+      });
+
+      return friendsEntities;
+    } catch (error) {
+      throw new Error(`Error getting friends on MongoDB: ${error}`);
+    }
+  }
 }
