@@ -18,6 +18,10 @@ export class GetFriendsController {
 
       const friends = await this.usecase.execute(username)
 
+      if (friends.length === 0) {
+        return new OK({ message: 'Nenhum amigo encontrado' })
+      }
+
       const viewmodel = new GetFriendsViewmodel(
         friends.map(friend => new FriendViewmodel(friend.userId || '', friend.userUsername, friend.userNickname || friend.userName,friend.userProfilePhoto))
       )
