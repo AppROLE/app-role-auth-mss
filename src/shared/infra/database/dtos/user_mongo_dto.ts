@@ -12,6 +12,7 @@ export interface UserMongoDTOProps {
   username: string;
   phoneNumber?: string;
   linkInstagram?: string;
+  biography?: string;
   linkTiktok?: string;
   backgroundPhoto?: string;
   profilePhoto?: string;
@@ -27,6 +28,7 @@ export class UserMongoDTO {
   private email: string;
   private nickname: string;
   private username: string;
+  private biography?: string;
   private phoneNumber?: string;
   private linkInstagram?: string;
   private linkTiktok?: string;
@@ -45,6 +47,7 @@ export class UserMongoDTO {
     this.username = props.username;
     this.phoneNumber = props.phoneNumber;
     this.linkInstagram = props.linkInstagram;
+    this.biography = props.biography
     this.linkTiktok = props.linkTiktok;
     this.backgroundPhoto = props.backgroundPhoto;
     this.profilePhoto = props.profilePhoto;
@@ -67,6 +70,7 @@ export class UserMongoDTO {
       linkInstagram: userObject.linkInstagram,
       linkTiktok: userObject.linkTiktok,
       backgroundPhoto: userObject.bg_photo,
+      biography: userObject.biography,
       profilePhoto: userObject.profile_photo,
       privacy: userObject.privacy,
       following: userObject.following,
@@ -86,6 +90,7 @@ export class UserMongoDTO {
       linkInstagram: userMongoDTO.linkInstagram,
       linkTiktok: userMongoDTO.linkTiktok,
       bgPhoto: userMongoDTO.backgroundPhoto,
+      biography: userMongoDTO.biography,
       profilePhoto: userMongoDTO.profilePhoto,
       privacy: userMongoDTO.privacy,
       following: userMongoDTO.following.map(following => ({
@@ -117,6 +122,7 @@ export class UserMongoDTO {
       linkInstagram: user.userlinkInstagram,
       linkTiktok: user.userlinkTiktok,
       backgroundPhoto: user.userBgPhoto,
+      biography: user.userBiography,
       profilePhoto: user.userProfilePhoto,
       privacy: user.userPrivacy as PRIVACY_TYPE,
       following: user.userFollowing.map(following => ({
