@@ -21,7 +21,9 @@ export class GetProfileController {
         profile.username,
         profile.following,
         profile.followers,
-        profile.biography
+        profile.biography,
+        profile.profilePhoto,
+        profile.backgroundPhoto
       )
 
       return new OK(viewmodel.toJSON())

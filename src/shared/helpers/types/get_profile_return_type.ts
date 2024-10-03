@@ -5,6 +5,8 @@ export type GetProfileReturnType = {
   linkTiktok?: string
   linkInstagram?: string
   biography: string | undefined
+  profilePhoto: string | undefined
+  backgroundPhoto: string | undefined
   following: number
   followers: number
 }
