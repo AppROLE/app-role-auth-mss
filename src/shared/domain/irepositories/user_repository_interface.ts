@@ -12,6 +12,7 @@ export interface IUserRepository {
     review: string,
     reviewedAt: Date,
     instituteId: string,
+    eventId: string,
     username: string
   ): Promise<void>;
   getFriends(username: string): Promise<User[]>;
