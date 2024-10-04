@@ -36,6 +36,7 @@ export interface FavoriteProps {
 
 export interface ReviewProps {
   instituteId: string;
+  eventId: string;
   star: number;
   review: string;
   reviewedAt?: Date;
