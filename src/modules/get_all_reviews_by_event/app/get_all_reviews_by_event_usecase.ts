@@ -9,28 +9,16 @@ export class GetAllReviewsByEventUseCase {
     const reviews = await this.userRepo.getAllReviewsByEvent(eventId);
     if (reviews.length === 0) return [];
 
-      const reviewsTransformed = reviews.map(review => {
-        const reviewsFromUser = review.userReviews.map(userReview => {
-          return {
-            star: userReview.star,
-            comment: userReview.review,
-            reviewedAt: userReview.reviewedAt,
-            instituteId: userReview.instituteId,
-            eventId: userReview.eventId
-          }
-        })
-
-        const user = {
-          username: review.userUsername,
-          nickname: review.userNickname,
-          profilePhoto: review.userProfilePhoto
-        }
-
-        return {
-          reviews: reviewsFromUser,
-          user
-        }
-      })
+    const reviewsTransformed = reviews.map((review) => {
+      return {
+        comment: review.userReviews[0].review,
+        username: review.userUsername,
+        profilePhoto: review.userProfilePhoto,
+        star: review.userReviews[0].star,
+        reviewedAt: review.userReviews[0].reviewedAt,
+        nickname: review.userNickname
+      }
+    });
 
       return reviewsTransformed;
     
