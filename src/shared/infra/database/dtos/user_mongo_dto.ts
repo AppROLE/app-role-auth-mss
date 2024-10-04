@@ -104,6 +104,7 @@ export class UserMongoDTO {
       })),
       reviews: userMongoDTO.reviews.map(review => ({
         instituteId: review.instituteId,
+        eventId: review.eventId,
         star: review.star,
         review: review.review,
         reviewedAt: review.reviewedAt
@@ -136,6 +137,7 @@ export class UserMongoDTO {
       })),
       reviews: user.userReviews.map(review => ({
         instituteId: review.instituteId,
+        eventId: review.eventId,
         star: review.star,
         review: review.review,
         reviewedAt: review.reviewedAt
@@ -166,6 +168,7 @@ export class UserMongoDTO {
       })),
       reviews: userMongoDTO.reviews.map(review => ({
         institute_id: review.instituteId,
+        event_id: review.eventId,
         star: review.star,
         review: review.review,
         reviewed_at: review.reviewedAt
