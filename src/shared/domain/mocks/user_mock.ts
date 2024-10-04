@@ -29,6 +29,7 @@ export class UserMock {
         reviews: [
           {
             instituteId: "1",
+            eventId: "101",
             star: 4,
             review: "Great place!",
             reviewedAt: new Date("2024-02-01"),
@@ -58,6 +59,7 @@ export class UserMock {
         reviews: [
           {
             instituteId: "2",
+            eventId: "102",
             star: 5,
             review: "Amazing experience!",
             reviewedAt: new Date("2024-02-02"),
@@ -87,6 +89,7 @@ export class UserMock {
         reviews: [
           {
             instituteId: "3",
+            eventId: "103",
             star: 3,
             review: "Good but could be better",
             reviewedAt: new Date("2024-02-03"),
