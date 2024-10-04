@@ -14,6 +14,7 @@ interface IFavorite {
 
 interface IReview {
   institute_id: string;
+  event_id: string;
   star: number;
   review: string;
   reviewed_at?: Date;
@@ -50,6 +51,7 @@ const FavoriteSchema = new Schema<IFavorite>({
 
 const ReviewSchema = new Schema<IReview>({
   institute_id: { type: String, ref: "Institute" },
+  event_id: { type: String, ref: "Event" },
   star: { type: Number, required: true },
   review: { type: String, required: true },
   reviewed_at: { type: Date, default: Date.now },
