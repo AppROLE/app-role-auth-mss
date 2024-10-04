@@ -244,4 +244,36 @@ export class UserRepositoryMongo implements IUserRepository {
       throw new Error(`Error getting friends on MongoDB: ${error}`);
     }
   }
+
+  async getAllReviewsByEvent(eventId: string): Promise<User[]> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const reviews = await userMongoClient?.find({ 'reviews.event_id': eventId }).toArray();
+
+      if (!reviews) {
+        throw new NoItemsFound('reviews');
+      }
+
+      const reviewsDto = reviews.map(reviewDoc => {
+        return UserMongoDTO.fromMongo(reviewDoc, false);
+      });
+
+      const reviewsEntities = reviewsDto.map(reviewDto => {
+        return UserMongoDTO.toEntity(reviewDto);
+      });
+
+      return reviewsEntities;
+    }
+
+    catch (error) {
+      throw new Error(`Error getting all reviews by event on MongoDB: ${error}`);
+    }
+  }
 }
