@@ -16,23 +16,26 @@ export class CreateReviewController {
 
       if (!parsedUserApiGateway) throw new ForbiddenAction('usuário')
 
-      const { star, review, reviewedAt, instituteId } = request.data
+      const { star, review, reviewedAt, instituteId, eventId } = request.data
 
       if (!star) throw new MissingParameters('star')
       if (!review) throw new MissingParameters('review')
       if (!reviewedAt) throw new MissingParameters('reviewedAt')
       if (!instituteId) throw new MissingParameters('instituteId')
+      if (!eventId) throw new MissingParameters('eventId')
 
       if (typeof star !== 'number') throw new WrongTypeParameters('star', 'number', typeof star)
       if (typeof review !== 'string') throw new WrongTypeParameters('review', 'string', typeof review)
       if (typeof reviewedAt !== 'number') throw new WrongTypeParameters('reviewedAt', 'string', typeof reviewedAt)
       if (typeof instituteId !== 'string') throw new WrongTypeParameters('instituteId', 'string', typeof instituteId)
+      if (typeof eventId !== 'string') throw new WrongTypeParameters('eventId', 'string', typeof eventId)
 
       await this.usecase.execute(
         star,
         review,
         reviewedAt,
         instituteId,
+        eventId,
         parsedUserApiGateway.username,
       )
         
