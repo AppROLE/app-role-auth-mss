@@ -165,6 +165,7 @@ export class UserRepositoryMongo implements IUserRepository {
     review: string,
     reviewedAt: Date,
     instituteId: string,
+    eventId: string,
     username: string
   ): Promise<void> {
     try {
@@ -186,7 +187,8 @@ export class UserRepositoryMongo implements IUserRepository {
         star,
         review,
         reviewedAt,
-        institute_id: instituteId
+        institute_id: instituteId,
+        event_id: eventId
       };
 
       userDoc.reviews.push(reviewDoc);
