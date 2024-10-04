@@ -3,8 +3,8 @@ import { GetAllReviewsByEventUseCase } from "./get_all_reviews_by_event_usecase"
 import { MissingParameters, WrongTypeParameters } from "src/shared/helpers/errors/controller_errors";
 import { UserAPIGatewayDTO } from "src/shared/infra/dto/user_api_gateway_dto";
 import { GetAllReviewsByEventViewmodel, ReviewViewmodel } from "./get_all_reviews_by_event_viewmodel";
-import { ForbiddenAction } from "src/shared/helpers/errors/usecase_errors";
-import { BadRequest, InternalServerError, OK, Unauthorized } from "src/shared/helpers/external_interfaces/http_codes";
+import { ForbiddenAction, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
+import { BadRequest, InternalServerError, NotFound, OK, Unauthorized } from "src/shared/helpers/external_interfaces/http_codes";
 import { EntityError } from "src/shared/helpers/errors/domain_errors";
 
 export class GetAllReviewsByEventController {
@@ -22,12 +22,10 @@ export class GetAllReviewsByEventController {
       if (typeof eventId !== 'string') throw new WrongTypeParameters('eventId', 'string', typeof eventId)
 
       const reviews = await this.usecase.execute(eventId);
-
-      return new OK(reviews.length > 0 ? {
+      if (reviews.length === 0) throw new NoItemsFound('avaliações')
+      return new OK({
         reviews,
         message: 'Avaliações encontradas com sucesso'
-      } : {
-        message: 'Nenhuma avaliação encontrada'
       })
 
     } catch (error: any) {
@@ -41,6 +39,10 @@ export class GetAllReviewsByEventController {
       ) {
         return new BadRequest(error.message)
       }
+
+      if (error instanceof NoItemsFound) return new NotFound({
+        message: 'Nenhuma avaliação encontrada'
+      })
 
       if (error instanceof Error) {
         return new InternalServerError(`GetAllReviewsByEventController, Error on handle: ${error.message}`);
