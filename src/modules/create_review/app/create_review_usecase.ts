@@ -10,6 +10,7 @@ export class CreateReviewUseCase {
     review: string,
     reviewedAt: number,
     instituteId: string,
+    eventId: string,
     username: string
   ) {
     if (star < 0 || star > 5) {
@@ -25,6 +26,10 @@ export class CreateReviewUseCase {
       throw new EntityError("instituteId");
     }
 
+    if (eventId.length < 1 || eventId.trim() === "") {
+      throw new EntityError("eventId");
+    }
+
     const reviewedAtDate = new Date(reviewedAt);
 
     await this.userRepo.findByUsername(username);
@@ -34,6 +39,7 @@ export class CreateReviewUseCase {
       review,
       reviewedAtDate,
       instituteId,
+      eventId,
       username
     );
 
