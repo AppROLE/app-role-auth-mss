@@ -23,7 +23,10 @@ export class GetAllReviewsByEventController {
 
       const reviews = await this.usecase.execute(eventId);
 
-      return new OK(reviews.length > 0 ? reviews : {
+      return new OK(reviews.length > 0 ? {
+        reviews,
+        message: 'Avaliações encontradas com sucesso'
+      } : {
         message: 'Nenhuma avaliação encontrada'
       })
 
