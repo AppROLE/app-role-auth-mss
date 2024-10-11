@@ -7,6 +7,7 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.637.0",
     "@types/nodemailer": "^6.4.15",
     "aws-sdk": "^2.1689.0",
+    "bcryptjs": "^2.4.3",
     "busboy": "^1.6.0",
     "dotenv": "^16.4.5",
     "mongoose": "^8.5.4",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@types/aws-sdk": "^2.7.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/busboy": "^1.5.4",
     "@types/node": "^22.5.0",
     "@types/uuid": "^10.0.0",
