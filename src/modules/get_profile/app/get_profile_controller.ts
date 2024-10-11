@@ -23,7 +23,9 @@ export class GetProfileController {
         profile.followers,
         profile.biography,
         profile.profilePhoto,
-        profile.backgroundPhoto
+        profile.backgroundPhoto,
+        profile.linkTiktok,
+        profile.linkInstagram,
       )
 
       return new OK(viewmodel.toJSON())
