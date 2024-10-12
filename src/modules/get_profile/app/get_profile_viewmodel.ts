@@ -4,6 +4,7 @@ export class GetProfileViewmodel {
   biography: string | undefined
   username: string
   profilePhoto?: string
+  privacy: string
   bgPhoto?: string
   linkTiktok?: string
   linkInstagram?: string
@@ -16,6 +17,7 @@ export class GetProfileViewmodel {
     username: string,
     following: number,
     followers: number,
+    privacy: string,
     biography?: string | undefined,
     profilePhoto?: string,
     bgPhoto?: string,
@@ -26,6 +28,7 @@ export class GetProfileViewmodel {
     this.name = name
     this.username = username
     this.following = following
+    this.privacy = privacy
     this.followers = followers
     this.linkTiktok = linkTiktok
     this.bgPhoto = bgPhoto
@@ -43,6 +46,7 @@ export class GetProfileViewmodel {
       linkInstagram: this.linkInstagram,
       backgroundPhoto: this.bgPhoto,
       profilePhoto: this.profilePhoto,
+      privacy: this.privacy,
       biography: this.biography,
       following: this.following,
       followers: this.followers
