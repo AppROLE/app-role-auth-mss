@@ -6,6 +6,7 @@ import { IUser } from "../../database/models/user.model";
 import { UserMongoDTO } from "../../database/dtos/user_mongo_dto"
 import { v4 as uuidv4 } from 'uuid';
 import { GetProfileReturnType } from "src/shared/helpers/types/get_profile_return_type";
+import { PRIVACY_TYPE } from "src/shared/domain/enums/privacy_enum";
 
 export class UserRepositoryMongo implements IUserRepository { 
   async createUser(user: User): Promise<User> {
@@ -108,6 +109,7 @@ export class UserRepositoryMongo implements IUserRepository {
         profilePhoto: user.userProfilePhoto,
         linkInstagram: user.userlinkInstagram,
         biography: user.userBiography,
+        privacy: user.userPrivacy ? user.userPrivacy : PRIVACY_TYPE.PUBLIC,
         following,
         followers
       };
