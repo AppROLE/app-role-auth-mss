@@ -52,7 +52,6 @@ jobs:
           echo EMAIL_LOGIN=${{ secrets.EMAIL_LOGIN }} >> $GITHUB_ENV
           echo EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} >> $GITHUB_ENV
           echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> $GITHUB_ENV
-          echo HASH_SALT=${{ secrets.HASH_SALT }} >> $GITHUB_ENV
       - name: CDK Bootstrap
         run: |
           echo "CDK Bootstrap"

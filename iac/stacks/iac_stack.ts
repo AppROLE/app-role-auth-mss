@@ -90,7 +90,6 @@ export class IacStack extends Stack {
       MONGO_URI: envs.MONGO_URI,
       S3_BUCKET_NAME: envs.S3_BUCKET_NAME + "-" + stage.toLowerCase(),
       CLOUDFRONT_DISTRO: distribution.domainName,
-      HASH_SALT: envs.HASH_SALT,
     };
     
     const lambdaStack = new LambdaStack(
