@@ -7,6 +7,7 @@ export type GetProfileReturnType = {
   biography: string | undefined
   profilePhoto: string | undefined
   backgroundPhoto: string | undefined
+  privacy: string
   following: number
   followers: number
 }
