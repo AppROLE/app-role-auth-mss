@@ -18,7 +18,7 @@ export async function getProfilePresenter(
   console.log('event.requestContext.authorizer.claims', event.requestContext.authorizer.claims);
   console.log('httpRequest', httpRequest);
   // httpRequest['requesterUser'] = event.requestContext.authorizer.claims;
-  const response = await controller.handle(httpRequest.requesterUser);
+  const response = await controller.handle(httpRequest, httpRequest.requesterUser);
   const httpResponse = new LambdaHttpResponse(
     response?.body,
     response?.statusCode,
