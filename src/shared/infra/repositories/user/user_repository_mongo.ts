@@ -7,6 +7,7 @@ import { UserMongoDTO } from "../../database/dtos/user_mongo_dto"
 import { v4 as uuidv4 } from 'uuid';
 import { GetProfileReturnType } from "src/shared/helpers/types/get_profile_return_type";
 import { PRIVACY_TYPE } from "src/shared/domain/enums/privacy_enum";
+import { FindPersonReturnType } from "src/shared/helpers/types/find_person_return_type";
 
 export class UserRepositoryMongo implements IUserRepository { 
   async createUser(user: User): Promise<User> {
@@ -276,6 +277,39 @@ export class UserRepositoryMongo implements IUserRepository {
 
     catch (error) {
       throw new Error(`Error getting all reviews by event on MongoDB: ${error}`);
+    }
+  }
+
+  async findPerson(searchTerm: string): Promise<FindPersonReturnType[]> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const persons = await userMongoClient?.find({ $or: [{ username: { $regex: searchTerm, $options: 'i' } }, { nickname: { $regex: searchTerm, $options: 'i' } }] }).toArray();
+
+      if (!persons || persons.length === 0) {
+        throw new NoItemsFound('persons');
+      }
+
+      const returnType: FindPersonReturnType[] = persons.map(personDoc => {
+        const personDto = UserMongoDTO.fromMongo(personDoc, false);
+        const person = UserMongoDTO.toEntity(personDto);
+        return {
+          profilePhoto: person.userProfilePhoto,
+          username: person.userUsername,
+          nickname: person.userName
+        };
+      } 
+      );
+
+      return returnType
+    } catch (error) {
+      throw new Error(`Error finding person on MongoDB: ${error}`);
     }
   }
 }
