@@ -8,7 +8,6 @@ interface IFollowing {
 
 interface IFavorite {
   institute_id: string;
-  event_id: string;
   favorited_at?: Date;
 }
 
@@ -45,7 +44,6 @@ const FollowingSchema = new Schema<IFollowing>({
 
 const FavoriteSchema = new Schema<IFavorite>({
   institute_id: { type: String, ref: "Institute" },
-  event_id: { type: String, ref: "Event" },
   favorited_at: { type: Date, default: Date.now },
 });
 
