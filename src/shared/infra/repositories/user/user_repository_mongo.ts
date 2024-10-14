@@ -290,7 +290,7 @@ export class UserRepositoryMongo implements IUserRepository {
 
       const userMongoClient = db.connections[0].db?.collection<IUser>('User');
 
-      const persons = await userMongoClient?.find({ $or: [{ username: { $regex: searchTerm, $options: 'i' } }, { nickname: { $regex: searchTerm, $options: 'i' } }] }).toArray();
+      const persons = await userMongoClient?.find({ $or: [{ username: { $regex: `^${searchTerm}`, $options: 'i' } }, { nickname: { $regex: `^${searchTerm}`, $options: 'i' } }] }).toArray();
 
       if (!persons || persons.length === 0) {
         throw new NoItemsFound('persons');
