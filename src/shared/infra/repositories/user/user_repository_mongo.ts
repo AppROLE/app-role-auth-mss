@@ -288,12 +288,19 @@ export class UserRepositoryMongo implements IUserRepository {
         throw new Error('Error connecting to MongoDB');
       });
 
+      let persons: IUser[] = [];
+
       const userMongoClient = db.connections[0].db?.collection<IUser>('User');
 
-      const persons = await userMongoClient?.find({ $or: [{ username: { $regex: `^${searchTerm}`, $options: 'i' } }, { nickname: { $regex: `^${searchTerm}`, $options: 'i' } }] }).toArray();
+      const personsByFirst = await userMongoClient?.find({ $or: [{ username: { $regex: `^${searchTerm}`, $options: 'i' } }, { nickname: { $regex: `^${searchTerm}`, $options: 'i' } }] }).toArray();
+      const personsByFull = await userMongoClient?.find({ $or: [{ username: { $regex: `^${searchTerm}`, $options: 'i' } }, { nickname: { $regex: `^${searchTerm}`, $options: 'i' } }] }).toArray();
 
-      if (!persons || persons.length === 0) {
-        throw new NoItemsFound('persons');
+      if (personsByFirst) {
+        persons = persons.concat(personsByFirst);
+      }
+
+      if (personsByFull) {
+        persons = persons.concat(personsByFull);
       }
 
       const returnType: FindPersonReturnType[] = persons.map(personDoc => {
