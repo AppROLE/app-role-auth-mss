@@ -28,6 +28,7 @@ export class LambdaStack extends Construct {
   createReviewFunction: lambda.Function
   getFriendsFunction: lambda.Function
   getAllReviewsByEventFunction: lambda.Function
+  findPersonFunction: lambda.Function
 
   createLambdaApiGatewayIntegration(
     moduleName: string, 
@@ -96,7 +97,7 @@ export class LambdaStack extends Construct {
     this.createReviewFunction = this.createLambdaApiGatewayIntegration('create_review', 'POST', apiGatewayResource, environmentVariables, authorizer)
     this.getFriendsFunction = this.createLambdaApiGatewayIntegration('get_friends', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.getAllReviewsByEventFunction = this.createLambdaApiGatewayIntegration('get_all_reviews_by_event', 'GET', apiGatewayResource, environmentVariables, authorizer)
-
+    this.findPersonFunction = this.createLambdaApiGatewayIntegration('find_person', 'GET', apiGatewayResource, environmentVariables, authorizer)
 
     this.functionsThatNeedS3Permissions = [
       this.uploadProfilePhoto
