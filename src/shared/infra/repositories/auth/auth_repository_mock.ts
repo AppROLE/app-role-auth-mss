@@ -6,6 +6,7 @@ import {
   NoItemsFound,
 } from "../../../helpers/errors/usecase_errors";
 import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
+import { ChangeUsernameReturnType } from "src/shared/helpers/types/change_username_return_type";
 
 export class UserRepoMock implements IAuthRepository {
   public user_mock: UserMock;
@@ -137,6 +138,17 @@ export class UserRepoMock implements IAuthRepository {
   }
 
   async deleteAccount(username: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  changeUsername(email: string, username: string, newUsername: string, password: string): Promise<ChangeUsernameReturnType | null> {
+    throw new Error("Method not implemented.");
+  }
+
+  updateProfile(username: string, nickname: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  findUserByUsername(username: string): Promise<User | undefined> {
     throw new Error("Method not implemented.");
   }
 }
