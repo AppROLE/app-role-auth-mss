@@ -18,6 +18,16 @@ export class UpdateProfileUseCase {
     instagramLink?: string,
     tiktokLink?: string
   ) {
+    console.log('UPDATE PROFILE USECASE: email', email);
+    console.log('UPDATE PROFILE USECASE: username', username);
+    console.log('UPDATE PROFILE USECASE: newUsername', newUsername);
+    console.log('UPDATE PROFILE USECASE: password', password);
+    console.log('UPDATE PROFILE USECASE: nickname', nickname);
+    console.log('UPDATE PROFILE USECASE: biography', biography);
+    console.log('UPDATE PROFILE USECASE: instagramLink', instagramLink);
+    console.log('UPDATE PROFILE USECASE: tiktokLink', tiktokLink);
+
+
     if (newUsername && password) {
       const usernameAlreadyExists = await this.authRepo.findUserByUsername(newUsername);
       if (usernameAlreadyExists) throw new DuplicatedItem('username');
