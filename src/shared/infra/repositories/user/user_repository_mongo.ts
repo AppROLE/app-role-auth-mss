@@ -342,6 +342,8 @@ export class UserRepositoryMongo implements IUserRepository {
 
       const userDoc = await userMongoClient?.findOne({ username });
 
+      console.log('MONGO REPO USER DOC - UPDATE PROFILE: ', userDoc);
+
       if (!userDoc) return null
 
       if (newUsername) {
