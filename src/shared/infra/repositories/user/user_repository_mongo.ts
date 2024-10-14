@@ -303,6 +303,9 @@ export class UserRepositoryMongo implements IUserRepository {
         persons = persons.concat(personsByFull);
       }
 
+      // remove duplicates
+      persons = persons.filter((person, index, self) => self.findIndex(p => p.username === person.username) === index);
+
       const returnType: FindPersonReturnType[] = persons.map(personDoc => {
         const personDto = UserMongoDTO.fromMongo(personDoc, false);
         const person = UserMongoDTO.toEntity(personDto);
