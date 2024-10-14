@@ -30,7 +30,6 @@ export interface FollowingProps {
 
 export interface FavoriteProps {
   instituteId: string;
-  eventId: string;
   favoritedAt?: Date;
 }
 
@@ -406,9 +405,6 @@ export class User {
     }
     favorites?.forEach((f) => {
       if (!f.instituteId || f.instituteId.trim().length === 0) {
-        return false;
-      }
-      if (!f.eventId || f.eventId.trim().length === 0) {
         return false;
       }
     });
