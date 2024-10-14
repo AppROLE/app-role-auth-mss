@@ -1,5 +1,6 @@
 import { GetProfileReturnType } from "src/shared/helpers/types/get_profile_return_type";
 import { User } from "../entities/user";
+import { FindPersonReturnType } from "src/shared/helpers/types/find_person_return_type";
 
 export interface IUserRepository {
   createUser(user: User): Promise<User>;
@@ -17,4 +18,5 @@ export interface IUserRepository {
   ): Promise<void>;
   getFriends(username: string): Promise<User[]>;
   getAllReviewsByEvent(eventId: string): Promise<User[]>;
+  findPerson(searchTerm: string): Promise<FindPersonReturnType[]>;
 }
