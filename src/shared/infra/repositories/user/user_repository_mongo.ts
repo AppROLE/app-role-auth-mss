@@ -409,7 +409,48 @@ export class UserRepositoryMongo implements IUserRepository {
         { $set: { favorites: updatedFavorites } }
       );
     } catch (error: any) {
+      throw new Error(`Error favorite institute on MongoDB: ${error}`);
+    }
+  }
 
+  async followUser(username: string, followedUsername: string): Promise<void> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ username });
+
+      if (!userDoc) {
+        throw new NoItemsFound('username');
+      }
+
+      const followedUserDoc = await userMongoClient?.findOne({ username: followedUsername });
+
+      if (!followedUserDoc) {
+        throw new NoItemsFound('followedUsername');
+      }
+
+      const userAlreadyFollows = userDoc.following.some(follow => follow.user_followed_id === followedUserDoc._id);
+
+      let updatedFollowing;
+
+      if (userAlreadyFollows) {
+        updatedFollowing = userDoc.following.filter(follow => follow.user_followed_id !== followedUserDoc._id);
+      } else {
+        updatedFollowing = [...userDoc.following, { user_followed_id: followedUserDoc._id }];
+      }
+
+      await userMongoClient?.updateOne(
+        { username }, 
+        { $set: { following: updatedFollowing } }
+      );
+    } catch (error: any) {
+      throw new Error(`Error following user on MongoDB: ${error}`);
     }
   }
 }
