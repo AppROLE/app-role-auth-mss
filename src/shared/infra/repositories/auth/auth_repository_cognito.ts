@@ -558,6 +558,10 @@ export class AuthRepositoryCognito implements IAuthRepository {
     try {
       console.log("USERNAME TO UPDATE: ", username);
       console.log("NICKNAME TO UPDATE: ", nickname);
+      const user = await this.findUserByUsername(username);
+
+      console.log("USER TO UPDATE: ", user);
+
       const params: AdminUpdateUserAttributesCommandInput = {
         UserPoolId: this.userPoolId,
         Username: username,
