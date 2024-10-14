@@ -1,5 +1,6 @@
 import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
 import { User } from "../entities/user";
+import { ChangeUsernameReturnType } from "src/shared/helpers/types/change_username_return_type";
 
 export interface IAuthRepository {
   forgotPassword(email: string, code: string): Promise<string>;
@@ -42,4 +43,16 @@ export interface IAuthRepository {
     refreshToken: string;
   }>;
   deleteAccount(username: string): Promise<void>;
+  changeUsername(
+    email: string,
+    username: string,
+    newUsername: string,
+    password: string
+  ): Promise<ChangeUsernameReturnType | null>
+
+  updateProfile(
+    username: string,
+    nickname: string
+  ): Promise<void>;
+  findUserByUsername(username: string): Promise<User | undefined>;
 }
