@@ -19,7 +19,9 @@ export const connectDB = async (): Promise<Mongoose> => {
     console.log('Connecting to MongoDB, uri:', uri);
     
     // Cria a conexão apenas uma vez
-    mongoConnection = await mongoose.connect(uri);
+    mongoConnection = await mongoose.connect(uri, {
+      maxPoolSize: 200
+    });
 
     console.log('MongoDB connected');
     return mongoConnection;
