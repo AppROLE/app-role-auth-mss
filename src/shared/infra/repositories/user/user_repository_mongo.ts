@@ -317,9 +317,11 @@ export class UserRepositoryMongo implements IUserRepository {
       } 
       );
 
+      db.connections[0].close();
+
       return returnType
     } catch (error) {
       throw new Error(`Error finding person on MongoDB: ${error}`);
-    }
+    } 
   }
 }
