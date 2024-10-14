@@ -1,7 +1,6 @@
 import { PRIVACY_TYPE } from "src/shared/domain/enums/privacy_enum";
 import { IUser } from "../models/user.model";
 import { FavoriteProps, FollowingProps, ReviewProps, User } from "src/shared/domain/entities/user";
-import { ROLE_TYPE } from "src/shared/domain/enums/role_type_enum";
 import { IUser as UserDocument } from "../models/user.model";
 
 export interface UserMongoDTOProps {
@@ -99,7 +98,6 @@ export class UserMongoDTO {
       })),
       favorites: userMongoDTO.favorites.map(favorite => ({
         instituteId: favorite.instituteId,
-        eventId: favorite.eventId,
         favoritedAt: favorite.favoritedAt,
       })),
       reviews: userMongoDTO.reviews.map(review => ({
@@ -132,7 +130,6 @@ export class UserMongoDTO {
       })),
       favorites: user.userFavorites.map(favorite => ({
         instituteId: favorite.instituteId,
-        eventId: favorite.eventId,
         favoritedAt: favorite.favoritedAt
       })),
       reviews: user.userReviews.map(review => ({
@@ -163,7 +160,6 @@ export class UserMongoDTO {
       })),
       favorites: userMongoDTO.favorites.map(favorite => ({
         institute_id: favorite.instituteId,
-        event_id: favorite.eventId,
         favorited_at: favorite.favoritedAt
       })),
       reviews: userMongoDTO.reviews.map(review => ({
