@@ -51,9 +51,6 @@ export class UpdateProfileController {
       if (error instanceof MissingParameters || error instanceof WrongTypeParameters) {
         return new BadRequest(error.message);
       }
-      if (error instanceof Error) {
-        return new InternalServerError(error.message);
-      }
       if (error instanceof DuplicatedItem) {
         return new BadRequest(error.message);
       }
@@ -65,6 +62,9 @@ export class UpdateProfileController {
       }
       if (error instanceof WrongTypeParameters) {
         return new BadRequest(error.message);
+      }
+      if (error instanceof Error) {
+        return new InternalServerError(error.message);
       }
     }
   }
