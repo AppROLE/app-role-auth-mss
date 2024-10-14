@@ -27,6 +27,7 @@ import { EntityError } from "src/shared/helpers/errors/domain_errors";
 import { FinishSignUpReturnType } from "src/shared/helpers/types/finish_sign_up_return_type";
 import { InvalidCredentialsError } from "src/shared/helpers/errors/login_errors";
 import { DuplicatedItem, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
+import { ChangeUsernameReturnType } from "src/shared/helpers/types/change_username_return_type";
 
 export class AuthRepositoryCognito implements IAuthRepository {
   userPoolId: string;
@@ -546,6 +547,177 @@ export class AuthRepositoryCognito implements IAuthRepository {
     } catch (error: any) {
       throw new Error(
         "AuthRepositoryCognito, Error on deleteAccount: " + error.message
+      );
+    }
+  }
+
+  async updateProfile(
+    username: string,
+    nickname: string
+  ) {
+    try {
+      const params: AdminUpdateUserAttributesCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: username,
+        UserAttributes: [
+          {
+            Name: "nickname",
+            Value: nickname,
+          },
+        ],
+      };
+
+      const command = new AdminUpdateUserAttributesCommand(params);
+
+      await this.client.send(command);
+    } catch (error: any) {
+      throw new Error(
+        "AuthRepositoryCognito, Error on updateProfile: " + error.message
+      );
+    }
+  }
+
+  async changeUsername(
+    email: string,
+    username: string,
+    newUsername: string,
+    password: string
+  ): Promise<ChangeUsernameReturnType | null> {
+    // implementar a logica de pegar TODOS os attrs do user, salvar numa variavel e deletar o user e criar um novo com os mesmos attrs e o novo username e password
+
+    try {
+      const user = await this.getUserByEmail(email);
+
+      if (!user) return null
+
+      const params: AdminGetUserCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: user.userUsername as string,
+      };
+
+      const command = new AdminGetUserCommand(params);
+      const result = await this.client.send(command);
+
+      const allAttributtesOfUser = {
+        email: result.UserAttributes?.find(
+          (attr) => attr.Name === "email"
+        )?.Value,
+        name: result.UserAttributes?.find((attr) => attr.Name === "name")
+          ?.Value,
+        nickname: result.UserAttributes?.find(
+          (attr) => attr.Name === "custom:nickname"
+        )?.Value,
+        acceptedTerms: result.UserAttributes?.find(
+          (attr) => attr.Name === "custom:acceptedTerms"
+        )?.Value,
+        roleType: result.UserAttributes?.find(
+          (attr) => attr.Name === "custom:roleType"
+        )?.Value,
+      };
+
+      const paramsToRealSignUp: SignUpCommandInput = {
+        ClientId: this.clientId,
+        Password: password,
+        Username: newUsername,
+        UserAttributes: [
+          {
+            Name: "email",
+            Value: allAttributtesOfUser.email,
+          },
+          {
+            Name: "name",
+            Value: allAttributtesOfUser.name,
+          },
+          {
+            Name: "nickname",
+            Value: allAttributtesOfUser.nickname,
+          },
+          {
+            Name: "custom:acceptedTerms",
+            Value: allAttributtesOfUser.acceptedTerms,
+          },
+          {
+            Name: "custom:roleType",
+            Value: allAttributtesOfUser.roleType,
+          },
+        ],
+      };
+
+      const commandToRealSignUp = new SignUpCommand(paramsToRealSignUp);
+      console.log("COMMAND TO REAL SIGN UP: ", commandToRealSignUp);
+      const resultRealSignUp = await this.client.send(commandToRealSignUp);
+
+      console.log("FINISH SIGN UP RESULT FROM REAL SIGN UP: ", resultRealSignUp);
+
+      await this.client.send(
+        new AdminConfirmSignUpCommand({
+          UserPoolId: this.userPoolId,
+          Username: newUsername,
+        })
+      );
+
+      const paramsConfirmEmail: AdminUpdateUserAttributesCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: newUsername,
+        UserAttributes: [
+          {
+            Name: "email_verified",
+            Value: "true",
+          },
+        ],
+
+      };
+
+      const commandConfirmEmail = new AdminUpdateUserAttributesCommand(
+        paramsConfirmEmail
+      );
+
+      await this.client.send(commandConfirmEmail);
+
+      await this.client.send(
+        new AdminDeleteUserCommand({
+          UserPoolId: this.userPoolId,
+          Username: username,
+        })
+      );
+
+      return allAttributtesOfUser as ChangeUsernameReturnType
+
+    } catch (error: any) {
+      throw new Error(
+        "AuthRepositoryCognito, Error on changeUsername: " + error.message
+      );
+    }
+
+  }
+
+  async findUserByUsername(username: string): Promise<User | undefined> {
+    try {
+      const params: AdminGetUserCommandInput = {
+        UserPoolId: this.userPoolId,
+        Username: username,
+      };
+
+      const command = new AdminGetUserCommand(params);
+      const result = await this.client.send(command);
+
+      if (!result) return
+
+      return new User({
+        name: result.UserAttributes?.find((attr) => attr.Name === "name")
+          ?.Value as string,
+        email: result.UserAttributes?.find((attr) => attr.Name === "email")
+          ?.Value as string,
+        username: result.Username as string,
+        nickname: result.UserAttributes?.find(
+          (attr) => attr.Name === "custom:nickname"
+        )?.Value as string,
+        user_id: result.UserAttributes?.find((attr) => attr.Name === "sub")
+          ?.Value as string,
+      });
+    } catch (error: any) {
+      throw new Error(
+        "AuthRepositoryCognito, Error on findUserByUsername: " + error.message
       );
     }
   }
