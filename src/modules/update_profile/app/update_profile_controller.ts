@@ -28,8 +28,6 @@ export class UpdateProfileController {
       if (biography && typeof biography !== 'string') throw new WrongTypeParameters('biography', 'string', typeof biography);
       if (instagramLink && typeof instagramLink !== 'string') throw new WrongTypeParameters('instagramLink', 'string', typeof instagramLink);
       if (tiktokLink && typeof tiktokLink !== 'string') throw new WrongTypeParameters('tiktokLink', 'string', typeof tiktokLink);
-      
-      if (newUsername && parsedUserApiGateway.username !== newUsername) throw new ForbiddenAction('usuário');
 
       if (newUsername && !password) throw new MissingParameters('senha');
 
