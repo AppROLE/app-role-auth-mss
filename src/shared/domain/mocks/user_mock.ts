@@ -22,7 +22,6 @@ export class UserMock {
         favorites: [
           {
             instituteId: "1",
-            eventId: "101",
             favoritedAt: new Date("2024-01-10"),
           },
         ],
@@ -52,7 +51,6 @@ export class UserMock {
         favorites: [
           {
             instituteId: "2",
-            eventId: "102",
             favoritedAt: new Date("2024-01-20"),
           },
         ],
@@ -82,7 +80,6 @@ export class UserMock {
         favorites: [
           {
             instituteId: "3",
-            eventId: "103",
             favoritedAt: new Date("2024-01-30"),
           },
         ],
