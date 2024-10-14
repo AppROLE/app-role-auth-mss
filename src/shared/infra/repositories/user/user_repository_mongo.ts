@@ -322,4 +322,55 @@ export class UserRepositoryMongo implements IUserRepository {
       throw new Error(`Error finding person on MongoDB: ${error}`);
     } 
   }
+
+  async updateProfile(
+    username: string,
+    newUsername?: string,
+    nickname?: string,
+    biography?: string,
+    instagramLink?: string,
+    tiktokLink?: string
+  ) {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ username });
+
+      if (!userDoc) return null
+
+      if (newUsername) {
+        userDoc.username = newUsername;
+      }
+
+      if (nickname) {
+        userDoc.nickname = nickname;
+      }
+
+      if (biography) {
+        userDoc.biography = biography;
+      }
+
+      if (instagramLink) {
+        userDoc.lnk_instagram = instagramLink;
+      }
+
+      if (tiktokLink) {
+        userDoc.lnk_tiktok = tiktokLink;
+      }
+
+      const respMongo = await userMongoClient?.updateOne({ username }, { $set: userDoc });
+      console.log('MONGO REPO USER RESPMONGO: ', respMongo);
+
+      return true;
+
+    } catch (error) {
+      throw new Error(`Error updating profile on MongoDB: ${error}`);
+    }
+  }
 }
