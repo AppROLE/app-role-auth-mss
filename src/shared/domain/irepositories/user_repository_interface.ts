@@ -19,4 +19,12 @@ export interface IUserRepository {
   getFriends(username: string): Promise<User[]>;
   getAllReviewsByEvent(eventId: string): Promise<User[]>;
   findPerson(searchTerm: string): Promise<FindPersonReturnType[]>;
+  updateProfile(
+    username: string,
+    newUsername?: string,
+    nickname?: string,
+    biography?: string,
+    instagramLink?: string,
+    tiktokLink?: string
+  ): Promise<boolean | null>;
 }
