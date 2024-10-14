@@ -312,7 +312,7 @@ export class UserRepositoryMongo implements IUserRepository {
         return {
           profilePhoto: person.userProfilePhoto,
           username: person.userUsername,
-          nickname: person.userName
+          nickname: person.userNickname as string
         };
       } 
       );
