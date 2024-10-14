@@ -35,9 +35,10 @@ export class UpdateProfileUseCase {
       if (!resp) throw new NoItemsFound('usuário');
     }
     if (newUsername && nickname) {
+      console.log('if newUsername && nickname, newUsername: ', newUsername, 'nickname: ', nickname);
       await this.authRepo.updateProfile(newUsername, nickname)
     }
-    if (nickname) {
+    if (!newUsername && nickname) {
       await this.authRepo.updateProfile(username, nickname)
     }
 
