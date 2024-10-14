@@ -716,6 +716,12 @@ export class AuthRepositoryCognito implements IAuthRepository {
           ?.Value as string,
       });
     } catch (error: any) {
+      if (error.name === "UserNotFoundException") {
+        return undefined
+      }
+      if (error.name === "ResourceNotFoundException") {
+        return undefined
+      }
       throw new Error(
         "AuthRepositoryCognito, Error on findUserByUsername: " + error.message
       );
