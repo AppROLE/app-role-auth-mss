@@ -30,4 +30,5 @@ export interface IUserRepository {
   favoriteInstitute(username: string, instituteId: string): Promise<void>;
   followUser(username: string, followedUsername: string): Promise<void>;
   getAllFollowers(username: string): Promise<User[]>;
+  getAllFollowing(username: string): Promise<User[]>;
 }
