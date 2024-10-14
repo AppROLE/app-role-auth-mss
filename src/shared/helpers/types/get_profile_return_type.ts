@@ -1,6 +1,6 @@
 export type GetProfileReturnType = {
   userId: string
-  name: string
+  nickname: string
   username: string
   linkTiktok?: string
   linkInstagram?: string

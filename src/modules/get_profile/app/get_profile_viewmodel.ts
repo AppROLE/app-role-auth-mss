@@ -1,6 +1,6 @@
 export class GetProfileViewmodel {
   userId: string
-  name: string
+  nickname: string
   biography: string | undefined
   username: string
   profilePhoto?: string
@@ -13,7 +13,7 @@ export class GetProfileViewmodel {
 
   constructor(
     userId: string,
-    name: string,
+    nickname: string,
     username: string,
     following: number,
     followers: number,
@@ -25,7 +25,7 @@ export class GetProfileViewmodel {
     linkInstagram?: string
   ) {
     this.userId = userId
-    this.name = name
+    this.nickname = nickname
     this.username = username
     this.following = following
     this.privacy = privacy
@@ -40,7 +40,7 @@ export class GetProfileViewmodel {
   toJSON() {
     return {
       userId: this.userId,
-      name: this.name,
+      nickname: this.nickname,
       username: this.username,
       linkTiktok: this.linkTiktok,
       linkInstagram: this.linkInstagram,

@@ -30,7 +30,7 @@ export class GetProfileController {
 
       const viewmodel = new GetProfileViewmodel(
         profile.userId,
-        profile.name,
+        profile.nickname,
         profile.username,
         profile.following,
         profile.followers,
