@@ -489,4 +489,46 @@ export class UserRepositoryMongo implements IUserRepository {
       throw new Error(`Error getting all followers on MongoDB: ${error}`);
     }
   }
+
+  async getAllFollowing(username: string): Promise<User[]> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+      
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ username });
+
+      if (!userDoc) {
+        throw new NoItemsFound('username');
+      }
+
+      const following = userDoc.following.map(follow => follow.user_followed_id);
+
+      if (!following) {
+        return [];
+      }
+
+      const followingDocs = await userMongoClient?.find({ _id: { $in: following } }).toArray();
+
+      if (!followingDocs) {
+        throw new NoItemsFound('following');
+      }
+
+      const followingDto = followingDocs.map(followingDoc => {
+        return UserMongoDTO.fromMongo(followingDoc, false);
+      });
+
+      const followingEntities = followingDto.map(followingDto => {
+        return UserMongoDTO.toEntity(followingDto);
+      });
+
+      return followingEntities;
+    } catch (error: any) {
+      throw new Error(`Error getting all following on MongoDB: ${error}`);
+    }
+  }
 }
