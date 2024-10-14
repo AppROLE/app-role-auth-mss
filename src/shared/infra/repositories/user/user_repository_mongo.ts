@@ -375,4 +375,41 @@ export class UserRepositoryMongo implements IUserRepository {
       throw new Error(`Error updating profile on MongoDB: ${error}`);
     }
   }
+
+  async favoriteInstitute(username: string, instituteId: string): Promise<void> {
+    try{
+      const db = await connectDB();
+      db.connections[0].on('error', () => {
+        console.error.bind(console, 'connection error:')
+        throw new Error('Error connecting to MongoDB');
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userDoc = await userMongoClient?.findOne({ username })
+
+      if (!userDoc) {
+        throw new NoItemsFound('username');
+      }
+
+      const instituteIdExists = userDoc.favorites.some(favorite => favorite.institute_id === instituteId);
+
+      let updatedFavorites;
+      
+      if (instituteIdExists) {
+        // Remove o instituteId existente
+        updatedFavorites = userDoc.favorites.filter(favorite => favorite.institute_id !== instituteId);
+      } else {
+        // Adiciona o novo instituteId
+        updatedFavorites = [...userDoc.favorites, { institute_id: instituteId }];
+      }
+
+      await userMongoClient?.updateOne(
+        { username }, 
+        { $set: { favorites: updatedFavorites } }
+      );
+    } catch (error: any) {
+
+    }
+  }
 }
