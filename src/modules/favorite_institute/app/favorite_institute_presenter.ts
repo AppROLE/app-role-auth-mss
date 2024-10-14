@@ -11,7 +11,7 @@ const userRepo = Environments.getUserRepo();
 const usecase = new FavoriteInstituteUseCase(userRepo);
 const controller = new FavoriteInstituteController(usecase);
 
-export async function createReviewPresenter(
+export async function favoriteInstitutePresenter(
   event: Record<string, any>
 ) {
   const requesterUser = getRequesterUser(event);
@@ -28,6 +28,6 @@ export async function createReviewPresenter(
 }
 
 export async function lambda_handler(event: any, context: any) {
-  const response = await createReviewPresenter(event);
+  const response = await favoriteInstitutePresenter(event);
   return response;
 }
