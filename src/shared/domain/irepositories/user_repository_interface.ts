@@ -27,4 +27,5 @@ export interface IUserRepository {
     instagramLink?: string,
     tiktokLink?: string
   ): Promise<boolean | null>;
+  favoriteInstitute(username: string, instituteId: string): Promise<void>;
 }
