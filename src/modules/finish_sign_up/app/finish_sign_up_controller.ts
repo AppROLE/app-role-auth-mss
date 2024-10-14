@@ -44,11 +44,11 @@ export class FinishSignUpController {
     try {
       let resp;
 
-      console.log('FINSIH SIGN UP CONTROLLER', email, newUsername, password, newNickname);
+      console.log('FINSIH SIGN UP CONTROLLER', email, newUsername.toLowerCase(), password, newNickname);
 
       resp = newNickname && typeof newNickname === 'string' ?
-        await this.usecase.execute(email, newUsername, password, newNickname) :
-        await this.usecase.execute(email, newUsername, password, undefined);
+        await this.usecase.execute(email, newUsername.toLowerCase(), password, newNickname) :
+        await this.usecase.execute(email, newUsername.toLowerCase(), password, undefined);
 
       const viewmodel = new FinishSignUpViewmodel(
         "Seu cadastro foi finalizado com sucesso!"
