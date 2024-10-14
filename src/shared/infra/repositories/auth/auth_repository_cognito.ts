@@ -605,7 +605,7 @@ export class AuthRepositoryCognito implements IAuthRepository {
         name: result.UserAttributes?.find((attr) => attr.Name === "name")
           ?.Value,
         nickname: result.UserAttributes?.find(
-          (attr) => attr.Name === "custom:nickname"
+          (attr) => attr.Name === "nickname"
         )?.Value,
         acceptedTerms: result.UserAttributes?.find(
           (attr) => attr.Name === "custom:acceptedTerms"
