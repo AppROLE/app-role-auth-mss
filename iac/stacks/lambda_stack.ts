@@ -33,6 +33,7 @@ export class LambdaStack extends Construct {
   favoriteInstituteFunction: lambda.Function
   followUserFunction: lambda.Function
   getAllFollowersFunction: lambda.Function
+  getAllFollowingFunction: lambda.Function
 
   createLambdaApiGatewayIntegration(
     moduleName: string, 
@@ -106,6 +107,7 @@ export class LambdaStack extends Construct {
     this.favoriteInstituteFunction = this.createLambdaApiGatewayIntegration('favorite_institute', 'PUT', apiGatewayResource, environmentVariables, authorizer)
     this.followUserFunction = this.createLambdaApiGatewayIntegration('follow_user', 'PUT', apiGatewayResource, environmentVariables, authorizer)
     this.getAllFollowersFunction = this.createLambdaApiGatewayIntegration('get_all_followers', 'GET', apiGatewayResource, environmentVariables, authorizer)
+    this.getAllFollowingFunction = this.createLambdaApiGatewayIntegration('get_all_following', 'GET', apiGatewayResource, environmentVariables, authorizer)
 
     this.functionsThatNeedS3Permissions = [
       this.uploadProfilePhoto
@@ -125,7 +127,8 @@ export class LambdaStack extends Construct {
       this.updateProfileFunction,
       this.favoriteInstituteFunction,
       this.followUserFunction,
-      this.getAllFollowersFunction
+      this.getAllFollowersFunction,
+      this.getAllFollowingFunction
     ]
   }
 }
