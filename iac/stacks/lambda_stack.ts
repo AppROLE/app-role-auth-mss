@@ -99,9 +99,7 @@ export class LambdaStack extends Construct {
     // inside app router
     this.getProfileFunction = this.createLambdaApiGatewayIntegration('get_profile', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.deleteAccountFunction = this.createLambdaApiGatewayIntegration('delete_account', 'DELETE', apiGatewayResource, environmentVariables, authorizer)
-    this.createReviewFunction = this.createLambdaApiGatewayIntegration('create_review', 'POST', apiGatewayResource, environmentVariables, authorizer)
     this.getFriendsFunction = this.createLambdaApiGatewayIntegration('get_friends', 'GET', apiGatewayResource, environmentVariables, authorizer)
-    this.getAllReviewsByEventFunction = this.createLambdaApiGatewayIntegration('get_all_reviews_by_event', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.findPersonFunction = this.createLambdaApiGatewayIntegration('find_person', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.updateProfileFunction = this.createLambdaApiGatewayIntegration('update_profile', 'PUT', apiGatewayResource, environmentVariables, authorizer)
     this.favoriteInstituteFunction = this.createLambdaApiGatewayIntegration('favorite_institute', 'PUT', apiGatewayResource, environmentVariables, authorizer)
