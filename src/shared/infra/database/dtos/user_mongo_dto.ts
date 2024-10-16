@@ -1,6 +1,6 @@
 import { PRIVACY_TYPE } from "src/shared/domain/enums/privacy_enum";
 import { IUser } from "../models/user.model";
-import { FavoriteProps, FollowingProps, ReviewProps, User } from "src/shared/domain/entities/user";
+import { FavoriteProps, FollowingProps, User } from "src/shared/domain/entities/user";
 import { IUser as UserDocument } from "../models/user.model";
 
 export interface UserMongoDTOProps {
@@ -18,7 +18,6 @@ export interface UserMongoDTOProps {
   privacy: PRIVACY_TYPE
   following: FollowingProps[];
   favorites: FavoriteProps[];
-  reviews: ReviewProps[];
 }
 
 export class UserMongoDTO {
@@ -36,7 +35,6 @@ export class UserMongoDTO {
   private privacy: PRIVACY_TYPE
   private following: FollowingProps[];
   private favorites: FavoriteProps[];
-  private reviews: ReviewProps[];
 
   constructor(props: UserMongoDTOProps) {
     this._id = props._id;
@@ -53,7 +51,6 @@ export class UserMongoDTO {
     this.privacy = props.privacy;
     this.following = props.following;
     this.favorites = props.favorites;
-    this.reviews = props.reviews;
   }
 
   static fromMongo(userDoc: IUser, needToObj: boolean): UserMongoDTO {
@@ -74,7 +71,6 @@ export class UserMongoDTO {
       privacy: userObject.privacy,
       following: userObject.following,
       favorites: userObject.favorites,
-      reviews: userObject.reviews,
     });
   }
 
@@ -99,13 +95,6 @@ export class UserMongoDTO {
       favorites: userMongoDTO.favorites.map(favorite => ({
         instituteId: favorite.instituteId,
         favoritedAt: favorite.favoritedAt,
-      })),
-      reviews: userMongoDTO.reviews.map(review => ({
-        instituteId: review.instituteId,
-        eventId: review.eventId,
-        star: review.star,
-        review: review.review,
-        reviewedAt: review.reviewedAt
       }))
     })
   }
@@ -132,13 +121,6 @@ export class UserMongoDTO {
         instituteId: favorite.instituteId,
         favoritedAt: favorite.favoritedAt
       })),
-      reviews: user.userReviews.map(review => ({
-        instituteId: review.instituteId,
-        eventId: review.eventId,
-        star: review.star,
-        review: review.review,
-        reviewedAt: review.reviewedAt
-      }))
     });
   }
 
@@ -161,13 +143,6 @@ export class UserMongoDTO {
       favorites: userMongoDTO.favorites.map(favorite => ({
         institute_id: favorite.instituteId,
         favorited_at: favorite.favoritedAt
-      })),
-      reviews: userMongoDTO.reviews.map(review => ({
-        institute_id: review.instituteId,
-        event_id: review.eventId,
-        star: review.star,
-        review: review.review,
-        reviewed_at: review.reviewedAt
       })),
       created_at: new Date(),
     } as UserDocument;
