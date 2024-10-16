@@ -25,15 +25,6 @@ export class UserMock {
             favoritedAt: new Date("2024-01-10"),
           },
         ],
-        reviews: [
-          {
-            instituteId: "1",
-            eventId: "101",
-            star: 4,
-            review: "Great place!",
-            reviewedAt: new Date("2024-02-01"),
-          },
-        ],
       }),
       new User({
         name: "User",
@@ -54,15 +45,6 @@ export class UserMock {
             favoritedAt: new Date("2024-01-20"),
           },
         ],
-        reviews: [
-          {
-            instituteId: "2",
-            eventId: "102",
-            star: 5,
-            review: "Amazing experience!",
-            reviewedAt: new Date("2024-02-02"),
-          },
-        ],
       }),
       new User({
         name: "Lionel Messi",
@@ -81,15 +63,6 @@ export class UserMock {
           {
             instituteId: "3",
             favoritedAt: new Date("2024-01-30"),
-          },
-        ],
-        reviews: [
-          {
-            instituteId: "3",
-            eventId: "103",
-            star: 3,
-            review: "Good but could be better",
-            reviewedAt: new Date("2024-02-03"),
           },
         ],
       }),
