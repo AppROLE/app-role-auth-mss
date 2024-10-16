@@ -20,7 +20,6 @@ interface UserProps {
   privacy?: PRIVACY_TYPE;
   following?: FollowingProps[];
   favorites?: FavoriteProps[];
-  reviews?: ReviewProps[];
 }
 
 export interface FollowingProps {
@@ -31,14 +30,6 @@ export interface FollowingProps {
 export interface FavoriteProps {
   instituteId: string;
   favoritedAt?: Date;
-}
-
-export interface ReviewProps {
-  instituteId: string;
-  eventId: string;
-  star: number;
-  review: string;
-  reviewedAt?: Date;
 }
 
 export class User {
@@ -59,7 +50,6 @@ export class User {
   private created_at: Date;
   private following: FollowingProps[];
   private favorites: FavoriteProps[];
-  private reviews: ReviewProps[];
 
   constructor(props: UserProps) {
     this.user_id = props.user_id;
@@ -127,7 +117,6 @@ export class User {
 
     this.following = props.following || [];
     this.favorites = props.favorites || [];
-    this.reviews = props.reviews || [];
     this.created_at = props.createdAt || new Date();
   }
 
@@ -199,10 +188,6 @@ export class User {
     return this.favorites;
   }
 
-  get userReviews(): ReviewProps[] {
-    return this.reviews;
-  }
-
   set setUserId(id: string | undefined) {
     this.user_id = id;
   }
@@ -265,10 +250,6 @@ export class User {
 
   set setUserFavorites(favorites: FavoriteProps[]) {
     this.favorites = favorites;
-  }
-
-  set setUserReviews(reviews: ReviewProps[]) {
-    this.reviews = reviews;
   }
 
   set setUserPassword(password: string | undefined) {
@@ -412,26 +393,4 @@ export class User {
     return true;
   }
 
-  static validateReviews(reviews?: ReviewProps[]): boolean {
-    if (reviews && !Array.isArray(reviews)) {
-      return false;
-    }
-    reviews?.forEach((r) => {
-      if (!r.instituteId || r.instituteId.trim().length === 0) {
-        return false;
-      }
-      if (!r.star || r.star < 1 || r.star > 5) {
-        return false;
-      }
-      if (
-        !r.review ||
-        r.review.trim().length === 0 ||
-        r.review.trim().length > 1000
-      ) {
-        return false;
-      }
-    });
-
-    return true;
-  }
 }
