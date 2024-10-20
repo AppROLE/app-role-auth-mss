@@ -1,102 +1,112 @@
-import { DuplicatedItem, NoItemsFound } from "src/shared/helpers/errors/usecase_errors";
+import {
+  DuplicatedItem,
+  NoItemsFound,
+} from "src/shared/helpers/errors/usecase_errors";
 import { User } from "../../../domain/entities/user";
 import { IUserRepository } from "../../../domain/irepositories/user_repository_interface";
 import { connectDB } from "../../database/models";
 import { IUser } from "../../database/models/user.model";
-import { UserMongoDTO } from "../../database/dtos/user_mongo_dto"
-import { v4 as uuidv4 } from 'uuid';
+import { UserMongoDTO } from "../../database/dtos/user_mongo_dto";
+import { v4 as uuidv4 } from "uuid";
 import { GetProfileReturnType } from "src/shared/helpers/types/get_profile_return_type";
 import { PRIVACY_TYPE } from "src/shared/domain/enums/privacy_enum";
 import { FindPersonReturnType } from "src/shared/helpers/types/find_person_return_type";
 
-export class UserRepositoryMongo implements IUserRepository { 
+export class UserRepositoryMongo implements IUserRepository {
   async createUser(user: User): Promise<User> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const dto = UserMongoDTO.fromEntity(user);
       const userDoc = UserMongoDTO.toMongo(dto);
 
-      console.log('MONGO REPO USER DOC: ', userDoc);
+      console.log("MONGO REPO USER DOC: ", userDoc);
 
       userDoc._id = uuidv4();
 
-      const userAlreadyExists = await userMongoClient?.findOne({ email: user.userEmail });
+      const userAlreadyExists = await userMongoClient?.findOne({
+        email: user.userEmail,
+      });
 
       if (userAlreadyExists) {
-        throw new DuplicatedItem('email');
+        throw new DuplicatedItem("email");
       }
 
       const respMongo = await userMongoClient?.insertOne(userDoc);
-      console.log('MONGO REPO USER RESPMONGO: ', respMongo);
-      console.log('MONGO REPO USER CREATED: ', user);
+      console.log("MONGO REPO USER RESPMONGO: ", respMongo);
+      console.log("MONGO REPO USER CREATED: ", user);
 
       return user;
     } catch (error) {
       throw new Error(`Error creating user on MongoDB: ${error}`);
     } finally {
-      
     }
   }
 
-  async updateProfilePhoto(email: string, profilePhotoUrl: string): Promise<string> {
+  async updateProfilePhoto(
+    email: string,
+    profilePhotoUrl: string
+  ): Promise<string> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ email });
 
       if (!userDoc) {
-        throw new NoItemsFound('email');
+        throw new NoItemsFound("email");
       }
 
       userDoc.profile_photo = profilePhotoUrl;
 
-      const respMongo = await userMongoClient?.updateOne({ email }, { $set: userDoc });
-      console.log('MONGO REPO USER RESPMONGO: ', respMongo);
+      const respMongo = await userMongoClient?.updateOne(
+        { email },
+        { $set: userDoc }
+      );
+      console.log("MONGO REPO USER RESPMONGO: ", respMongo);
 
       return profilePhotoUrl;
-
     } catch (error) {
       throw new Error(`Error updating profile photo on MongoDB: ${error}`);
-    } 
-
+    }
   }
 
   async getProfile(username: string): Promise<GetProfileReturnType> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
-      console.log('MONGO REPO USER DOC: ', userDoc);
+      console.log("MONGO REPO USER DOC: ", userDoc);
 
       const userDto = UserMongoDTO.fromMongo(userDoc, false);
       const user = UserMongoDTO.toEntity(userDto);
 
       const following: number = user.userFollowing.length;
-      let followers = await userMongoClient?.countDocuments({ following: { $elemMatch: { user_followed_id: user.userId } } });
+      let followers = await userMongoClient?.countDocuments({
+        following: { $elemMatch: { user_followed_id: user.userId } },
+      });
       if (!followers) {
         followers = 0;
       }
@@ -112,9 +122,8 @@ export class UserRepositoryMongo implements IUserRepository {
         biography: user.userBiography,
         privacy: user.userPrivacy ? user.userPrivacy : PRIVACY_TYPE.PUBLIC,
         following,
-        followers
+        followers,
       };
-
     } catch (error) {
       throw new Error(`Error getting profile on MongoDB: ${error}`);
     }
@@ -123,15 +132,14 @@ export class UserRepositoryMongo implements IUserRepository {
   async deleteAccount(username: string): Promise<void> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       await userMongoClient?.deleteOne({ username });
-
     } catch (error) {
       throw new Error(`Error deleting account on MongoDB: ${error}`);
     }
@@ -140,26 +148,27 @@ export class UserRepositoryMongo implements IUserRepository {
   async findByUsername(username: string): Promise<User> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
       const userDto = UserMongoDTO.fromMongo(userDoc, false);
       const user = UserMongoDTO.toEntity(userDto);
 
       return user;
-
     } catch (error: any) {
-      throw new Error(`Error finding user by username on MongoDB: ${error.message}`);
+      throw new Error(
+        `Error finding user by username on MongoDB: ${error.message}`
+      );
     }
   }
 
@@ -173,17 +182,17 @@ export class UserRepositoryMongo implements IUserRepository {
   ): Promise<void> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
       const reviewDoc = {
@@ -191,14 +200,16 @@ export class UserRepositoryMongo implements IUserRepository {
         review,
         reviewedAt,
         institute_id: instituteId,
-        event_id: eventId
+        event_id: eventId,
       };
 
       userDoc.reviews.push(reviewDoc);
 
-      const respMongo = await userMongoClient?.updateOne({ username }, { $set: userDoc });
-      console.log('MONGO REPO USER RESPMONGO: ', respMongo);
-
+      const respMongo = await userMongoClient?.updateOne(
+        { username },
+        { $set: userDoc }
+      );
+      console.log("MONGO REPO USER RESPMONGO: ", respMongo);
     } catch (error) {
       throw new Error(`Error creating review on MongoDB: ${error}`);
     }
@@ -207,20 +218,20 @@ export class UserRepositoryMongo implements IUserRepository {
   async getFriends(username: string): Promise<User[]> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
-      const friends = userDoc.following.map(friend => {
+      const friends = userDoc.following.map((friend) => {
         return friend.user_followed_id;
       });
 
@@ -228,17 +239,19 @@ export class UserRepositoryMongo implements IUserRepository {
         return [];
       }
 
-      const friendsDocs = await userMongoClient?.find({ userId: { $in: friends } }).toArray();
+      const friendsDocs = await userMongoClient
+        ?.find({ userId: { $in: friends } })
+        .toArray();
 
       if (!friendsDocs) {
-        throw new NoItemsFound('friends');
+        throw new NoItemsFound("friends");
       }
 
-      const friendsDto = friendsDocs.map(friendDoc => {
+      const friendsDto = friendsDocs.map((friendDoc) => {
         return UserMongoDTO.fromMongo(friendDoc, false);
       });
 
-      const friendsEntities = friendsDto.map(friendDto => {
+      const friendsEntities = friendsDto.map((friendDto) => {
         return UserMongoDTO.toEntity(friendDto);
       });
 
@@ -251,49 +264,65 @@ export class UserRepositoryMongo implements IUserRepository {
   async getAllReviewsByEvent(eventId: string): Promise<User[]> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
-      const reviews = await userMongoClient?.find({ 'reviews.event_id': eventId }).toArray();
+      const reviews = await userMongoClient
+        ?.find({ "reviews.event_id": eventId })
+        .toArray();
 
       if (!reviews) {
-        throw new NoItemsFound('reviews');
+        throw new NoItemsFound("reviews");
       }
 
-      const reviewsDto = reviews.map(reviewDoc => {
+      const reviewsDto = reviews.map((reviewDoc) => {
         return UserMongoDTO.fromMongo(reviewDoc, false);
       });
 
-      const reviewsEntities = reviewsDto.map(reviewDto => {
+      const reviewsEntities = reviewsDto.map((reviewDto) => {
         return UserMongoDTO.toEntity(reviewDto);
       });
 
       return reviewsEntities;
-    }
-
-    catch (error) {
-      throw new Error(`Error getting all reviews by event on MongoDB: ${error}`);
+    } catch (error) {
+      throw new Error(
+        `Error getting all reviews by event on MongoDB: ${error}`
+      );
     }
   }
 
   async findPerson(searchTerm: string): Promise<FindPersonReturnType[]> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
       let persons: IUser[] = [];
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
-      const personsByFirst = await userMongoClient?.find({ $or: [{ username: { $regex: `^${searchTerm}`, $options: 'i' } }, { nickname: { $regex: `^${searchTerm}`, $options: 'i' } }] }).toArray();
-      const personsByFull = await userMongoClient?.find({ $or: [{ username: { $regex: `^${searchTerm}`, $options: 'i' } }, { nickname: { $regex: `^${searchTerm}`, $options: 'i' } }] }).toArray();
+      const personsByFirst = await userMongoClient
+        ?.find({
+          $or: [
+            { username: { $regex: `^${searchTerm}`, $options: "i" } },
+            { nickname: { $regex: `^${searchTerm}`, $options: "i" } },
+          ],
+        })
+        .toArray();
+      const personsByFull = await userMongoClient
+        ?.find({
+          $or: [
+            { username: { $regex: `^${searchTerm}`, $options: "i" } },
+            { nickname: { $regex: `^${searchTerm}`, $options: "i" } },
+          ],
+        })
+        .toArray();
 
       if (personsByFirst) {
         persons = persons.concat(personsByFirst);
@@ -304,23 +333,25 @@ export class UserRepositoryMongo implements IUserRepository {
       }
 
       // remove duplicates
-      persons = persons.filter((person, index, self) => self.findIndex(p => p.username === person.username) === index);
+      persons = persons.filter(
+        (person, index, self) =>
+          self.findIndex((p) => p.username === person.username) === index
+      );
 
-      const returnType: FindPersonReturnType[] = persons.map(personDoc => {
+      const returnType: FindPersonReturnType[] = persons.map((personDoc) => {
         const personDto = UserMongoDTO.fromMongo(personDoc, false);
         const person = UserMongoDTO.toEntity(personDto);
         return {
           profilePhoto: person.userProfilePhoto,
           username: person.userUsername,
-          nickname: person.userNickname as string
+          nickname: person.userNickname as string,
         };
-      } 
-      );
+      });
 
-      return returnType
+      return returnType;
     } catch (error) {
       throw new Error(`Error finding person on MongoDB: ${error}`);
-    } 
+    }
   }
 
   async updateProfile(
@@ -333,18 +364,18 @@ export class UserRepositoryMongo implements IUserRepository {
   ) {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
-      console.log('MONGO REPO USER DOC - UPDATE PROFILE: ', userDoc);
+      console.log("MONGO REPO USER DOC - UPDATE PROFILE: ", userDoc);
 
-      if (!userDoc) return null
+      if (!userDoc) return null;
 
       if (newUsername) {
         userDoc.username = newUsername;
@@ -366,46 +397,58 @@ export class UserRepositoryMongo implements IUserRepository {
         userDoc.lnk_tiktok = tiktokLink;
       }
 
-      const respMongo = await userMongoClient?.updateOne({ username }, { $set: userDoc });
-      console.log('MONGO REPO USER RESPMONGO: ', respMongo);
+      const respMongo = await userMongoClient?.updateOne(
+        { username },
+        { $set: userDoc }
+      );
+      console.log("MONGO REPO USER RESPMONGO: ", respMongo);
 
       return true;
-
     } catch (error) {
       throw new Error(`Error updating profile on MongoDB: ${error}`);
     }
   }
 
-  async favoriteInstitute(username: string, instituteId: string): Promise<void> {
-    try{
+  async favoriteInstitute(
+    username: string,
+    instituteId: string
+  ): Promise<void> {
+    try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
-      const userDoc = await userMongoClient?.findOne({ username })
+      const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
-      const instituteIdExists = userDoc.favorites.some(favorite => favorite.institute_id === instituteId);
+      const instituteIdExists = userDoc.favorites.some(
+        (favorite) => favorite.institute_id === instituteId
+      );
 
       let updatedFavorites;
-      
+
       if (instituteIdExists) {
         // Remove o instituteId existente
-        updatedFavorites = userDoc.favorites.filter(favorite => favorite.institute_id !== instituteId);
+        updatedFavorites = userDoc.favorites.filter(
+          (favorite) => favorite.institute_id !== instituteId
+        );
       } else {
         // Adiciona o novo instituteId
-        updatedFavorites = [...userDoc.favorites, { institute_id: instituteId }];
+        updatedFavorites = [
+          ...userDoc.favorites,
+          { institute_id: instituteId },
+        ];
       }
 
       await userMongoClient?.updateOne(
-        { username }, 
+        { username },
         { $set: { favorites: updatedFavorites } }
       );
     } catch (error: any) {
@@ -416,37 +459,46 @@ export class UserRepositoryMongo implements IUserRepository {
   async followUser(username: string, followedUsername: string): Promise<void> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
 
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
-      const followedUserDoc = await userMongoClient?.findOne({ username: followedUsername });
+      const followedUserDoc = await userMongoClient?.findOne({
+        username: followedUsername,
+      });
 
       if (!followedUserDoc) {
-        throw new NoItemsFound('followedUsername');
+        throw new NoItemsFound("followedUsername");
       }
 
-      const userAlreadyFollows = userDoc.following.some(follow => follow.user_followed_id === followedUserDoc._id);
+      const userAlreadyFollows = userDoc.following.some(
+        (follow) => follow.user_followed_id === followedUserDoc._id
+      );
 
       let updatedFollowing;
 
       if (userAlreadyFollows) {
-        updatedFollowing = userDoc.following.filter(follow => follow.user_followed_id !== followedUserDoc._id);
+        updatedFollowing = userDoc.following.filter(
+          (follow) => follow.user_followed_id !== followedUserDoc._id
+        );
       } else {
-        updatedFollowing = [...userDoc.following, { user_followed_id: followedUserDoc._id }];
+        updatedFollowing = [
+          ...userDoc.following,
+          { user_followed_id: followedUserDoc._id },
+        ];
       }
 
       await userMongoClient?.updateOne(
-        { username }, 
+        { username },
         { $set: { following: updatedFollowing } }
       );
     } catch (error: any) {
@@ -457,30 +509,32 @@ export class UserRepositoryMongo implements IUserRepository {
   async getAllFollowers(username: string): Promise<User[]> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
-      
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
-      const followers = await userMongoClient?.find({ following: { $elemMatch: { user_followed_id: userDoc._id } } }).toArray();
+      const followers = await userMongoClient
+        ?.find({ following: { $elemMatch: { user_followed_id: userDoc._id } } })
+        .toArray();
 
       if (!followers) {
-        throw new NoItemsFound('followers');
+        throw new NoItemsFound("followers");
       }
 
-      const followersDto = followers.map(followerDoc => {
+      const followersDto = followers.map((followerDoc) => {
         return UserMongoDTO.fromMongo(followerDoc, false);
       });
 
-      const followersEntities = followersDto.map(followerDto => {
+      const followersEntities = followersDto.map((followerDto) => {
         return UserMongoDTO.toEntity(followerDto);
       });
 
@@ -493,42 +547,78 @@ export class UserRepositoryMongo implements IUserRepository {
   async getAllFollowing(username: string): Promise<User[]> {
     try {
       const db = await connectDB();
-      db.connections[0].on('error', () => {
-        console.error.bind(console, 'connection error:')
-        throw new Error('Error connecting to MongoDB');
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
       });
-      
-      const userMongoClient = db.connections[0].db?.collection<IUser>('User');
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
 
       const userDoc = await userMongoClient?.findOne({ username });
 
       if (!userDoc) {
-        throw new NoItemsFound('username');
+        throw new NoItemsFound("username");
       }
 
-      const following = userDoc.following.map(follow => follow.user_followed_id);
+      const following = userDoc.following.map(
+        (follow) => follow.user_followed_id
+      );
 
       if (!following) {
         return [];
       }
 
-      const followingDocs = await userMongoClient?.find({ _id: { $in: following } }).toArray();
+      const followingDocs = await userMongoClient
+        ?.find({ _id: { $in: following } })
+        .toArray();
 
       if (!followingDocs) {
-        throw new NoItemsFound('following');
+        throw new NoItemsFound("following");
       }
 
-      const followingDto = followingDocs.map(followingDoc => {
+      const followingDto = followingDocs.map((followingDoc) => {
         return UserMongoDTO.fromMongo(followingDoc, false);
       });
 
-      const followingEntities = followingDto.map(followingDto => {
+      const followingEntities = followingDto.map((followingDto) => {
         return UserMongoDTO.toEntity(followingDto);
       });
 
       return followingEntities;
     } catch (error: any) {
       throw new Error(`Error getting all following on MongoDB: ${error}`);
+    }
+  }
+
+  async getAllFavoriteInstitutes(username: string): Promise<any> {
+    try {
+      const db = await connectDB();
+      db.connections[0].on("error", () => {
+        console.error.bind(console, "connection error:");
+        throw new Error("Error connecting to MongoDB");
+      });
+
+      const userMongoClient = db.connections[0].db?.collection<IUser>("User");
+
+      const userDoc = await userMongoClient?.findOne({ username });
+
+      if (!userDoc) {
+        throw new NoItemsFound("username");
+      }
+
+      const favoriteInstitutes = userDoc.favorites.map(
+        (favorite) => favorite.institute_id
+      );
+
+      if (!favoriteInstitutes) {
+        return [];
+      }
+
+      return favoriteInstitutes;
+    } catch (error: any) {
+      throw new Error(
+        `Error getting all favorite institutes on MongoDB: ${error}`
+      );
     }
   }
 }
