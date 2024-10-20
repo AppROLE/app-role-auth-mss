@@ -8,27 +8,16 @@ export interface IUserRepository {
   getProfile(username: string): Promise<GetProfileReturnType>
   deleteAccount(username: string): Promise<void>;
   findByUsername(username: string): Promise<User>;
-  createReview(
-    star: number,
-    review: string,
-    reviewedAt: Date,
-    instituteId: string,
-    eventId: string,
-    username: string
+  createReview(star: number, review: string, reviewedAt: Date, instituteId: string, eventId: string, username: string
   ): Promise<void>;
   getFriends(username: string): Promise<User[]>;
   getAllReviewsByEvent(eventId: string): Promise<User[]>;
   findPerson(searchTerm: string): Promise<FindPersonReturnType[]>;
-  updateProfile(
-    username: string,
-    newUsername?: string,
-    nickname?: string,
-    biography?: string,
-    instagramLink?: string,
-    tiktokLink?: string
+  updateProfile(username: string, newUsername?: string, nickname?: string, biography?: string, instagramLink?: string, tiktokLink?: string
   ): Promise<boolean | null>;
   favoriteInstitute(username: string, instituteId: string): Promise<void>;
   followUser(username: string, followedUsername: string): Promise<void>;
   getAllFollowers(username: string): Promise<User[]>;
   getAllFollowing(username: string): Promise<User[]>;
+  getAllFavoriteInstitutes(username: string): Promise<any>;
 }
