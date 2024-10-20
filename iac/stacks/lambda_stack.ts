@@ -31,6 +31,7 @@ export class LambdaStack extends Construct {
   findPersonFunction: lambda.Function
   updateProfileFunction: lambda.Function
   favoriteInstituteFunction: lambda.Function
+  getAllFavoriteInstitutesFunction: lambda.Function
   followUserFunction: lambda.Function
   getAllFollowersFunction: lambda.Function
   getAllFollowingFunction: lambda.Function
@@ -103,6 +104,7 @@ export class LambdaStack extends Construct {
     this.findPersonFunction = this.createLambdaApiGatewayIntegration('find_person', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.updateProfileFunction = this.createLambdaApiGatewayIntegration('update_profile', 'PUT', apiGatewayResource, environmentVariables, authorizer)
     this.favoriteInstituteFunction = this.createLambdaApiGatewayIntegration('favorite_institute', 'PUT', apiGatewayResource, environmentVariables, authorizer)
+    this.getAllFavoriteInstitutesFunction = this.createLambdaApiGatewayIntegration('get_all_favorite_institutes', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.followUserFunction = this.createLambdaApiGatewayIntegration('follow_user', 'PUT', apiGatewayResource, environmentVariables, authorizer)
     this.getAllFollowersFunction = this.createLambdaApiGatewayIntegration('get_all_followers', 'GET', apiGatewayResource, environmentVariables, authorizer)
     this.getAllFollowingFunction = this.createLambdaApiGatewayIntegration('get_all_following', 'GET', apiGatewayResource, environmentVariables, authorizer)
